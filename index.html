@@ -112,7 +112,7 @@ select {
 
 #rootSelect {
 
-    width: 90px;
+    width: 95px;
 }
 
 #scaleSelect {
@@ -464,7 +464,7 @@ select {
 
 
 /* =====================================================
-   SINGLE DISPLAY MODES
+   DISPLAY MODES
    ===================================================== */
 
 .mode-notes .note-interval {
@@ -615,16 +615,27 @@ select {
 
         <option value="C">C</option>
         <option value="C#">C#</option>
+        <option value="Db">Db</option>
+
         <option value="D">D</option>
         <option value="D#">D#</option>
+        <option value="Eb">Eb</option>
+
         <option value="E">E</option>
         <option value="F">F</option>
         <option value="F#">F#</option>
+        <option value="Gb">Gb</option>
+
         <option value="G">G</option>
         <option value="G#">G#</option>
+        <option value="Ab">Ab</option>
+
         <option value="A">A</option>
         <option value="A#">A#</option>
+        <option value="Bb">Bb</option>
+
         <option value="B">B</option>
+        <option value="Cb">Cb</option>
 
     </select>
 
@@ -861,22 +872,94 @@ select {
 
 
 /* =====================================================
-   NOTE DATA
+   MUSIC THEORY ENGINE
    ===================================================== */
 
-const noteNames = [
+
+/*
+    We now separate:
+
+    1. NOTE NAME
+    2. CHROMATIC DISTANCE
+    3. SCALE DEGREE
+    4. INTERVAL NAME
+
+    This is important because:
+
+        A# and Bb
+
+    are the same pitch on an equal-tempered guitar,
+
+    but they are NOT the same musical spelling.
+*/
+
+
+const chromaticPitch = {
+
+    "C": 0,
+
+    "C#": 1,
+    "Db": 1,
+
+    "D": 2,
+
+    "D#": 3,
+    "Eb": 3,
+
+    "E": 4,
+
+    "F": 5,
+
+    "F#": 6,
+    "Gb": 6,
+
+    "G": 7,
+
+    "G#": 8,
+    "Ab": 8,
+
+    "A": 9,
+
+    "A#": 10,
+    "Bb": 10,
+
+    "B": 11,
+
+    "Cb": 11
+
+};
+
+
+
+/*
+    Natural notes.
+
+    These are used to determine the correct
+    letter name of every scale degree.
+*/
+
+const naturalPitch = {
+
+    "C": 0,
+    "D": 2,
+    "E": 4,
+    "F": 5,
+    "G": 7,
+    "A": 9,
+    "B": 11
+
+};
+
+
+
+const naturalLetters = [
 
     "C",
-    "C#",
     "D",
-    "D#",
     "E",
     "F",
-    "F#",
     "G",
-    "G#",
     "A",
-    "A#",
     "B"
 
 ];
@@ -884,11 +967,7 @@ const noteNames = [
 
 
 /*
-    Interval names.
-
-    The number tells us the scale degree.
-    The modifier tells us whether it is
-    major, minor, perfect, augmented or diminished.
+    Interval names based on chromatic distance.
 */
 
 const intervalNames = {
@@ -921,9 +1000,54 @@ const intervalNames = {
 
 
 
+/*
+    More precise interval names.
+
+    These are useful for the future theory engine.
+*/
+
+const qualityIntervalNames = {
+
+    0: "R",
+
+    1: "m2",
+
+    2: "M2",
+
+    3: "m3",
+
+    4: "M3",
+
+    5: "P4",
+
+    6: "TT",
+
+    7: "P5",
+
+    8: "m6",
+
+    9: "M6",
+
+    10: "m7",
+
+    11: "M7"
+
+};
+
+
+
 /* =====================================================
    SCALES
    ===================================================== */
+
+
+/*
+    Every scale is defined by:
+
+    - name
+    - semitone intervals
+    - scale degrees
+*/
 
 const scales = {
 
@@ -934,6 +1058,16 @@ const scales = {
 
         intervals: [
             0, 2, 4, 5, 7, 9, 11
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7"
         ]
 
     },
@@ -945,6 +1079,16 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 8, 10
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "b3",
+            "4",
+            "5",
+            "b6",
+            "b7"
         ]
 
     },
@@ -956,6 +1100,16 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 9, 10
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "b3",
+            "4",
+            "5",
+            "6",
+            "b7"
         ]
 
     },
@@ -967,6 +1121,16 @@ const scales = {
 
         intervals: [
             0, 1, 3, 5, 7, 8, 10
+        ],
+
+        degrees: [
+            "1",
+            "b2",
+            "b3",
+            "4",
+            "5",
+            "b6",
+            "b7"
         ]
 
     },
@@ -978,6 +1142,16 @@ const scales = {
 
         intervals: [
             0, 2, 4, 6, 7, 9, 11
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "3",
+            "#4",
+            "5",
+            "6",
+            "7"
         ]
 
     },
@@ -989,6 +1163,16 @@ const scales = {
 
         intervals: [
             0, 2, 4, 5, 7, 9, 10
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "b7"
         ]
 
     },
@@ -1000,6 +1184,16 @@ const scales = {
 
         intervals: [
             0, 1, 3, 5, 6, 8, 10
+        ],
+
+        degrees: [
+            "1",
+            "b2",
+            "b3",
+            "4",
+            "b5",
+            "b6",
+            "b7"
         ]
 
     },
@@ -1011,6 +1205,16 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 8, 11
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "b3",
+            "4",
+            "5",
+            "b6",
+            "7"
         ]
 
     },
@@ -1022,6 +1226,16 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 9, 11
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "b3",
+            "4",
+            "5",
+            "6",
+            "7"
         ]
 
     },
@@ -1033,6 +1247,14 @@ const scales = {
 
         intervals: [
             0, 2, 4, 7, 9
+        ],
+
+        degrees: [
+            "1",
+            "2",
+            "3",
+            "5",
+            "6"
         ]
 
     },
@@ -1044,6 +1266,14 @@ const scales = {
 
         intervals: [
             0, 3, 5, 7, 10
+        ],
+
+        degrees: [
+            "1",
+            "b3",
+            "4",
+            "5",
+            "b7"
         ]
 
     },
@@ -1055,11 +1285,416 @@ const scales = {
 
         intervals: [
             0, 3, 5, 6, 7, 10
+        ],
+
+        degrees: [
+            "1",
+            "b3",
+            "4",
+            "b5",
+            "5",
+            "b7"
         ]
 
     }
 
 };
+
+
+
+/* =====================================================
+   ROOT SPELLING
+   ===================================================== */
+
+
+/*
+    Determines whether the selected root
+    is naturally written with sharps or flats.
+
+    This gives us a sensible default for
+    generating the scale spelling.
+*/
+
+const flatRoots = [
+
+    "F",
+    "Bb",
+    "Eb",
+    "Ab",
+    "Db",
+    "Gb",
+    "Cb"
+
+];
+
+
+const sharpRoots = [
+
+    "G",
+    "D",
+    "A",
+    "E",
+    "B",
+    "F#",
+    "C#"
+
+];
+
+
+
+/*
+    Preferred spelling for enharmonic pitches.
+
+    These are used when the scale needs a
+    sharp or flat accidental.
+*/
+
+const sharpNames = {
+
+    0: "C",
+
+    1: "C#",
+
+    2: "D",
+
+    3: "D#",
+
+    4: "E",
+
+    5: "F",
+
+    6: "F#",
+
+    7: "G",
+
+    8: "G#",
+
+    9: "A",
+
+    10: "A#",
+
+    11: "B"
+
+};
+
+
+
+const flatNames = {
+
+    0: "C",
+
+    1: "Db",
+
+    2: "D",
+
+    3: "Eb",
+
+    4: "E",
+
+    5: "F",
+
+    6: "Gb",
+
+    7: "G",
+
+    8: "Ab",
+
+    9: "A",
+
+    10: "Bb",
+
+    11: "B"
+
+};
+
+
+
+/* =====================================================
+   GENERATE CORRECT SCALE SPELLING
+   ===================================================== */
+
+function getScaleNotes() {
+
+
+    const root =
+        rootSelect.value;
+
+
+    const scale =
+        scales[
+            scaleSelect.value
+        ];
+
+
+    const rootPitch =
+        chromaticPitch[root];
+
+
+    const rootLetter =
+        root.charAt(0);
+
+
+    const rootLetterIndex =
+        naturalLetters.indexOf(
+            rootLetter
+        );
+
+
+    const useFlats =
+        flatRoots.includes(root);
+
+
+    const useSharps =
+        sharpRoots.includes(root);
+
+
+    const result = [];
+
+
+
+    /*
+        Each scale degree must use a different
+        letter name.
+
+        Example:
+
+        F Major
+
+        F G A Bb C D E
+
+        NOT
+
+        F G A A# C D E
+    */
+
+    scale.intervals.forEach(
+
+        (semitones, index) => {
+
+
+            const targetPitch =
+                (rootPitch + semitones) % 12;
+
+
+            const targetLetter =
+                naturalLetters[
+                    (
+                        rootLetterIndex +
+                        index
+                    ) % 7
+                ];
+
+
+            const naturalTargetPitch =
+                naturalPitch[
+                    targetLetter
+                ];
+
+
+            let difference =
+                targetPitch -
+                naturalTargetPitch;
+
+
+
+            /*
+                Normalize to -6 ... +6.
+            */
+
+            while (difference > 6) {
+
+                difference -= 12;
+
+            }
+
+            while (difference < -6) {
+
+                difference += 12;
+
+            }
+
+
+
+            let noteName =
+                targetLetter;
+
+
+
+            if (difference === 1) {
+
+                noteName += "#";
+
+            }
+
+            else if (difference === -1) {
+
+                noteName += "b";
+
+            }
+
+            else if (difference === 2) {
+
+                noteName += "##";
+
+            }
+
+            else if (difference === -2) {
+
+                noteName += "bb";
+
+            }
+
+
+
+            /*
+                Normally the calculated spelling
+                should be correct.
+
+                This fallback protects against
+                unusual theoretical cases.
+            */
+
+            if (
+                chromaticPitch[noteName] === undefined
+            ) {
+
+                noteName =
+                    useFlats
+
+                    ? flatNames[targetPitch]
+
+                    : sharpNames[targetPitch];
+
+            }
+
+
+
+            result.push(noteName);
+
+        }
+
+    );
+
+
+    return result;
+
+}
+
+
+
+/* =====================================================
+   GET CURRENT SCALE
+   ===================================================== */
+
+function getCurrentScale() {
+
+    return scales[
+        scaleSelect.value
+    ];
+
+}
+
+
+
+/* =====================================================
+   GET SCALE DEGREE
+   ===================================================== */
+
+function getScaleDegree(note) {
+
+
+    const scale =
+        getCurrentScale();
+
+
+    const scaleNotes =
+        getScaleNotes();
+
+
+    const index =
+        scaleNotes.indexOf(note);
+
+
+    if (index === -1) {
+
+        return "";
+
+    }
+
+
+    return scale.degrees[index];
+
+}
+
+
+
+/* =====================================================
+   GET INTERVAL
+   ===================================================== */
+
+function getInterval(note) {
+
+
+    const root =
+        rootSelect.value;
+
+
+    const rootPitch =
+        chromaticPitch[root];
+
+
+    const notePitch =
+        chromaticPitch[note];
+
+
+    const distance =
+        (
+            notePitch -
+            rootPitch +
+            12
+        ) % 12;
+
+
+    return intervalNames[
+        distance
+    ];
+
+}
+
+
+
+/* =====================================================
+   GET PRECISE INTERVAL
+   ===================================================== */
+
+function getQualityInterval(note) {
+
+
+    const root =
+        rootSelect.value;
+
+
+    const rootPitch =
+        chromaticPitch[root];
+
+
+    const notePitch =
+        chromaticPitch[note];
+
+
+    const distance =
+        (
+            notePitch -
+            rootPitch +
+            12
+        ) % 12;
+
+
+    return qualityIntervalNames[
+        distance
+    ];
+
+}
 
 
 
@@ -1079,13 +1714,6 @@ const tuning = [
 ];
 
 
-
-/*
-    Current study positions.
-
-    We will later replace these simple
-    windows with actual scale fingerings.
-*/
 
 const positions = [
 
@@ -1129,51 +1757,73 @@ let displayMode = "notes";
 
 
 /* =====================================================
-   DOM ELEMENTS
+   DOM
    ===================================================== */
 
 const rootSelect =
-    document.getElementById("rootSelect");
+    document.getElementById(
+        "rootSelect"
+    );
 
 
 const scaleSelect =
-    document.getElementById("scaleSelect");
+    document.getElementById(
+        "scaleSelect"
+    );
 
 
 const fretboard =
-    document.getElementById("fretboard");
+    document.getElementById(
+        "fretboard"
+    );
 
 
 const scaleName =
-    document.getElementById("scaleName");
+    document.getElementById(
+        "scaleName"
+    );
 
 
 const notes =
-    document.getElementById("notes");
+    document.getElementById(
+        "notes"
+    );
 
 
 const positionNumber =
-    document.getElementById("positionNumber");
+    document.getElementById(
+        "positionNumber"
+    );
 
 
 const positionFrets =
-    document.getElementById("positionFrets");
+    document.getElementById(
+        "positionFrets"
+    );
 
 
 const positionDots =
-    document.getElementById("positionDots");
+    document.getElementById(
+        "positionDots"
+    );
 
 
 const previousButton =
-    document.getElementById("previousButton");
+    document.getElementById(
+        "previousButton"
+    );
 
 
 const nextButton =
-    document.getElementById("nextButton");
+    document.getElementById(
+        "nextButton"
+    );
 
 
 const fretboardWrapper =
-    document.getElementById("fretboardWrapper");
+    document.getElementById(
+        "fretboardWrapper"
+    );
 
 
 const displayButtons =
@@ -1184,95 +1834,29 @@ const displayButtons =
 
 
 /* =====================================================
-   GET CURRENT SCALE
-   ===================================================== */
-
-function getCurrentScale() {
-
-    return scales[
-        scaleSelect.value
-    ];
-
-}
-
-
-
-/* =====================================================
-   GET SCALE NOTES
-   ===================================================== */
-
-function getScaleNotes() {
-
-    const root =
-        rootSelect.value;
-
-    const rootIndex =
-        noteNames.indexOf(root);
-
-    const scale =
-        getCurrentScale();
-
-    return scale.intervals.map(
-
-        interval =>
-
-            noteNames[
-                (rootIndex + interval) % 12
-            ]
-
-    );
-
-}
-
-
-
-/* =====================================================
-   GET INTERVAL FOR A NOTE
-   ===================================================== */
-
-function getInterval(note) {
-
-    const root =
-        rootSelect.value;
-
-    const rootIndex =
-        noteNames.indexOf(root);
-
-    const noteIndex =
-        noteNames.indexOf(note);
-
-    const distance =
-        (noteIndex - rootIndex + 12) % 12;
-
-    return intervalNames[distance];
-
-}
-
-
-
-/* =====================================================
-   UPDATE SCALE INFORMATION
+   SCALE INFORMATION
    ===================================================== */
 
 function updateScaleInfo() {
 
+
     const root =
         rootSelect.value;
 
+
     const scale =
         getCurrentScale();
+
 
     const scaleNotes =
         getScaleNotes();
 
 
     scaleName.textContent =
-
         `${root} ${scale.name}`;
 
 
     notes.textContent =
-
         scaleNotes.join("  •  ");
 
 }
@@ -1285,23 +1869,23 @@ function updateScaleInfo() {
 
 function drawFretboard() {
 
+
     const root =
         rootSelect.value;
+
 
     const scaleNotes =
         getScaleNotes();
 
+
     const position =
-        positions[currentPosition];
+        positions[
+            currentPosition
+        ];
 
 
     fretboard.innerHTML = "";
 
-
-    /*
-        Change the class according to
-        the selected display mode.
-    */
 
     fretboard.className =
         `fretboard mode-${displayMode}`;
@@ -1312,75 +1896,105 @@ function drawFretboard() {
 
         openNote => {
 
+
             const string =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             string.className =
                 "string";
 
 
 
-            /*
-                String tuning label.
-            */
-
             const label =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             label.className =
                 "string-label";
 
+
             label.textContent =
                 openNote;
 
-            string.appendChild(label);
+
+            string.appendChild(
+                label
+            );
 
 
 
-            const openIndex =
-                noteNames.indexOf(openNote);
+            const openPitch =
+                chromaticPitch[
+                    openNote
+                ];
 
 
-
-            /*
-                Draw the five frets
-                belonging to the current position.
-            */
 
             for (
-                let fret = position.start;
+
+                let fret =
+                    position.start;
+
                 fret <= position.end;
+
                 fret++
+
             ) {
 
 
                 const fretElement =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 fretElement.className =
                     "fret";
 
 
 
-                const note =
-                    noteNames[
-                        (openIndex + fret) % 12
-                    ];
+                const pitch =
+                    (
+                        openPitch +
+                        fret
+                    ) % 12;
 
 
 
                 /*
-                    Only show notes that belong
-                    to the selected scale.
+                    Find the actual scale note
+                    at this pitch.
+
+                    This is where the corrected
+                    spelling becomes important.
                 */
 
-                if (
-                    scaleNotes.includes(note)
-                ) {
+                const note =
+                    scaleNotes.find(
+
+                        scaleNote =>
+
+                            chromaticPitch[
+                                scaleNote
+                            ] === pitch
+
+                    );
+
+
+
+                if (note) {
 
 
                     const noteElement =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
+
 
                     noteElement.className =
                         "note " +
@@ -1395,33 +2009,35 @@ function drawFretboard() {
 
 
 
-                    /*
-                        Note name.
-                    */
-
                     const noteName =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
+
 
                     noteName.className =
                         "note-name";
+
 
                     noteName.textContent =
                         note;
 
 
 
-                    /*
-                        Interval.
-                    */
-
                     const noteInterval =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
+
 
                     noteInterval.className =
                         "note-interval";
 
+
                     noteInterval.textContent =
-                        getInterval(note);
+                        getScaleDegree(
+                            note
+                        );
 
 
 
@@ -1443,18 +2059,19 @@ function drawFretboard() {
 
 
 
-                /*
-                    Fret number.
-                */
-
                 const number =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
+
 
                 number.className =
                     "fret-number";
 
+
                 number.textContent =
                     fret;
+
 
                 fretElement.appendChild(
                     number
@@ -1482,23 +2099,34 @@ function drawFretboard() {
 
 
 /* =====================================================
-   UPDATE POSITION UI
+   POSITION UI
    ===================================================== */
 
 function updatePositionUI() {
 
+
     const position =
-        positions[currentPosition];
+        positions[
+            currentPosition
+        ];
 
 
     positionNumber.textContent =
 
-        `Position ${currentPosition + 1} / ${positions.length}`;
+        `Position ${
+            currentPosition + 1
+        } / ${
+            positions.length
+        }`;
 
 
     positionFrets.textContent =
 
-        `Frets ${position.start} – ${position.end}`;
+        `Frets ${
+            position.start
+        } – ${
+            position.end
+        }`;
 
 
     positionDots.innerHTML = "";
@@ -1508,15 +2136,20 @@ function updatePositionUI() {
 
         (_, index) => {
 
+
             const dot =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             dot.className =
                 "position-dot";
 
 
             if (
-                index === currentPosition
+                index ===
+                currentPosition
             ) {
 
                 dot.classList.add(
@@ -1539,7 +2172,7 @@ function updatePositionUI() {
 
 
 /* =====================================================
-   UPDATE EVERYTHING
+   UPDATE APP
    ===================================================== */
 
 function updateApp() {
@@ -1555,10 +2188,11 @@ function updateApp() {
 
 
 /* =====================================================
-   POSITION NAVIGATION
+   NAVIGATION
    ===================================================== */
 
 function nextPosition() {
+
 
     if (
         currentPosition <
@@ -1576,6 +2210,7 @@ function nextPosition() {
 
 
 function previousPosition() {
+
 
     if (
         currentPosition > 0
@@ -1611,7 +2246,7 @@ previousButton.addEventListener(
 
 
 /* =====================================================
-   ROOT / SCALE SELECTORS
+   SELECTORS
    ===================================================== */
 
 rootSelect.addEventListener(
@@ -1653,11 +2288,13 @@ displayButtons.forEach(
 
     button => {
 
+
         button.addEventListener(
 
             "click",
 
             () => {
+
 
                 displayButtons.forEach(
 
@@ -1745,8 +2382,10 @@ fretboardWrapper.addEventListener(
 
 function handleSwipe() {
 
+
     const difference =
-        touchEndX - touchStartX;
+        touchEndX -
+        touchStartX;
 
 
     const minimumSwipe =
@@ -1769,7 +2408,9 @@ function handleSwipe() {
 
         nextPosition();
 
-    } else {
+    }
+
+    else {
 
         previousPosition();
 
@@ -1780,10 +2421,11 @@ function handleSwipe() {
 
 
 /* =====================================================
-   START APPLICATION
+   START
    ===================================================== */
 
 updateApp();
+
 
 </script>
 
