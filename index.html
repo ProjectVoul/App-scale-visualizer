@@ -12,7 +12,12 @@
 
 <title>Scale Visualizer</title>
 
+
 <style>
+
+/* =====================================================
+   GENERAL
+   ===================================================== */
 
 * {
     box-sizing: border-box;
@@ -22,12 +27,19 @@ body {
     margin: 0;
     background: #111;
     color: #f5f5f5;
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
     overflow-x: hidden;
+}
+
+button,
+select {
+    font-family: inherit;
 }
 
 
@@ -60,13 +72,18 @@ h1 {
 .controls {
     display: flex;
     gap: 10px;
+
     padding: 18px 16px;
+
     width: 100%;
     max-width: 650px;
+
     margin: auto;
 }
 
-select {
+.root-select {
+    width: 95px;
+
     appearance: none;
     -webkit-appearance: none;
 
@@ -80,15 +97,191 @@ select {
 
     font-size: 16px;
 
-    min-width: 0;
+    cursor: pointer;
 }
 
-#rootSelect {
-    width: 95px;
-}
 
-#scaleSelect {
+/* =====================================================
+   SCALE MENU
+   ===================================================== */
+
+.scale-menu-wrapper {
+    position: relative;
     flex: 1;
+}
+
+.scale-menu-button {
+
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #222;
+    color: white;
+
+    border: 1px solid #444;
+    border-radius: 12px;
+
+    padding: 13px 14px;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+.scale-menu-arrow {
+    color: #888;
+    font-size: 14px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.scale-menu-button.open .scale-menu-arrow {
+    transform: rotate(180deg);
+}
+
+
+/* =====================================================
+   SCALE MENU PANEL
+   ===================================================== */
+
+.scale-menu {
+
+    position: absolute;
+
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+
+    background: #1c1c1c;
+
+    border: 1px solid #444;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    z-index: 100;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.45);
+
+    display: none;
+}
+
+.scale-menu.open {
+    display: block;
+}
+
+
+/* =====================================================
+   CATEGORY
+   ===================================================== */
+
+.scale-category {
+    border-bottom: 1px solid #303030;
+}
+
+.scale-category:last-child {
+    border-bottom: none;
+}
+
+.category-button {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #aaa;
+
+    padding: 15px 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+
+    cursor: pointer;
+
+    text-align: left;
+}
+
+.category-button:active {
+    background: #252525;
+}
+
+.category-arrow {
+    color: #666;
+
+    transition:
+        transform 0.2s ease;
+}
+
+.scale-category.expanded
+.category-arrow {
+    transform: rotate(90deg);
+}
+
+
+/* =====================================================
+   SCALE OPTIONS
+   ===================================================== */
+
+.category-options {
+    display: none;
+
+    padding: 0 8px 8px;
+}
+
+.scale-category.expanded
+.category-options {
+    display: block;
+}
+
+.scale-option {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    color: #eee;
+
+    padding: 11px 12px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.scale-option:hover {
+    background: #292929;
+}
+
+.scale-option.selected {
+    background: #eee;
+    color: #111;
 }
 
 
@@ -102,14 +295,20 @@ select {
 }
 
 .display-label {
+
     color: #777;
+
     font-size: 12px;
+
     text-transform: uppercase;
+
     letter-spacing: 1px;
+
     margin-bottom: 8px;
 }
 
 .display-buttons {
+
     display: inline-flex;
 
     background: #222;
@@ -122,6 +321,7 @@ select {
 }
 
 .display-button {
+
     border: none;
 
     background: transparent;
@@ -138,7 +338,9 @@ select {
 }
 
 .display-button.active {
+
     background: #eee;
+
     color: #111;
 }
 
@@ -148,20 +350,29 @@ select {
    ===================================================== */
 
 .scale-info {
+
     text-align: center;
+
     padding: 5px 20px 18px;
 }
 
 .scale-name {
+
     font-size: 23px;
+
     font-weight: 600;
 }
 
 .notes {
+
     margin-top: 8px;
+
     color: #999;
+
     font-size: 16px;
+
     letter-spacing: 1px;
+
     line-height: 1.5;
 }
 
@@ -171,14 +382,20 @@ select {
    ===================================================== */
 
 .position-header {
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     gap: 18px;
+
     margin-bottom: 12px;
 }
 
 .position-button {
+
     width: 42px;
     height: 42px;
 
@@ -202,41 +419,58 @@ select {
 }
 
 .position-button:active {
+
     background: #333;
+
     transform: scale(0.95);
 }
 
 .position-title {
+
     text-align: center;
+
     min-width: 130px;
 }
 
 .position-number {
+
     font-size: 17px;
+
     font-weight: 600;
 }
 
 .position-frets {
+
     margin-top: 3px;
+
     font-size: 12px;
+
     color: #777;
 }
 
 .position-dots {
+
     display: flex;
+
     justify-content: center;
+
     gap: 7px;
+
     margin-top: 7px;
 }
 
 .position-dot {
+
     width: 7px;
     height: 7px;
+
     border-radius: 50%;
+
     background: #444;
 }
 
 .position-dot.active {
+
     background: #eee;
 }
 
@@ -246,12 +480,16 @@ select {
    ===================================================== */
 
 .fretboard-wrapper {
+
     width: 100%;
+
     padding: 0 10px 25px;
+
     touch-action: pan-y;
 }
 
 .fretboard {
+
     width: 100%;
 
     border-radius: 10px;
@@ -264,6 +502,7 @@ select {
 }
 
 .string {
+
     display: grid;
 
     grid-template-columns:
@@ -286,6 +525,7 @@ select {
    ===================================================== */
 
 .string-label {
+
     display: flex;
 
     align-items: center;
@@ -307,6 +547,7 @@ select {
    ===================================================== */
 
 .fret {
+
     position: relative;
 
     display: flex;
@@ -325,10 +566,11 @@ select {
 
 
 /* =====================================================
-   NOTE CIRCLE
+   NOTE
    ===================================================== */
 
 .note {
+
     width: 38px;
     height: 38px;
 
@@ -356,6 +598,7 @@ select {
 }
 
 .note-interval {
+
     font-size: 10px;
 
     margin-top: 3px;
@@ -364,12 +607,16 @@ select {
 }
 
 .scale-note {
+
     background: #f1f1f1;
+
     color: #111;
 }
 
 .root-note {
+
     background: #e63946;
+
     color: white;
 }
 
@@ -396,10 +643,10 @@ select {
    ===================================================== */
 
 .fret-number {
+
     position: absolute;
 
     bottom: 2px;
-
     right: 4px;
 
     font-size: 9px;
@@ -413,6 +660,7 @@ select {
    ===================================================== */
 
 .legend {
+
     display: flex;
 
     justify-content: center;
@@ -427,6 +675,7 @@ select {
 }
 
 .legend-item {
+
     display: flex;
 
     align-items: center;
@@ -435,6 +684,7 @@ select {
 }
 
 .legend-dot {
+
     width: 13px;
     height: 13px;
 
@@ -457,7 +707,9 @@ select {
 @media (min-width: 700px) {
 
     .fretboard-wrapper {
+
         max-width: 700px;
+
         margin: auto;
     }
 
@@ -466,6 +718,7 @@ select {
     }
 
     .note {
+
         width: 44px;
         height: 44px;
     }
@@ -476,6 +729,11 @@ select {
 
     .note-interval {
         font-size: 11px;
+    }
+
+    .scale-menu {
+        max-height: 500px;
+        overflow-y: auto;
     }
 
 }
@@ -501,12 +759,18 @@ select {
 
 
 <!-- =====================================================
-     ROOT + SCALE
+     CONTROLS
      ===================================================== -->
 
 <div class="controls">
 
-    <select id="rootSelect">
+
+    <!-- ROOT -->
+
+    <select
+        id="rootSelect"
+        class="root-select"
+    >
 
         <option value="C">C</option>
 
@@ -542,78 +806,348 @@ select {
     </select>
 
 
-    <select id="scaleSelect">
 
-        <optgroup label="Diatonic">
+    <!-- SCALE -->
 
-            <option value="major">
+    <div
+        class="scale-menu-wrapper"
+        id="scaleMenuWrapper"
+    >
+
+        <button
+            class="scale-menu-button"
+            id="scaleMenuButton"
+        >
+
+            <span id="selectedScaleLabel">
                 Major / Ionian
-            </option>
+            </span>
 
-            <option value="minor">
-                Natural Minor / Aeolian
-            </option>
+            <span class="scale-menu-arrow">
+                ▾
+            </span>
 
-            <option value="dorian">
-                Dorian
-            </option>
-
-            <option value="phrygian">
-                Phrygian
-            </option>
-
-            <option value="lydian">
-                Lydian
-            </option>
-
-            <option value="mixolydian">
-                Mixolydian
-            </option>
-
-            <option value="locrian">
-                Locrian
-            </option>
-
-        </optgroup>
+        </button>
 
 
-        <optgroup label="Minor">
-
-            <option value="harmonicMinor">
-                Harmonic Minor
-            </option>
-
-            <option value="melodicMinor">
-                Melodic Minor
-            </option>
-
-        </optgroup>
+        <div
+            class="scale-menu"
+            id="scaleMenu"
+        >
 
 
-        <optgroup label="Pentatonic & Blues">
+            <!-- DIATONIC -->
 
-            <option value="majorPentatonic">
-                Major Pentatonic
-            </option>
+            <div class="scale-category">
 
-            <option value="minorPentatonic">
-                Minor Pentatonic
-            </option>
+                <button
+                    class="category-button"
+                >
 
-            <option value="blues">
-                Blues
-            </option>
+                    <span>
+                        Diatonic
+                    </span>
 
-        </optgroup>
+                    <span class="category-arrow">
+                        ›
+                    </span>
 
-    </select>
+                </button>
+
+
+                <div class="category-options">
+
+                    <button
+                        class="scale-option selected"
+                        data-scale="major"
+                    >
+                        Major / Ionian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="dorian"
+                    >
+                        Dorian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="phrygian"
+                    >
+                        Phrygian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="lydian"
+                    >
+                        Lydian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="mixolydian"
+                    >
+                        Mixolydian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="minor"
+                    >
+                        Natural Minor / Aeolian
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="locrian"
+                    >
+                        Locrian
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MINOR -->
+
+            <div class="scale-category">
+
+                <button
+                    class="category-button"
+                >
+
+                    <span>
+                        Minor
+                    </span>
+
+                    <span class="category-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <div class="category-options">
+
+                    <button
+                        class="scale-option"
+                        data-scale="harmonicMinor"
+                    >
+                        Harmonic Minor
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="melodicMinor"
+                    >
+                        Melodic Minor
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PENTATONIC & BLUES -->
+
+            <div class="scale-category">
+
+                <button
+                    class="category-button"
+                >
+
+                    <span>
+                        Pentatonic & Blues
+                    </span>
+
+                    <span class="category-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <div class="category-options">
+
+                    <button
+                        class="scale-option"
+                        data-scale="majorPentatonic"
+                    >
+                        Major Pentatonic
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="minorPentatonic"
+                    >
+                        Minor Pentatonic
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="blues"
+                    >
+                        Blues
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- JAZZ -->
+
+            <div class="scale-category">
+
+                <button
+                    class="category-button"
+                >
+
+                    <span>
+                        Jazz
+                    </span>
+
+                    <span class="category-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <div class="category-options">
+
+                    <button
+                        class="scale-option"
+                        data-scale="lydianDominant"
+                    >
+                        Lydian Dominant
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="altered"
+                    >
+                        Altered
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="wholeTone"
+                    >
+                        Whole Tone
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="halfWholeDiminished"
+                    >
+                        Half-Whole Diminished
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="wholeHalfDiminished"
+                    >
+                        Whole-Half Diminished
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="bebopDominant"
+                    >
+                        Bebop Dominant
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="bebopMajor"
+                    >
+                        Bebop Major
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- EXOTIC -->
+
+            <div class="scale-category">
+
+                <button
+                    class="category-button"
+                >
+
+                    <span>
+                        Exotic / World
+                    </span>
+
+                    <span class="category-arrow">
+                        ›
+                    </span>
+
+                </button>
+
+
+                <div class="category-options">
+
+                    <button
+                        class="scale-option"
+                        data-scale="phrygianDominant"
+                    >
+                        Phrygian Dominant
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="doubleHarmonic"
+                    >
+                        Double Harmonic Major
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="hungarianMinor"
+                    >
+                        Hungarian Minor
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="hirajoshi"
+                    >
+                        Hirajoshi
+                    </button>
+
+                    <button
+                        class="scale-option"
+                        data-scale="japanese"
+                    >
+                        Japanese
+                    </button>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
 
 </div>
 
 
 
 <!-- =====================================================
-     DISPLAY MODE
+     DISPLAY
      ===================================================== -->
 
 <div class="display-section">
@@ -678,7 +1212,7 @@ select {
 
 
 <!-- =====================================================
-     POSITION NAVIGATION
+     POSITION
      ===================================================== -->
 
 <div class="position-header">
@@ -686,7 +1220,6 @@ select {
     <button
         class="position-button"
         id="previousButton"
-        aria-label="Previous position"
     >
         ‹
     </button>
@@ -721,7 +1254,6 @@ select {
     <button
         class="position-button"
         id="nextButton"
-        aria-label="Next position"
     >
         ›
     </button>
@@ -774,15 +1306,14 @@ select {
 
 
 /* =====================================================
-   MUSIC THEORY ENGINE
+   MUSIC THEORY
    ===================================================== */
 
 
 /*
-    Every note has a chromatic pitch.
+    Chromatic pitch values.
 
-    Enharmonic notes share the same pitch,
-    but are written differently.
+    Enharmonic spellings share the same pitch.
 */
 
 const chromaticPitch = {
@@ -798,6 +1329,10 @@ const chromaticPitch = {
     "Eb": 3,
 
     "E": 4,
+
+    "Fb": 4,
+
+    "E#": 5,
 
     "F": 5,
 
@@ -815,16 +1350,10 @@ const chromaticPitch = {
     "Bb": 10,
 
     "B": 11,
-
     "Cb": 11
 
 };
 
-
-
-/*
-    Natural notes.
-*/
 
 const naturalPitch = {
 
@@ -853,11 +1382,9 @@ const naturalLetters = [
 
 
 
-/*
-    Simple interval names.
-
-    These are useful as scale-degree descriptions.
-*/
+/* =====================================================
+   INTERVALS
+   ===================================================== */
 
 const intervalNames = {
 
@@ -907,17 +1434,6 @@ const scales = {
     },
 
 
-    minor: {
-
-        name: "Natural Minor / Aeolian",
-
-        intervals: [
-            0, 2, 3, 5, 7, 8, 10
-        ]
-
-    },
-
-
     dorian: {
 
         name: "Dorian",
@@ -957,6 +1473,17 @@ const scales = {
 
         intervals: [
             0, 2, 4, 5, 7, 9, 10
+        ]
+
+    },
+
+
+    minor: {
+
+        name: "Natural Minor / Aeolian",
+
+        intervals: [
+            0, 2, 3, 5, 7, 8, 10
         ]
 
     },
@@ -1025,6 +1552,138 @@ const scales = {
             0, 3, 5, 6, 7, 10
         ]
 
+    },
+
+
+    lydianDominant: {
+
+        name: "Lydian Dominant",
+
+        intervals: [
+            0, 2, 4, 6, 7, 9, 10
+        ]
+
+    },
+
+
+    altered: {
+
+        name: "Altered",
+
+        intervals: [
+            0, 1, 3, 4, 6, 8, 10
+        ]
+
+    },
+
+
+    wholeTone: {
+
+        name: "Whole Tone",
+
+        intervals: [
+            0, 2, 4, 6, 8, 10
+        ]
+
+    },
+
+
+    halfWholeDiminished: {
+
+        name: "Half-Whole Diminished",
+
+        intervals: [
+            0, 1, 3, 4, 6, 7, 9, 10
+        ]
+
+    },
+
+
+    wholeHalfDiminished: {
+
+        name: "Whole-Half Diminished",
+
+        intervals: [
+            0, 2, 3, 5, 6, 8, 9, 11
+        ]
+
+    },
+
+
+    bebopDominant: {
+
+        name: "Bebop Dominant",
+
+        intervals: [
+            0, 2, 4, 5, 7, 9, 10, 11
+        ]
+
+    },
+
+
+    bebopMajor: {
+
+        name: "Bebop Major",
+
+        intervals: [
+            0, 2, 4, 5, 7, 8, 9, 11
+        ]
+
+    },
+
+
+    phrygianDominant: {
+
+        name: "Phrygian Dominant",
+
+        intervals: [
+            0, 1, 4, 5, 7, 8, 10
+        ]
+
+    },
+
+
+    doubleHarmonic: {
+
+        name: "Double Harmonic Major",
+
+        intervals: [
+            0, 1, 4, 5, 7, 8, 11
+        ]
+
+    },
+
+
+    hungarianMinor: {
+
+        name: "Hungarian Minor",
+
+        intervals: [
+            0, 2, 3, 6, 7, 8, 11
+        ]
+
+    },
+
+
+    hirajoshi: {
+
+        name: "Hirajoshi",
+
+        intervals: [
+            0, 2, 3, 7, 8
+        ]
+
+    },
+
+
+    japanese: {
+
+        name: "Japanese",
+
+        intervals: [
+            0, 1, 5, 7, 8
+        ]
+
     }
 
 };
@@ -1044,19 +1703,6 @@ const flatRoots = [
     "Db",
     "Gb",
     "Cb"
-
-];
-
-
-const sharpRoots = [
-
-    "G",
-    "D",
-    "A",
-    "E",
-    "B",
-    "F#",
-    "C#"
 
 ];
 
@@ -1097,6 +1743,15 @@ const flatNames = {
 };
 
 
+
+/*
+    Generate the correctly-spelled notes
+    of a scale.
+
+    The scale degrees move through the
+    seven letter names rather than simply
+    choosing enharmonic pitch names.
+*/
 
 function getScaleNotes() {
 
@@ -1212,8 +1867,9 @@ function getScaleNotes() {
 
 
             /*
-                Fallback for unusual theoretical
-                spellings.
+                If the spelling is unusual,
+                keep the theoretically correct
+                spelling when possible.
             */
 
             if (
@@ -1258,7 +1914,7 @@ function getCurrentScale() {
 
 
 /* =====================================================
-   INTERVAL FROM ROOT
+   INTERVAL
    ===================================================== */
 
 function getInterval(note) {
@@ -1354,71 +2010,274 @@ const rootSelect =
         "rootSelect"
     );
 
-
-const scaleSelect =
+const scaleMenuButton =
     document.getElementById(
-        "scaleSelect"
+        "scaleMenuButton"
     );
 
+const scaleMenu =
+    document.getElementById(
+        "scaleMenu"
+    );
+
+const selectedScaleLabel =
+    document.getElementById(
+        "selectedScaleLabel"
+    );
 
 const fretboard =
     document.getElementById(
         "fretboard"
     );
 
-
 const scaleName =
     document.getElementById(
         "scaleName"
     );
-
 
 const notes =
     document.getElementById(
         "notes"
     );
 
-
 const positionNumber =
     document.getElementById(
         "positionNumber"
     );
-
 
 const positionFrets =
     document.getElementById(
         "positionFrets"
     );
 
-
 const positionDots =
     document.getElementById(
         "positionDots"
     );
-
 
 const previousButton =
     document.getElementById(
         "previousButton"
     );
 
-
 const nextButton =
     document.getElementById(
         "nextButton"
     );
-
 
 const fretboardWrapper =
     document.getElementById(
         "fretboardWrapper"
     );
 
-
 const displayButtons =
     document.querySelectorAll(
         ".display-button"
     );
+
+const categoryButtons =
+    document.querySelectorAll(
+        ".category-button"
+    );
+
+const scaleOptions =
+    document.querySelectorAll(
+        ".scale-option"
+    );
+
+
+
+/* =====================================================
+   SCALE MENU
+   ===================================================== */
+
+
+/*
+    Open / close the main scale menu.
+*/
+
+scaleMenuButton.addEventListener(
+
+    "click",
+
+    event => {
+
+        event.stopPropagation();
+
+        const isOpen =
+            scaleMenu.classList.contains(
+                "open"
+            );
+
+
+        if (isOpen) {
+
+            closeScaleMenu();
+
+        }
+
+        else {
+
+            scaleMenu.classList.add(
+                "open"
+            );
+
+            scaleMenuButton.classList.add(
+                "open"
+            );
+
+        }
+
+    }
+
+);
+
+
+
+function closeScaleMenu() {
+
+    scaleMenu.classList.remove(
+        "open"
+    );
+
+    scaleMenuButton.classList.remove(
+        "open"
+    );
+
+}
+
+
+
+/*
+    Expand / collapse categories.
+*/
+
+categoryButtons.forEach(
+
+    button => {
+
+        button.addEventListener(
+
+            "click",
+
+            () => {
+
+                const category =
+                    button.parentElement;
+
+
+                category.classList.toggle(
+                    "expanded"
+                );
+
+            }
+
+        );
+
+    }
+
+);
+
+
+
+/*
+    Selecting a scale.
+*/
+
+scaleOptions.forEach(
+
+    option => {
+
+        option.addEventListener(
+
+            "click",
+
+            () => {
+
+                const selectedScale =
+                    option.dataset.scale;
+
+
+                scaleSelectValue =
+                    selectedScale;
+
+
+                selectedScaleLabel.textContent =
+                    scales[
+                        selectedScale
+                    ].name;
+
+
+                scaleOptions.forEach(
+
+                    other => {
+
+                        other.classList.remove(
+                            "selected"
+                        );
+
+                    }
+
+                );
+
+
+                option.classList.add(
+                    "selected"
+                );
+
+
+                currentPosition = 0;
+
+
+                updateApp();
+
+
+                closeScaleMenu();
+
+            }
+
+        );
+
+    }
+
+);
+
+
+/*
+    This variable replaces the old
+    HTML select for scales.
+*/
+
+let scaleSelectValue =
+    "major";
+
+
+
+/*
+    Close menu when tapping elsewhere.
+*/
+
+document.addEventListener(
+
+    "click",
+
+    event => {
+
+        if (
+            !document
+                .getElementById(
+                    "scaleMenuWrapper"
+                )
+                .contains(event.target)
+        ) {
+
+            closeScaleMenu();
+
+        }
+
+    }
+
+);
 
 
 
@@ -1443,7 +2302,9 @@ function updateScaleInfo() {
 
 
     notes.textContent =
-        scaleNotes.join("  •  ");
+        scaleNotes.join(
+            "  •  "
+        );
 
 }
 
@@ -1489,7 +2350,6 @@ function drawFretboard() {
                 "string";
 
 
-
             const label =
                 document.createElement(
                     "div"
@@ -1507,7 +2367,6 @@ function drawFretboard() {
             string.appendChild(
                 label
             );
-
 
 
             const openPitch =
@@ -1539,7 +2398,6 @@ function drawFretboard() {
                     "fret";
 
 
-
                 const pitch =
                     (
                         openPitch +
@@ -1547,11 +2405,6 @@ function drawFretboard() {
                     ) % 12;
 
 
-
-                /*
-                    Find the correctly-spelled
-                    scale note at this pitch.
-                */
 
                 const note =
                     scaleNotes.find(
@@ -1567,7 +2420,6 @@ function drawFretboard() {
 
 
                 if (note) {
-
 
                     const noteElement =
                         document.createElement(
@@ -1587,7 +2439,6 @@ function drawFretboard() {
                         );
 
 
-
                     const noteName =
                         document.createElement(
                             "div"
@@ -1600,7 +2451,6 @@ function drawFretboard() {
 
                     noteName.textContent =
                         note;
-
 
 
                     const noteInterval =
@@ -1617,7 +2467,6 @@ function drawFretboard() {
                         getInterval(
                             note
                         );
-
 
 
                     noteElement.appendChild(
@@ -1662,7 +2511,6 @@ function drawFretboard() {
                 );
 
             }
-
 
 
             fretboard.appendChild(
@@ -1749,7 +2597,7 @@ function updatePositionUI() {
 
 
 /* =====================================================
-   UPDATE APP
+   UPDATE
    ===================================================== */
 
 function updateApp() {
@@ -1765,55 +2613,7 @@ function updateApp() {
 
 
 /* =====================================================
-   NAVIGATION
-   ===================================================== */
-
-function nextPosition() {
-
-    if (
-        currentPosition <
-        positions.length - 1
-    ) {
-
-        currentPosition++;
-
-        updateApp();
-
-    }
-
-}
-
-
-function previousPosition() {
-
-    if (
-        currentPosition > 0
-    ) {
-
-        currentPosition--;
-
-        updateApp();
-
-    }
-
-}
-
-
-nextButton.addEventListener(
-    "click",
-    nextPosition
-);
-
-
-previousButton.addEventListener(
-    "click",
-    previousPosition
-);
-
-
-
-/* =====================================================
-   SELECTORS
+   ROOT
    ===================================================== */
 
 rootSelect.addEventListener(
@@ -1831,15 +2631,48 @@ rootSelect.addEventListener(
 );
 
 
-scaleSelect.addEventListener(
 
-    "change",
+/* =====================================================
+   POSITION NAVIGATION
+   ===================================================== */
+
+nextButton.addEventListener(
+
+    "click",
 
     () => {
 
-        currentPosition = 0;
+        if (
+            currentPosition <
+            positions.length - 1
+        ) {
 
-        updateApp();
+            currentPosition++;
+
+            updateApp();
+
+        }
+
+    }
+
+);
+
+
+previousButton.addEventListener(
+
+    "click",
+
+    () => {
+
+        if (
+            currentPosition > 0
+        ) {
+
+            currentPosition--;
+
+            updateApp();
+
+        }
 
     }
 
@@ -1967,13 +2800,13 @@ function handleSwipe() {
         difference < 0
     ) {
 
-        nextPosition();
+        nextButton.click();
 
     }
 
     else {
 
-        previousPosition();
+        previousButton.click();
 
     }
 
@@ -1988,6 +2821,37 @@ function handleSwipe() {
 updateApp();
 
 </script>
+
+
+<!--
+    Hidden select value used by the scale engine.
+    The visible custom menu controls the value.
+-->
+
+<script>
+
+Object.defineProperty(
+    window,
+    "scaleSelect",
+    {
+        get: function() {
+
+            return {
+
+                get value() {
+
+                    return scaleSelectValue;
+
+                }
+
+            };
+
+        }
+    }
+);
+
+</script>
+
 
 </body>
 
