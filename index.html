@@ -1475,6 +1475,81 @@ document.getElementById("nextPosition")
 
 
 /* ==================================================
+   SWIPE BETWEEN POSITIONS
+================================================== */
+
+const fretboardElement =
+    document.getElementById("fretboard");
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+const SWIPE_THRESHOLD = 50;
+
+fretboardElement.addEventListener("touchstart", (event) => {
+
+    const touch = event.changedTouches[0];
+
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+
+}, { passive: true });
+
+
+fretboardElement.addEventListener("touchend", (event) => {
+
+    const touch = event.changedTouches[0];
+
+    const deltaX =
+        touch.clientX - touchStartX;
+
+    const deltaY =
+        touch.clientY - touchStartY;
+
+    /*
+       Ignore gestures that are primarily vertical.
+       This keeps normal page scrolling intact.
+    */
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        return;
+    }
+
+    /*
+       Ignore very short movements.
+    */
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD) {
+        return;
+    }
+
+    /*
+       Swipe left → next position
+       Swipe right → previous position
+    */
+
+    if (deltaX < 0) {
+
+        currentPosition++;
+
+        if (currentPosition >= POSITION_COUNT) {
+            currentPosition = 0;
+        }
+
+    } else {
+
+        currentPosition--;
+
+        if (currentPosition < 0) {
+            currentPosition = POSITION_COUNT - 1;
+        }
+
+    }
+
+    updateAll();
+
+});
+
+
+/* ==================================================
    DISPLAY MODE
 ================================================== */
 
