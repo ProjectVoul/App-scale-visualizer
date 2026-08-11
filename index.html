@@ -125,6 +125,79 @@ button {
 
 
 /* ==================================================
+   ROOT MENU
+================================================== */
+
+.root-menu {
+    max-width: 760px;
+
+    margin: 0 auto 14px;
+
+    padding: 18px;
+
+    background: #1c1c1c;
+
+    border: 1px solid #414141;
+    border-radius: 22px;
+
+    display: none;
+
+    position: relative;
+    z-index: 20;
+}
+
+.root-menu.open {
+    display: block;
+}
+
+.root-menu-title {
+    margin-bottom: 14px;
+
+    color: #888;
+
+    text-align: center;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+}
+
+.root-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.root-option {
+    min-height: 48px;
+
+    border: 1px solid #383838;
+    border-radius: 12px;
+
+    background: #242424;
+    color: #eee;
+
+    cursor: pointer;
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.root-option:hover {
+    background: #303030;
+}
+
+.root-option.active {
+    background: #f2f2f2;
+    color: #151515;
+}
+
+
+/* ==================================================
    SCALE MENU
 ================================================== */
 
@@ -753,6 +826,20 @@ and (max-height: 600px) {
         padding: 0 16px;
     }
 
+    .root-menu {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .root-grid {
+        gap: 6px;
+    }
+
+    .root-option {
+        min-height: 44px;
+        font-size: 15px;
+    }
+
     .position-header {
         grid-template-columns:
             58px
@@ -881,6 +968,47 @@ and (max-height: 600px) {
         </span>
 
     </button>
+
+</div>
+
+
+<!-- ==================================================
+     ROOT MENU
+================================================== -->
+
+<div
+    class="root-menu"
+    id="rootMenu">
+
+    <div class="root-menu-title">
+        ROOT NOTE
+    </div>
+
+    <div class="root-grid">
+
+        <button class="root-option" data-root="C">C</button>
+        <button class="root-option" data-root="C#">C#</button>
+        <button class="root-option" data-root="Db">Db</button>
+        <button class="root-option" data-root="D">D</button>
+
+        <button class="root-option" data-root="D#">D#</button>
+        <button class="root-option" data-root="Eb">Eb</button>
+        <button class="root-option" data-root="E">E</button>
+        <button class="root-option" data-root="F">F</button>
+
+        <button class="root-option" data-root="F#">F#</button>
+        <button class="root-option" data-root="Gb">Gb</button>
+        <button class="root-option" data-root="G">G</button>
+        <button class="root-option" data-root="G#">G#</button>
+
+        <button class="root-option" data-root="Ab">Ab</button>
+        <button class="root-option" data-root="A">A</button>
+        <button class="root-option" data-root="A#">A#</button>
+        <button class="root-option" data-root="Bb">Bb</button>
+
+        <button class="root-option" data-root="B">B</button>
+
+    </div>
 
 </div>
 
@@ -1314,7 +1442,7 @@ and (max-height: 600px) {
             class="position-shape"
             id="positionShape">
 
-            E Shape · CAGED
+            C Shape · CAGED
 
         </div>
 
@@ -1323,7 +1451,7 @@ and (max-height: 600px) {
             class="fret-range"
             id="fretRange">
 
-            Frets 7 – 10
+            Frets 12 – 15
 
         </div>
 
@@ -2138,17 +2266,19 @@ const MAX_FRET = 24;
 
 const CAGED_TEMPLATES = [
 
-    {
-        shape: "E",
-        start: 7,
-        end: 10
-    },
+    /*
+       Canonical CAGED order:
 
-    {
-        shape: "D",
-        start: 9,
-        end: 13
-    },
+       1. C
+       2. A
+       3. G
+       4. E
+       5. D
+
+       The verified C-major regions themselves are
+       unchanged; only their presentation/numbering
+       order is corrected.
+    */
 
     {
         shape: "C",
@@ -2166,6 +2296,18 @@ const CAGED_TEMPLATES = [
         shape: "G",
         start: 5,
         end: 8
+    },
+
+    {
+        shape: "E",
+        start: 7,
+        end: 10
+    },
+
+    {
+        shape: "D",
+        start: 9,
+        end: 13
     }
 
 ];
@@ -2249,10 +2391,13 @@ function getNaturalLetterIndex(letter) {
 
 function accidentalText(value) {
 
-    if (value === 2) return "##";
-    if (value === 1) return "#";
-    if (value === -1) return "b";
-    if (value === -2) return "bb";
+    if (value > 0) {
+        return "#".repeat(value);
+    }
+
+    if (value < 0) {
+        return "b".repeat(Math.abs(value));
+    }
 
     return "";
 
@@ -2319,6 +2464,20 @@ function getScaleNotes() {
                     root.pitch + interval
                 );
 
+            /*
+               The scale degree determines the natural letter.
+               The selected root and interval determine the
+               accidental required for that letter.
+
+               Example:
+
+               C# major =
+               C# D# E# F# G# A# B#
+
+               This avoids the previous problem where the
+               accidental table was effectively fixed to C.
+            */
+
             let accidental =
                 targetPitch -
                 naturalPitch;
@@ -2331,18 +2490,6 @@ function getScaleNotes() {
                 accidental += 12;
             }
 
-            /*
-               Scale definitions contain the intended
-               theoretical spelling. Prefer it over
-               an accidental inferred from pitch.
-            */
-
-            const definedAccidental =
-                scale.accidentals[index];
-
-            const finalAccidental =
-                definedAccidental;
-
             return {
 
                 pitch:
@@ -2353,7 +2500,7 @@ function getScaleNotes() {
                 name:
                     letter +
                     accidentalText(
-                        finalAccidental
+                        accidental
                     )
 
             };
@@ -2362,14 +2509,6 @@ function getScaleNotes() {
     );
 
 }
-
-
-function naturalPitchValue(letter) {
-
-    return naturalPitch[letter];
-
-}
-
 
 /* ==================================================
    INTERVAL LABELS
@@ -2458,8 +2597,8 @@ function buildPositionDatabase() {
                    Keep the displayed region inside
                    the normal guitar range.
 
-                   We use modulo-style octave wrapping
-                   so the two patterns repeat naturally.
+                   Each symmetric pattern remains a
+                   practical six-fret study region.
                 */
 
                 while (start < 1) {
@@ -2492,7 +2631,12 @@ function buildPositionDatabase() {
 
                 };
 
-            });
+            })
+            .sort(
+                (a, b) =>
+                    a.startFret -
+                    b.startFret
+            );
 
     }
 
@@ -3060,6 +3204,10 @@ scaleButton.addEventListener(
             "open"
         );
 
+        rootMenu.classList.remove(
+            "open"
+        );
+
     }
 );
 
@@ -3364,91 +3512,119 @@ document
    ROOT SELECTOR
 ================================================== */
 
-document
-    .getElementById(
+const rootButton =
+    document.getElementById(
         "rootButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
+    );
 
 
-            const nextRoot =
-                prompt(
-                    "Root note (C, C#, D, Eb, E, F, F#, G, Ab, A, Bb, B):",
+const rootMenu =
+    document.getElementById(
+        "rootMenu"
+    );
+
+
+const rootOptions =
+    document.querySelectorAll(
+        ".root-option"
+    );
+
+
+function updateRootMenu() {
+
+    rootOptions.forEach(
+        option => {
+
+            option.classList.toggle(
+                "active",
+                option.dataset.root ===
                     currentRoot
-                );
-
-
-            if (!nextRoot) {
-                return;
-            }
-
-
-            const normalized =
-                nextRoot.trim();
-
-
-            const acceptedRoots = [
-
-                "C",
-                "C#",
-                "Db",
-
-                "D",
-                "D#",
-                "Eb",
-
-                "E",
-
-                "F",
-                "F#",
-                "Gb",
-
-                "G",
-                "G#",
-                "Ab",
-
-                "A",
-                "A#",
-                "Bb",
-
-                "B"
-
-            ];
-
-
-            if (
-                !acceptedRoots.includes(
-                    normalized
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            currentRoot =
-                normalized;
-
-
-            currentPosition =
-                0;
-
-
-            document
-                .getElementById(
-                    "rootButton"
-                )
-                .textContent =
-                currentRoot;
-
-
-            updateAll();
+            );
 
         }
     );
+
+}
+
+
+rootButton.addEventListener(
+    "click",
+    () => {
+
+        rootMenu.classList.toggle(
+            "open"
+        );
+
+        scaleMenu.classList.remove(
+            "open"
+        );
+
+        updateRootMenu();
+
+    }
+);
+
+
+rootOptions.forEach(
+    option => {
+
+        option.addEventListener(
+            "click",
+            () => {
+
+                currentRoot =
+                    option.dataset.root;
+
+                currentPosition = 0;
+
+                rootButton.textContent =
+                    currentRoot;
+
+                rootMenu.classList.remove(
+                    "open"
+                );
+
+                updateAll();
+
+            }
+        );
+
+    }
+);
+
+
+/*
+   Clicking outside either menu closes it.
+*/
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            !rootMenu.contains(event.target) &&
+            event.target !== rootButton
+        ) {
+
+            rootMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+        if (
+            !scaleMenu.contains(event.target) &&
+            event.target !== scaleButton
+        ) {
+
+            scaleMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
 
 
 /* ==================================================
