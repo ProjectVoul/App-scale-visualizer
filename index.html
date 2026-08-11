@@ -535,6 +535,8 @@ button {
     background: #93612d;
 
     touch-action: pan-y;
+
+    min-height: 100px;
 }
 
 
@@ -1442,7 +1444,7 @@ and (max-height: 600px) {
             class="position-shape"
             id="positionShape">
 
-            C Shape · CAGED
+            E Shape · CAGED
 
         </div>
 
@@ -1451,7 +1453,7 @@ and (max-height: 600px) {
             class="fret-range"
             id="fretRange">
 
-            Frets 12 – 15
+            Frets 7 – 10
 
         </div>
 
@@ -2266,19 +2268,17 @@ const MAX_FRET = 24;
 
 const CAGED_TEMPLATES = [
 
-    /*
-       Canonical CAGED order:
+    {
+        shape: "E",
+        start: 7,
+        end: 10
+    },
 
-       1. C
-       2. A
-       3. G
-       4. E
-       5. D
-
-       The verified C-major regions themselves are
-       unchanged; only their presentation/numbering
-       order is corrected.
-    */
+    {
+        shape: "D",
+        start: 9,
+        end: 13
+    },
 
     {
         shape: "C",
@@ -2296,21 +2296,9 @@ const CAGED_TEMPLATES = [
         shape: "G",
         start: 5,
         end: 8
-    },
-
-    {
-        shape: "E",
-        start: 7,
-        end: 10
-    },
-
-    {
-        shape: "D",
-        start: 9,
-        end: 13
     }
 
-];
+]
 
 
 /*
@@ -2509,6 +2497,13 @@ function getScaleNotes() {
     );
 
 }
+
+function naturalPitchValue(letter) {
+
+    return naturalPitch[letter];
+
+}
+
 
 /* ==================================================
    INTERVAL LABELS
