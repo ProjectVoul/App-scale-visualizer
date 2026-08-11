@@ -321,8 +321,22 @@ button {
 
 .fretboard {
     width: 100%;
+
+    /*
+       The number of fret columns is controlled by
+       --fret-count.
+
+       Positions 1–4 = 5 columns
+       Position 5    = 4 columns
+    */
+    --fret-count: 5;
+    --label-width: 78px;
+
     display: grid;
-    grid-template-columns: 78px repeat(5, minmax(0, 1fr));
+    grid-template-columns:
+        var(--label-width)
+        repeat(var(--fret-count), minmax(0, 1fr));
+
     border: 4px solid #3b3b3b;
     border-radius: 24px;
     overflow: hidden;
@@ -358,13 +372,20 @@ button {
     justify-content: center;
 }
 
-.fret:last-child {
+.fret.last-column {
     border-right: 0;
 }
 
-/* Hide bottom border on final row */
+/*
+   The old layout assumed that every row always
+   contained 6 elements.
 
-.fretboard > :nth-last-child(-n + 6) {
+   That is no longer true for Position 5,
+   so the last row is marked explicitly.
+*/
+
+.string-label.last-row,
+.fret.last-row {
     border-bottom: 0;
 }
 
@@ -496,7 +517,7 @@ button {
     }
 
     .fretboard {
-        grid-template-columns: 64px repeat(5, minmax(0, 1fr));
+        --label-width: 64px;
     }
 
     .string-label,
@@ -574,7 +595,7 @@ button {
     }
 
     .fretboard {
-        grid-template-columns: 52px repeat(5, minmax(0, 1fr));
+        --label-width: 52px;
         border-width: 3px;
         border-radius: 20px;
     }
@@ -1219,12 +1240,37 @@ function renderFretboard() {
     const startFret = currentPosition * 5 + 1;
     const endFret = Math.min(startFret + 4, MAX_FRET);
 
-    strings.forEach(string => {
+    /*
+       Determine how many fret columns this position
+       actually contains.
 
-        const label = document.createElement("div");
+       Positions 1–4 = 5 columns
+       Position 5    = 4 columns
+    */
+    const fretCount =
+        endFret - startFret + 1;
+
+    board.style.setProperty(
+        "--fret-count",
+        fretCount
+    );
+
+    strings.forEach((string, stringIndex) => {
+
+        const isLastRow =
+            stringIndex === strings.length - 1;
+
+        const label =
+            document.createElement("div");
 
         label.className = "string-label";
-        label.textContent = string.name;
+
+        if (isLastRow) {
+            label.classList.add("last-row");
+        }
+
+        label.textContent =
+            string.name;
 
         board.appendChild(label);
 
@@ -1234,9 +1280,26 @@ function renderFretboard() {
             fret++
         ) {
 
-            const cell = document.createElement("div");
+            const cell =
+                document.createElement("div");
 
             cell.className = "fret";
+
+            /*
+               Last column of each row:
+               remove the right border.
+            */
+            if (fret === endFret) {
+                cell.classList.add("last-column");
+            }
+
+            /*
+               Last row:
+               remove the bottom border.
+            */
+            if (isLastRow) {
+                cell.classList.add("last-row");
+            }
 
             const pitch =
                 (string.pitch + fret) % 12;
@@ -1258,7 +1321,9 @@ function renderFretboard() {
                 const name =
                     document.createElement("div");
 
-                name.className = "note-name";
+                name.className =
+                    "note-name";
+
                 name.textContent =
                     getNoteName(pitch);
 
@@ -1293,7 +1358,8 @@ function renderFretboard() {
             fretNumber.className =
                 "fret-number";
 
-            fretNumber.textContent = fret;
+            fretNumber.textContent =
+                fret;
 
             cell.appendChild(fretNumber);
 
