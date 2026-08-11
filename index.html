@@ -627,8 +627,11 @@ button {
     width:
         clamp(56px, 7vw, 82px);
 
-    height:
-        clamp(56px, 7vw, 82px);
+    height: auto;
+
+    aspect-ratio: 1 / 1;
+
+    flex: 0 0 auto;
 
     border-radius: 50%;
 
@@ -781,7 +784,11 @@ and (max-height: 600px) {
 
     .note {
         width: 58px;
-        height: 58px;
+        height: auto;
+
+        aspect-ratio: 1 / 1;
+
+        flex: 0 0 auto;
     }
 
     .note-name {
@@ -894,7 +901,11 @@ and (max-height: 600px) {
 
     .note {
         width: 56px;
-        height: 56px;
+        height: auto;
+
+        aspect-ratio: 1 / 1;
+
+        flex: 0 0 auto;
     }
 
     .note-name {
@@ -2758,7 +2769,7 @@ function renderFretboard() {
                             ? "R"
                             : getIntervalLabel(
                                 interval
-                              );
+                            );
 
 
                     /*
@@ -2929,16 +2940,14 @@ rootButton.addEventListener(
 
 document
     .querySelectorAll(".root-option")
-    .forEach(option => {
+    .forEach(button => {
 
-
-        option.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
-
                 currentRoot =
-                    option.dataset.root;
+                    button.dataset.root;
 
 
                 rootButton.textContent =
@@ -2958,7 +2967,7 @@ document
                     });
 
 
-                option.classList.add(
+                button.classList.add(
                     "active"
                 );
 
@@ -2966,14 +2975,6 @@ document
                 rootMenu.classList.remove(
                     "open"
                 );
-
-
-                /*
-                   Return to the first visual
-                   position when changing root.
-                */
-
-                currentPosition = 0;
 
 
                 updateAll();
@@ -3017,15 +3018,19 @@ scaleButton.addEventListener(
 );
 
 
-document
-    .querySelectorAll(".category-header")
-    .forEach(header => {
+/* ==================================================
+   SCALE CATEGORIES
+================================================== */
 
+document
+    .querySelectorAll(
+        ".category-header"
+    )
+    .forEach(header => {
 
         header.addEventListener(
             "click",
             () => {
-
 
                 const category =
                     header.parentElement;
@@ -3041,18 +3046,22 @@ document
     });
 
 
+/* ==================================================
+   SCALE SELECTION
+================================================== */
+
 document
-    .querySelectorAll(".scale-option")
-    .forEach(option => {
+    .querySelectorAll(
+        ".scale-option"
+    )
+    .forEach(button => {
 
-
-        option.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
-
                 currentScale =
-                    option.dataset.scale;
+                    button.dataset.scale;
 
 
                 document
@@ -3068,24 +3077,9 @@ document
                     });
 
 
-                /*
-                   A scale can appear in more than
-                   one category.
-
-                   Activate all matching entries.
-                */
-
-                document
-                    .querySelectorAll(
-                        `.scale-option[data-scale="${currentScale}"]`
-                    )
-                    .forEach(item => {
-
-                        item.classList.add(
-                            "active"
-                        );
-
-                    });
+                button.classList.add(
+                    "active"
+                );
 
 
                 scaleMenu.classList.remove(
@@ -3105,18 +3099,8 @@ document
 
 
 /* ==================================================
-   POSITION BUTTONS
+   POSITION ARROWS
 ================================================== */
-
-document
-    .getElementById(
-        "previousPosition"
-    )
-    .addEventListener(
-        "click",
-        previousPosition
-    );
-
 
 document
     .getElementById(
@@ -3128,8 +3112,53 @@ document
     );
 
 
+document
+    .getElementById(
+        "previousPosition"
+    )
+    .addEventListener(
+        "click",
+        previousPosition
+    );
+
+
 /* ==================================================
-   SWIPE BETWEEN POSITIONS
+   CLOSE MENUS WHEN CLICKING OUTSIDE
+================================================== */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            !rootMenu.contains(event.target) &&
+            !rootButton.contains(event.target)
+        ) {
+
+            rootMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+
+        if (
+            !scaleMenu.contains(event.target) &&
+            !scaleButton.contains(event.target)
+        ) {
+
+            scaleMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   SWIPE POSITION NAVIGATION
 ================================================== */
 
 const fretboardElement =
@@ -3139,7 +3168,6 @@ const fretboardElement =
 
 
 let touchStartX = 0;
-
 let touchStartY = 0;
 
 
@@ -3151,7 +3179,7 @@ fretboardElement.addEventListener(
     event => {
 
         const touch =
-            event.changedTouches[0];
+            event.touches[0];
 
 
         touchStartX =
