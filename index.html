@@ -12,31 +12,21 @@
 
 <title>Scale Visualizer</title>
 
-
 <style>
-
-/* =====================================================
-   GENERAL
-   ===================================================== */
 
 * {
     box-sizing: border-box;
 }
 
 body {
-
     margin: 0;
-
     background: #111;
-
     color: #f5f5f5;
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
-
     overflow-x: hidden;
 }
 
@@ -46,27 +36,19 @@ body {
    ===================================================== */
 
 header {
-
     text-align: center;
-
     padding: 28px 20px 12px;
 }
 
 h1 {
-
     margin: 0;
-
     font-size: 30px;
-
     font-weight: 700;
 }
 
 .subtitle {
-
     margin-top: 5px;
-
     color: #888;
-
     font-size: 14px;
 }
 
@@ -76,31 +58,22 @@ h1 {
    ===================================================== */
 
 .controls {
-
     display: flex;
-
     gap: 10px;
-
     padding: 18px 16px;
-
     width: 100%;
-
     max-width: 650px;
-
     margin: auto;
 }
 
 select {
-
     appearance: none;
     -webkit-appearance: none;
 
     background: #222;
-
     color: white;
 
     border: 1px solid #444;
-
     border-radius: 12px;
 
     padding: 13px 14px;
@@ -111,12 +84,10 @@ select {
 }
 
 #rootSelect {
-
     width: 95px;
 }
 
 #scaleSelect {
-
     flex: 1;
 }
 
@@ -126,27 +97,19 @@ select {
    ===================================================== */
 
 .display-section {
-
     text-align: center;
-
     margin: 0 auto 15px;
 }
 
 .display-label {
-
     color: #777;
-
     font-size: 12px;
-
     text-transform: uppercase;
-
     letter-spacing: 1px;
-
     margin-bottom: 8px;
 }
 
 .display-buttons {
-
     display: inline-flex;
 
     background: #222;
@@ -159,7 +122,6 @@ select {
 }
 
 .display-button {
-
     border: none;
 
     background: transparent;
@@ -176,9 +138,7 @@ select {
 }
 
 .display-button.active {
-
     background: #eee;
-
     color: #111;
 }
 
@@ -188,29 +148,20 @@ select {
    ===================================================== */
 
 .scale-info {
-
     text-align: center;
-
     padding: 5px 20px 18px;
 }
 
 .scale-name {
-
     font-size: 23px;
-
     font-weight: 600;
 }
 
 .notes {
-
     margin-top: 8px;
-
     color: #999;
-
     font-size: 16px;
-
     letter-spacing: 1px;
-
     line-height: 1.5;
 }
 
@@ -220,20 +171,14 @@ select {
    ===================================================== */
 
 .position-header {
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 18px;
-
     margin-bottom: 12px;
 }
 
 .position-button {
-
     width: 42px;
     height: 42px;
 
@@ -257,58 +202,41 @@ select {
 }
 
 .position-button:active {
-
     background: #333;
-
     transform: scale(0.95);
 }
 
 .position-title {
-
     text-align: center;
-
     min-width: 130px;
 }
 
 .position-number {
-
     font-size: 17px;
-
     font-weight: 600;
 }
 
 .position-frets {
-
     margin-top: 3px;
-
     font-size: 12px;
-
     color: #777;
 }
 
 .position-dots {
-
     display: flex;
-
     justify-content: center;
-
     gap: 7px;
-
     margin-top: 7px;
 }
 
 .position-dot {
-
     width: 7px;
     height: 7px;
-
     border-radius: 50%;
-
     background: #444;
 }
 
 .position-dot.active {
-
     background: #eee;
 }
 
@@ -318,16 +246,12 @@ select {
    ===================================================== */
 
 .fretboard-wrapper {
-
     width: 100%;
-
     padding: 0 10px 25px;
-
     touch-action: pan-y;
 }
 
 .fretboard {
-
     width: 100%;
 
     border-radius: 10px;
@@ -340,7 +264,6 @@ select {
 }
 
 .string {
-
     display: grid;
 
     grid-template-columns:
@@ -354,7 +277,6 @@ select {
 }
 
 .string:last-child {
-
     border-bottom: none;
 }
 
@@ -364,7 +286,6 @@ select {
    ===================================================== */
 
 .string-label {
-
     display: flex;
 
     align-items: center;
@@ -386,7 +307,6 @@ select {
    ===================================================== */
 
 .fret {
-
     position: relative;
 
     display: flex;
@@ -400,7 +320,6 @@ select {
 }
 
 .fret:last-child {
-
     border-right: none;
 }
 
@@ -410,9 +329,7 @@ select {
    ===================================================== */
 
 .note {
-
     width: 38px;
-
     height: 38px;
 
     border-radius: 50%;
@@ -435,12 +352,10 @@ select {
 }
 
 .note-name {
-
     font-size: 12px;
 }
 
 .note-interval {
-
     font-size: 10px;
 
     margin-top: 3px;
@@ -449,16 +364,12 @@ select {
 }
 
 .scale-note {
-
     background: #f1f1f1;
-
     color: #111;
 }
 
 .root-note {
-
     background: #e63946;
-
     color: white;
 }
 
@@ -468,17 +379,14 @@ select {
    ===================================================== */
 
 .mode-notes .note-interval {
-
     display: none;
 }
 
 .mode-intervals .note-name {
-
     display: none;
 }
 
 .mode-intervals .note {
-
     font-size: 14px;
 }
 
@@ -488,7 +396,6 @@ select {
    ===================================================== */
 
 .fret-number {
-
     position: absolute;
 
     bottom: 2px;
@@ -506,7 +413,6 @@ select {
    ===================================================== */
 
 .legend {
-
     display: flex;
 
     justify-content: center;
@@ -521,7 +427,6 @@ select {
 }
 
 .legend-item {
-
     display: flex;
 
     align-items: center;
@@ -530,7 +435,6 @@ select {
 }
 
 .legend-dot {
-
     width: 13px;
     height: 13px;
 
@@ -538,12 +442,10 @@ select {
 }
 
 .root-dot {
-
     background: #e63946;
 }
 
 .scale-dot {
-
     background: #f1f1f1;
 }
 
@@ -555,31 +457,24 @@ select {
 @media (min-width: 700px) {
 
     .fretboard-wrapper {
-
         max-width: 700px;
-
         margin: auto;
     }
 
     .string {
-
         height: 70px;
     }
 
     .note {
-
         width: 44px;
-
         height: 44px;
     }
 
     .note-name {
-
         font-size: 14px;
     }
 
     .note-interval {
-
         font-size: 11px;
     }
 
@@ -614,27 +509,34 @@ select {
     <select id="rootSelect">
 
         <option value="C">C</option>
+
         <option value="C#">C#</option>
         <option value="Db">Db</option>
 
         <option value="D">D</option>
+
         <option value="D#">D#</option>
         <option value="Eb">Eb</option>
 
         <option value="E">E</option>
+
         <option value="F">F</option>
+
         <option value="F#">F#</option>
         <option value="Gb">Gb</option>
 
         <option value="G">G</option>
+
         <option value="G#">G#</option>
         <option value="Ab">Ab</option>
 
         <option value="A">A</option>
+
         <option value="A#">A#</option>
         <option value="Bb">Bb</option>
 
         <option value="B">B</option>
+
         <option value="Cb">Cb</option>
 
     </select>
@@ -877,22 +779,11 @@ select {
 
 
 /*
-    We now separate:
+    Every note has a chromatic pitch.
 
-    1. NOTE NAME
-    2. CHROMATIC DISTANCE
-    3. SCALE DEGREE
-    4. INTERVAL NAME
-
-    This is important because:
-
-        A# and Bb
-
-    are the same pitch on an equal-tempered guitar,
-
-    but they are NOT the same musical spelling.
+    Enharmonic notes share the same pitch,
+    but are written differently.
 */
-
 
 const chromaticPitch = {
 
@@ -933,9 +824,6 @@ const chromaticPitch = {
 
 /*
     Natural notes.
-
-    These are used to determine the correct
-    letter name of every scale degree.
 */
 
 const naturalPitch = {
@@ -949,7 +837,6 @@ const naturalPitch = {
     "B": 11
 
 };
-
 
 
 const naturalLetters = [
@@ -967,46 +854,12 @@ const naturalLetters = [
 
 
 /*
-    Interval names based on chromatic distance.
+    Simple interval names.
+
+    These are useful as scale-degree descriptions.
 */
 
 const intervalNames = {
-
-    0: "R",
-
-    1: "b2",
-
-    2: "2",
-
-    3: "b3",
-
-    4: "3",
-
-    5: "4",
-
-    6: "b5",
-
-    7: "5",
-
-    8: "b6",
-
-    9: "6",
-
-    10: "b7",
-
-    11: "7"
-
-};
-
-
-
-/*
-    More precise interval names.
-
-    These are useful for the future theory engine.
-*/
-
-const qualityIntervalNames = {
 
     0: "R",
 
@@ -1037,17 +890,8 @@ const qualityIntervalNames = {
 
 
 /* =====================================================
-   SCALES
+   SCALE DEFINITIONS
    ===================================================== */
-
-
-/*
-    Every scale is defined by:
-
-    - name
-    - semitone intervals
-    - scale degrees
-*/
 
 const scales = {
 
@@ -1058,16 +902,6 @@ const scales = {
 
         intervals: [
             0, 2, 4, 5, 7, 9, 11
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7"
         ]
 
     },
@@ -1079,16 +913,6 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 8, 10
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "b3",
-            "4",
-            "5",
-            "b6",
-            "b7"
         ]
 
     },
@@ -1100,16 +924,6 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 9, 10
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "b3",
-            "4",
-            "5",
-            "6",
-            "b7"
         ]
 
     },
@@ -1121,16 +935,6 @@ const scales = {
 
         intervals: [
             0, 1, 3, 5, 7, 8, 10
-        ],
-
-        degrees: [
-            "1",
-            "b2",
-            "b3",
-            "4",
-            "5",
-            "b6",
-            "b7"
         ]
 
     },
@@ -1142,16 +946,6 @@ const scales = {
 
         intervals: [
             0, 2, 4, 6, 7, 9, 11
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "3",
-            "#4",
-            "5",
-            "6",
-            "7"
         ]
 
     },
@@ -1163,16 +957,6 @@ const scales = {
 
         intervals: [
             0, 2, 4, 5, 7, 9, 10
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "b7"
         ]
 
     },
@@ -1184,16 +968,6 @@ const scales = {
 
         intervals: [
             0, 1, 3, 5, 6, 8, 10
-        ],
-
-        degrees: [
-            "1",
-            "b2",
-            "b3",
-            "4",
-            "b5",
-            "b6",
-            "b7"
         ]
 
     },
@@ -1205,16 +979,6 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 8, 11
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "b3",
-            "4",
-            "5",
-            "b6",
-            "7"
         ]
 
     },
@@ -1226,16 +990,6 @@ const scales = {
 
         intervals: [
             0, 2, 3, 5, 7, 9, 11
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "b3",
-            "4",
-            "5",
-            "6",
-            "7"
         ]
 
     },
@@ -1247,14 +1001,6 @@ const scales = {
 
         intervals: [
             0, 2, 4, 7, 9
-        ],
-
-        degrees: [
-            "1",
-            "2",
-            "3",
-            "5",
-            "6"
         ]
 
     },
@@ -1266,14 +1012,6 @@ const scales = {
 
         intervals: [
             0, 3, 5, 7, 10
-        ],
-
-        degrees: [
-            "1",
-            "b3",
-            "4",
-            "5",
-            "b7"
         ]
 
     },
@@ -1285,15 +1023,6 @@ const scales = {
 
         intervals: [
             0, 3, 5, 6, 7, 10
-        ],
-
-        degrees: [
-            "1",
-            "b3",
-            "4",
-            "b5",
-            "5",
-            "b7"
         ]
 
     }
@@ -1303,17 +1032,8 @@ const scales = {
 
 
 /* =====================================================
-   ROOT SPELLING
+   SCALE SPELLING
    ===================================================== */
-
-
-/*
-    Determines whether the selected root
-    is naturally written with sharps or flats.
-
-    This gives us a sensible default for
-    generating the scale spelling.
-*/
 
 const flatRoots = [
 
@@ -1341,139 +1061,79 @@ const sharpRoots = [
 ];
 
 
-
-/*
-    Preferred spelling for enharmonic pitches.
-
-    These are used when the scale needs a
-    sharp or flat accidental.
-*/
-
 const sharpNames = {
 
     0: "C",
-
     1: "C#",
-
     2: "D",
-
     3: "D#",
-
     4: "E",
-
     5: "F",
-
     6: "F#",
-
     7: "G",
-
     8: "G#",
-
     9: "A",
-
     10: "A#",
-
     11: "B"
 
 };
-
 
 
 const flatNames = {
 
     0: "C",
-
     1: "Db",
-
     2: "D",
-
     3: "Eb",
-
     4: "E",
-
     5: "F",
-
     6: "Gb",
-
     7: "G",
-
     8: "Ab",
-
     9: "A",
-
     10: "Bb",
-
     11: "B"
 
 };
 
 
 
-/* =====================================================
-   GENERATE CORRECT SCALE SPELLING
-   ===================================================== */
-
 function getScaleNotes() {
-
 
     const root =
         rootSelect.value;
-
 
     const scale =
         scales[
             scaleSelect.value
         ];
 
-
     const rootPitch =
         chromaticPitch[root];
 
-
     const rootLetter =
         root.charAt(0);
-
 
     const rootLetterIndex =
         naturalLetters.indexOf(
             rootLetter
         );
 
-
     const useFlats =
         flatRoots.includes(root);
 
-
-    const useSharps =
-        sharpRoots.includes(root);
-
-
     const result = [];
 
-
-
-    /*
-        Each scale degree must use a different
-        letter name.
-
-        Example:
-
-        F Major
-
-        F G A Bb C D E
-
-        NOT
-
-        F G A A# C D E
-    */
 
     scale.intervals.forEach(
 
         (semitones, index) => {
 
-
             const targetPitch =
-                (rootPitch + semitones) % 12;
+                (
+                    rootPitch +
+                    semitones
+                ) % 12;
 
 
             const targetLetter =
@@ -1496,62 +1156,64 @@ function getScaleNotes() {
                 naturalTargetPitch;
 
 
-
-            /*
-                Normalize to -6 ... +6.
-            */
-
-            while (difference > 6) {
+            while (
+                difference > 6
+            ) {
 
                 difference -= 12;
 
             }
 
-            while (difference < -6) {
+
+            while (
+                difference < -6
+            ) {
 
                 difference += 12;
 
             }
 
 
-
             let noteName =
                 targetLetter;
 
 
-
-            if (difference === 1) {
+            if (
+                difference === 1
+            ) {
 
                 noteName += "#";
 
             }
 
-            else if (difference === -1) {
+            else if (
+                difference === -1
+            ) {
 
                 noteName += "b";
 
             }
 
-            else if (difference === 2) {
+            else if (
+                difference === 2
+            ) {
 
                 noteName += "##";
 
             }
 
-            else if (difference === -2) {
+            else if (
+                difference === -2
+            ) {
 
                 noteName += "bb";
 
             }
 
 
-
             /*
-                Normally the calculated spelling
-                should be correct.
-
-                This fallback protects against
-                unusual theoretical cases.
+                Fallback for unusual theoretical
+                spellings.
             */
 
             if (
@@ -1560,16 +1222,15 @@ function getScaleNotes() {
 
                 noteName =
                     useFlats
-
                     ? flatNames[targetPitch]
-
                     : sharpNames[targetPitch];
 
             }
 
 
-
-            result.push(noteName);
+            result.push(
+                noteName
+            );
 
         }
 
@@ -1583,7 +1244,7 @@ function getScaleNotes() {
 
 
 /* =====================================================
-   GET CURRENT SCALE
+   CURRENT SCALE
    ===================================================== */
 
 function getCurrentScale() {
@@ -1597,55 +1258,19 @@ function getCurrentScale() {
 
 
 /* =====================================================
-   GET SCALE DEGREE
-   ===================================================== */
-
-function getScaleDegree(note) {
-
-
-    const scale =
-        getCurrentScale();
-
-
-    const scaleNotes =
-        getScaleNotes();
-
-
-    const index =
-        scaleNotes.indexOf(note);
-
-
-    if (index === -1) {
-
-        return "";
-
-    }
-
-
-    return scale.degrees[index];
-
-}
-
-
-
-/* =====================================================
-   GET INTERVAL
+   INTERVAL FROM ROOT
    ===================================================== */
 
 function getInterval(note) {
 
-
     const root =
         rootSelect.value;
-
 
     const rootPitch =
         chromaticPitch[root];
 
-
     const notePitch =
         chromaticPitch[note];
-
 
     const distance =
         (
@@ -1656,41 +1281,6 @@ function getInterval(note) {
 
 
     return intervalNames[
-        distance
-    ];
-
-}
-
-
-
-/* =====================================================
-   GET PRECISE INTERVAL
-   ===================================================== */
-
-function getQualityInterval(note) {
-
-
-    const root =
-        rootSelect.value;
-
-
-    const rootPitch =
-        chromaticPitch[root];
-
-
-    const notePitch =
-        chromaticPitch[note];
-
-
-    const distance =
-        (
-            notePitch -
-            rootPitch +
-            12
-        ) % 12;
-
-
-    return qualityIntervalNames[
         distance
     ];
 
@@ -1712,7 +1302,6 @@ const tuning = [
     "E"
 
 ];
-
 
 
 const positions = [
@@ -1839,14 +1428,11 @@ const displayButtons =
 
 function updateScaleInfo() {
 
-
     const root =
         rootSelect.value;
 
-
     const scale =
         getCurrentScale();
-
 
     const scaleNotes =
         getScaleNotes();
@@ -1869,14 +1455,11 @@ function updateScaleInfo() {
 
 function drawFretboard() {
 
-
     const root =
         rootSelect.value;
 
-
     const scaleNotes =
         getScaleNotes();
-
 
     const position =
         positions[
@@ -1895,7 +1478,6 @@ function drawFretboard() {
     tuning.forEach(
 
         openNote => {
-
 
             const string =
                 document.createElement(
@@ -1967,11 +1549,8 @@ function drawFretboard() {
 
 
                 /*
-                    Find the actual scale note
-                    at this pitch.
-
-                    This is where the corrected
-                    spelling becomes important.
+                    Find the correctly-spelled
+                    scale note at this pitch.
                 */
 
                 const note =
@@ -2035,7 +1614,7 @@ function drawFretboard() {
 
 
                     noteInterval.textContent =
-                        getScaleDegree(
+                        getInterval(
                             note
                         );
 
@@ -2104,7 +1683,6 @@ function drawFretboard() {
 
 function updatePositionUI() {
 
-
     const position =
         positions[
             currentPosition
@@ -2135,7 +1713,6 @@ function updatePositionUI() {
     positions.forEach(
 
         (_, index) => {
-
 
             const dot =
                 document.createElement(
@@ -2193,7 +1770,6 @@ function updateApp() {
 
 function nextPosition() {
 
-
     if (
         currentPosition <
         positions.length - 1
@@ -2208,9 +1784,7 @@ function nextPosition() {
 }
 
 
-
 function previousPosition() {
-
 
     if (
         currentPosition > 0
@@ -2225,22 +1799,15 @@ function previousPosition() {
 }
 
 
-
 nextButton.addEventListener(
-
     "click",
-
     nextPosition
-
 );
 
 
 previousButton.addEventListener(
-
     "click",
-
     previousPosition
-
 );
 
 
@@ -2288,13 +1855,11 @@ displayButtons.forEach(
 
     button => {
 
-
         button.addEventListener(
 
             "click",
 
             () => {
-
 
                 displayButtons.forEach(
 
@@ -2339,7 +1904,6 @@ let touchStartX = 0;
 let touchEndX = 0;
 
 
-
 fretboardWrapper.addEventListener(
 
     "touchstart",
@@ -2356,7 +1920,6 @@ fretboardWrapper.addEventListener(
     }
 
 );
-
 
 
 fretboardWrapper.addEventListener(
@@ -2379,9 +1942,7 @@ fretboardWrapper.addEventListener(
 );
 
 
-
 function handleSwipe() {
-
 
     const difference =
         touchEndX -
@@ -2426,9 +1987,7 @@ function handleSwipe() {
 
 updateApp();
 
-
 </script>
-
 
 </body>
 
