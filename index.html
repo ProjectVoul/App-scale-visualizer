@@ -1786,6 +1786,174 @@ const scaleData = {
 
 
 /* ==================================================
+   SCALE SPELLING
+================================================== */
+
+/*
+   Each scale also needs to know which musical letter
+   belongs to each scale degree.
+
+   This is separate from the pitch calculation.
+
+   Example:
+
+   C# Major
+
+   Pitch calculation:
+   C# D# F F# G# A# C
+
+   Theoretical spelling:
+   C# D# E# F# G# A# B#
+
+   The pitch is the same, but the written note
+   must respect the scale degree.
+
+   0 = root letter
+   1 = next letter
+   2 = next letter
+   etc.
+*/
+
+const scaleLetterOffsets = {
+
+    major: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    dorian: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    phrygian: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    lydian: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    mixolydian: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    naturalMinor: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    locrian: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    harmonicMinor: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    melodicMinor: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    majorPentatonic: [
+        0, 1, 2, 4, 5
+    ],
+
+    minorPentatonic: [
+        0, 2, 3, 4, 6
+    ],
+
+    blues: [
+        0, 2, 3, 4, 4, 6
+    ],
+
+    lydianDominant: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    /*
+       Altered scale:
+
+       C Db Eb E Gb Ab Bb
+
+       Notice the repeated letter E:
+       Eb → E
+
+       This is intentional theoretical spelling.
+    */
+    altered: [
+        0, 1, 2, 2, 4, 5, 6
+    ],
+
+    wholeTone: [
+        0, 1, 2, 3, 4, 5
+    ],
+
+    /*
+       Half-Whole Diminished:
+
+       C Db Eb E Gb G A Bb
+
+       The scale contains both Eb/E and Gb/G,
+       so some letters are repeated.
+    */
+    halfWholeDiminished: [
+        0, 1, 2, 2, 4, 4, 5, 6
+    ],
+
+    /*
+       Whole-Half Diminished:
+
+       C D Eb F Gb Ab A B
+    */
+    wholeHalfDiminished: [
+        0, 1, 2, 3, 4, 5, 5, 6
+    ],
+
+    /*
+       Bebop Dominant:
+
+       C D E F G A Bb B
+    */
+    bebopDominant: [
+        0, 1, 2, 3, 4, 5, 6, 6
+    ],
+
+    /*
+       Bebop Major:
+
+       C D E F G Ab A B
+    */
+    bebopMajor: [
+        0, 1, 2, 3, 4, 5, 5, 6
+    ],
+
+    /*
+       Bebop Minor:
+
+       C D Eb E F G A Bb
+    */
+    bebopMinor: [
+        0, 1, 2, 2, 3, 4, 5, 6
+    ],
+
+    phrygianDominant: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    hirajoshi: [
+        0, 1, 2, 4, 5
+    ],
+
+    hungarianMinor: [
+        0, 1, 2, 3, 4, 5, 6
+    ],
+
+    doubleHarmonicMajor: [
+        0, 1, 2, 3, 4, 5, 6
+    ]
+
+};
+
+
+/* ==================================================
    GUITAR
 ================================================== */
 
@@ -1837,8 +2005,6 @@ const MAX_FRET = 24;
 
 /*
    Five visual study zones.
-
-   These are NOT canonical CAGED positions.
 
    1 → 1–5
    2 → 6–10
@@ -1921,25 +2087,189 @@ function noteIndex(note) {
 
 
 /*
-   Decide whether the selected root should use
-   sharp or flat spellings.
+   These are the natural pitch values of the
+   seven musical letters.
 
-   Natural keys use sharps where necessary:
+   C = 0
+   D = 2
+   E = 4
+   F = 5
+   G = 7
+   A = 9
+   B = 11
+*/
 
-   D  → F# C#
-   E  → F# G# C# D#
-   G  → F#
-   A  → C# F# G#
-   B  → C# D# F# G# A#
+const naturalPitches = {
 
-   Flat roots use flat spellings:
+    C: 0,
+    D: 2,
+    E: 4,
+    F: 5,
+    G: 7,
+    A: 9,
+    B: 11
 
-   Db → Db Eb Gb Ab Bb
-   Eb → Eb Ab Bb
-   F  → Bb
-   Gb → Gb Ab Bb Db Eb
-   Ab → Ab Bb Db Eb
-   Bb → Bb Eb Ab
+};
+
+
+const musicalLetters = [
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "A",
+    "B"
+];
+
+
+/*
+   Return the correctly spelled note name for a
+   particular scale degree.
+
+   This is the important part of the new system.
+
+   It does NOT simply choose between sharps and flats.
+
+   Instead it determines:
+
+   1. Which musical letter the scale degree requires.
+   2. What accidental is necessary to reach the
+      calculated pitch.
+
+   Example:
+
+   C# Major, third degree:
+
+   Degree letter = E
+   Actual pitch = F
+
+   Therefore:
+
+   E → E#
+
+   Result = E#
+*/
+
+function getScaleNoteName(
+    pitch,
+    degreeIndex
+) {
+
+    const normalizedPitch =
+        (pitch + 12) % 12;
+
+
+    const rootLetter =
+        currentRoot.charAt(0);
+
+
+    const rootLetterIndex =
+        musicalLetters.indexOf(
+            rootLetter
+        );
+
+
+    const letterOffset =
+        scaleLetterOffsets[currentScale][
+            degreeIndex
+        ];
+
+
+    const letterIndex =
+        (
+            rootLetterIndex +
+            letterOffset
+        ) % 7;
+
+
+    const letter =
+        musicalLetters[
+            letterIndex
+        ];
+
+
+    const naturalPitch =
+        naturalPitches[letter];
+
+
+    /*
+       Determine the accidental needed to transform
+       the natural letter into the actual pitch.
+
+       Examples:
+
+       E → F = E#
+       B → C = B#
+       F → E = Fb
+       C → C# = C#
+    */
+
+    let difference =
+        normalizedPitch -
+        naturalPitch;
+
+
+    /*
+       Normalize the difference so that we choose
+       the closest theoretical spelling.
+    */
+
+    if (difference > 6) {
+
+        difference -= 12;
+
+    }
+
+
+    if (difference < -6) {
+
+        difference += 12;
+
+    }
+
+
+    let accidental = "";
+
+
+    if (difference > 0) {
+
+        accidental =
+            "#".repeat(
+                difference
+            );
+
+    }
+
+
+    if (difference < 0) {
+
+        accidental =
+            "b".repeat(
+                Math.abs(
+                    difference
+                )
+            );
+
+    }
+
+
+    return (
+        letter +
+        accidental
+    );
+
+}
+
+
+/*
+   Kept for compatibility with the rest of the
+   application.
+
+   This function determines whether the selected
+   root is conventionally written using flats.
+
+   It is no longer responsible for scale spelling.
 */
 
 function usesFlats() {
@@ -1960,11 +2290,14 @@ function usesFlats() {
 
 
 /*
-   Return the displayed name for a pitch.
+   Generic pitch-name helper.
 
-   This keeps the existing pitch calculation intact
-   while making the written note names consistent
-   with the selected root/key.
+   This is still useful as a fallback for any code
+   that needs a chromatic pitch name independently
+   of a scale.
+
+   Scale notes themselves now use
+   getScaleNoteName().
 */
 
 function getNoteName(pitch) {
@@ -2025,12 +2358,19 @@ function getScaleNotes() {
         noteIndex(currentRoot);
 
 
-    return scaleData[currentScale]
-        .intervals
-        .map(interval => {
+    const intervals =
+        scaleData[currentScale]
+            .intervals;
+
+
+    return intervals.map(
+        (interval, degreeIndex) => {
 
             const pitch =
-                (rootPitch + interval) % 12;
+                (
+                    rootPitch +
+                    interval
+                ) % 12;
 
 
             return {
@@ -2038,13 +2378,17 @@ function getScaleNotes() {
                 pitch,
 
                 name:
-                    getNoteName(pitch),
+                    getScaleNoteName(
+                        pitch,
+                        degreeIndex
+                    ),
 
                 interval
 
             };
 
-        });
+        }
+    );
 
 }
 
@@ -2174,6 +2518,14 @@ function renderFretboard() {
         getScaleNotes();
 
 
+    /*
+       Store the complete scale-note object,
+       not just its interval.
+
+       This allows the fretboard to use the
+       theoretically correct spelling.
+    */
+
     const scaleMap =
         new Map();
 
@@ -2182,7 +2534,7 @@ function renderFretboard() {
 
         scaleMap.set(
             note.pitch,
-            note.interval
+            note
         );
 
     });
@@ -2309,8 +2661,18 @@ function renderFretboard() {
                 ) {
 
 
-                    const interval =
+                    /*
+                       Retrieve the complete scale note
+                       including its theoretical name
+                       and interval.
+                    */
+
+                    const scaleNote =
                         scaleMap.get(pitch);
+
+
+                    const interval =
+                        scaleNote.interval;
 
 
                     const note =
@@ -2348,8 +2710,25 @@ function renderFretboard() {
                         "note-name";
 
 
+                    /*
+                       IMPORTANT:
+
+                       Use the name belonging to the
+                       selected scale, rather than deriving
+                       the name only from the pitch.
+
+                       This is what gives us:
+
+                       C# Major:
+                       C# D# E# F# G# A# B#
+
+                       instead of:
+
+                       C# D# F F# G# A# C
+                    */
+
                     name.textContent =
-                        getNoteName(pitch);
+                        scaleNote.name;
 
 
                     const intervalLabel =
@@ -2452,6 +2831,7 @@ function nextPosition() {
 
     currentPosition++;
 
+
     if (
         currentPosition >=
         POSITION_COUNT
@@ -2470,6 +2850,7 @@ function nextPosition() {
 function previousPosition() {
 
     currentPosition--;
+
 
     if (
         currentPosition < 0
