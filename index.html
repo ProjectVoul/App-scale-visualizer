@@ -257,12 +257,8 @@ button {
         transform 0.2s ease;
 }
 
-.category.open
-.category-header
-.chevron {
-
-    transform:
-        rotate(90deg);
+.category.open .category-header .chevron {
+    transform: rotate(90deg);
 }
 
 .scale-list {
@@ -505,13 +501,16 @@ button {
 .fretboard {
 
     /*
-       Five visual positions.
+       Five visual study positions.
 
        Position 1 = frets 1–5
        Position 2 = frets 6–10
        Position 3 = frets 11–15
        Position 4 = frets 16–20
        Position 5 = frets 21–24
+
+       These are visual zones of the guitar
+       neck, not theoretical CAGED positions.
     */
 
     --fret-count: 5;
@@ -993,105 +992,71 @@ and (max-height: 600px) {
             class="root-grid"
             id="rootGrid">
 
-            <button
-                class="root-option active"
-                data-root="C">
+            <button class="root-option active" data-root="C">
                 C
             </button>
 
-            <button
-                class="root-option"
-                data-root="C#">
+            <button class="root-option" data-root="C#">
                 C#
             </button>
 
-            <button
-                class="root-option"
-                data-root="Db">
+            <button class="root-option" data-root="Db">
                 Db
             </button>
 
-            <button
-                class="root-option"
-                data-root="D">
+            <button class="root-option" data-root="D">
                 D
             </button>
 
-            <button
-                class="root-option"
-                data-root="D#">
+            <button class="root-option" data-root="D#">
                 D#
             </button>
 
-            <button
-                class="root-option"
-                data-root="Eb">
+            <button class="root-option" data-root="Eb">
                 Eb
             </button>
 
-            <button
-                class="root-option"
-                data-root="E">
+            <button class="root-option" data-root="E">
                 E
             </button>
 
-            <button
-                class="root-option"
-                data-root="F">
+            <button class="root-option" data-root="F">
                 F
             </button>
 
-            <button
-                class="root-option"
-                data-root="F#">
+            <button class="root-option" data-root="F#">
                 F#
             </button>
 
-            <button
-                class="root-option"
-                data-root="Gb">
+            <button class="root-option" data-root="Gb">
                 Gb
             </button>
 
-            <button
-                class="root-option"
-                data-root="G">
+            <button class="root-option" data-root="G">
                 G
             </button>
 
-            <button
-                class="root-option"
-                data-root="G#">
+            <button class="root-option" data-root="G#">
                 G#
             </button>
 
-            <button
-                class="root-option"
-                data-root="Ab">
+            <button class="root-option" data-root="Ab">
                 Ab
             </button>
 
-            <button
-                class="root-option"
-                data-root="A">
+            <button class="root-option" data-root="A">
                 A
             </button>
 
-            <button
-                class="root-option"
-                data-root="A#">
+            <button class="root-option" data-root="A#">
                 A#
             </button>
 
-            <button
-                class="root-option"
-                data-root="Bb">
+            <button class="root-option" data-root="Bb">
                 Bb
             </button>
 
-            <button
-                class="root-option"
-                data-root="B">
+            <button class="root-option" data-root="B">
                 B
             </button>
 
@@ -1483,7 +1448,6 @@ and (max-height: 600px) {
 
     <section class="position-header">
 
-
         <button
             class="position-arrow"
             id="previousPosition">
@@ -1605,6 +1569,24 @@ const chromatic = [
 ];
 
 
+const sharpNames = {
+
+    0: "C",
+    1: "C#",
+    2: "D",
+    3: "D#",
+    4: "E",
+    5: "F",
+    6: "F#",
+    7: "G",
+    8: "G#",
+    9: "A",
+    10: "A#",
+    11: "B"
+
+};
+
+
 const flatNames = {
 
     0: "C",
@@ -1632,14 +1614,12 @@ const flatNames = {
 
 const scaleData = {
 
-
     major: {
         name: "Major / Ionian",
         intervals: [
             0, 2, 4, 5, 7, 9, 11
         ]
     },
-
 
     dorian: {
         name: "Dorian",
@@ -1648,14 +1628,12 @@ const scaleData = {
         ]
     },
 
-
     phrygian: {
         name: "Phrygian",
         intervals: [
             0, 1, 3, 5, 7, 8, 10
         ]
     },
-
 
     lydian: {
         name: "Lydian",
@@ -1664,14 +1642,12 @@ const scaleData = {
         ]
     },
 
-
     mixolydian: {
         name: "Mixolydian",
         intervals: [
             0, 2, 4, 5, 7, 9, 10
         ]
     },
-
 
     naturalMinor: {
         name: "Natural Minor / Aeolian",
@@ -1680,14 +1656,12 @@ const scaleData = {
         ]
     },
 
-
     locrian: {
         name: "Locrian",
         intervals: [
             0, 1, 3, 5, 6, 8, 10
         ]
     },
-
 
     harmonicMinor: {
         name: "Harmonic Minor",
@@ -1696,14 +1670,12 @@ const scaleData = {
         ]
     },
 
-
     melodicMinor: {
         name: "Melodic Minor",
         intervals: [
             0, 2, 3, 5, 7, 9, 11
         ]
     },
-
 
     majorPentatonic: {
         name: "Major Pentatonic",
@@ -1712,14 +1684,12 @@ const scaleData = {
         ]
     },
 
-
     minorPentatonic: {
         name: "Minor Pentatonic",
         intervals: [
             0, 3, 5, 7, 10
         ]
     },
-
 
     blues: {
         name: "Blues",
@@ -1728,14 +1698,12 @@ const scaleData = {
         ]
     },
 
-
     lydianDominant: {
         name: "Lydian Dominant",
         intervals: [
             0, 2, 4, 6, 7, 9, 10
         ]
     },
-
 
     altered: {
         name: "Altered",
@@ -1744,14 +1712,12 @@ const scaleData = {
         ]
     },
 
-
     wholeTone: {
         name: "Whole Tone",
         intervals: [
             0, 2, 4, 6, 8, 10
         ]
     },
-
 
     halfWholeDiminished: {
         name: "Half-Whole Diminished",
@@ -1760,14 +1726,12 @@ const scaleData = {
         ]
     },
 
-
     wholeHalfDiminished: {
         name: "Whole-Half Diminished",
         intervals: [
             0, 2, 3, 5, 6, 8, 9, 11
         ]
     },
-
 
     bebopDominant: {
         name: "Bebop Dominant",
@@ -1776,14 +1740,12 @@ const scaleData = {
         ]
     },
 
-
     bebopMajor: {
         name: "Bebop Major",
         intervals: [
             0, 2, 4, 5, 7, 8, 9, 11
         ]
     },
-
 
     bebopMinor: {
         name: "Bebop Minor",
@@ -1792,14 +1754,12 @@ const scaleData = {
         ]
     },
 
-
     phrygianDominant: {
         name: "Phrygian Dominant",
         intervals: [
             0, 1, 4, 5, 7, 8, 10
         ]
     },
-
 
     hirajoshi: {
         name: "Hirajoshi",
@@ -1808,14 +1768,12 @@ const scaleData = {
         ]
     },
 
-
     hungarianMinor: {
         name: "Hungarian Minor",
         intervals: [
             0, 2, 3, 6, 7, 8, 11
         ]
     },
-
 
     doubleHarmonicMajor: {
         name: "Double Harmonic Major",
@@ -1878,10 +1836,9 @@ const MAX_FRET = 24;
 
 
 /*
-   IMPORTANT:
+   Five visual study zones.
 
-   These are visual study zones,
-   NOT theoretical/canonical scale positions.
+   These are NOT canonical CAGED positions.
 
    1 → 1–5
    2 → 6–10
@@ -1939,11 +1896,6 @@ let displayMode = "both";
 
 function noteIndex(note) {
 
-    /*
-       Convert either sharp or flat spelling
-       into the chromatic pitch index.
-    */
-
     const sharpIndex =
         chromatic.indexOf(note);
 
@@ -1968,10 +1920,70 @@ function noteIndex(note) {
 }
 
 
+/*
+   Decide whether the selected root should use
+   sharp or flat spellings.
+
+   Natural keys use sharps where necessary:
+
+   D  → F# C#
+   E  → F# G# C# D#
+   G  → F#
+   A  → C# F# G#
+   B  → C# D# F# G# A#
+
+   Flat roots use flat spellings:
+
+   Db → Db Eb Gb Ab Bb
+   Eb → Eb Ab Bb
+   F  → Bb
+   Gb → Gb Ab Bb Db Eb
+   Ab → Ab Bb Db Eb
+   Bb → Bb Eb Ab
+*/
+
+function usesFlats() {
+
+    const flatRoots = [
+        "Db",
+        "Eb",
+        "Gb",
+        "Ab",
+        "Bb"
+    ];
+
+    return flatRoots.includes(
+        currentRoot
+    );
+
+}
+
+
+/*
+   Return the displayed name for a pitch.
+
+   This keeps the existing pitch calculation intact
+   while making the written note names consistent
+   with the selected root/key.
+*/
+
 function getNoteName(pitch) {
 
-    return flatNames[
-        (pitch + 12) % 12
+    const normalizedPitch =
+        (pitch + 12) % 12;
+
+
+    if (usesFlats()) {
+
+        return flatNames[
+            normalizedPitch
+        ];
+
+    }
+
+
+    return sharpNames[
+        normalizedPitch
     ];
 
 }
@@ -2002,6 +2014,10 @@ function getIntervalLabel(semitones) {
 
 }
 
+
+/* ==================================================
+   SCALE NOTES
+================================================== */
 
 function getScaleNotes() {
 
@@ -2272,8 +2288,8 @@ function renderFretboard() {
 
 
                 /*
-                   Calculate the pitch at this
-                   exact string/fret combination.
+                   Calculate the exact pitch
+                   at this string/fret.
                 */
 
                 const pitch =
@@ -2284,7 +2300,7 @@ function renderFretboard() {
 
 
                 /*
-                   Only show the note if it belongs
+                   Only display notes belonging
                    to the selected scale.
                 */
 
@@ -2308,7 +2324,7 @@ function renderFretboard() {
 
 
                     /*
-                       The root is always interval 0.
+                       Interval 0 is always the root.
                     */
 
                     if (
@@ -2660,10 +2676,10 @@ document
 
 
                 /*
-                   There can be duplicate entries
-                   for a scale in different categories.
+                   A scale can appear in more than
+                   one category.
 
-                   Activate every matching entry.
+                   Activate all matching entries.
                 */
 
                 document
