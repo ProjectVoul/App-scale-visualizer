@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 
 <meta name="viewport"
@@ -21,8 +20,10 @@ body {
     padding: 0;
     width: 100%;
     min-height: 100%;
+
     background: #101010;
     color: #f4f4f4;
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -83,6 +84,7 @@ button {
 .controls {
     display: grid;
     grid-template-columns: 120px minmax(0, 1fr);
+
     gap: 12px;
 
     max-width: 760px;
@@ -123,14 +125,15 @@ button {
 
 
 /* ==================================================
-   ROOT NOTE MENU
+   ROOT MENU
 ================================================== */
 
 .root-menu {
     max-width: 760px;
-    margin: 0 auto 18px;
 
-    padding: 28px;
+    margin: 0 auto 14px;
+
+    padding: 18px;
 
     background: #1c1c1c;
 
@@ -140,7 +143,7 @@ button {
     display: none;
 
     position: relative;
-    z-index: 30;
+    z-index: 20;
 }
 
 .root-menu.open {
@@ -148,16 +151,16 @@ button {
 }
 
 .root-menu-title {
+    margin-bottom: 14px;
+
+    color: #888;
+
     text-align: center;
 
-    color: #999;
-
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
 
     letter-spacing: 0.12em;
-
-    margin-bottom: 18px;
 }
 
 .root-grid {
@@ -166,26 +169,26 @@ button {
     grid-template-columns:
         repeat(4, minmax(0, 1fr));
 
-    gap: 10px;
+    gap: 8px;
 }
 
 .root-option {
-    min-height: 58px;
+    min-height: 48px;
 
-    border-radius: 15px;
-    border: 1px solid #3b3b3b;
+    border: 1px solid #383838;
+    border-radius: 12px;
 
     background: #242424;
     color: #eee;
 
     cursor: pointer;
 
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
 }
 
 .root-option:hover {
-    background: #2d2d2d;
+    background: #303030;
 }
 
 .root-option.active {
@@ -200,6 +203,7 @@ button {
 
 .scale-menu {
     max-width: 760px;
+
     margin: 0 auto;
 
     background: #1c1c1c;
@@ -257,17 +261,15 @@ button {
         transform 0.2s ease;
 }
 
-.category.open .category-header .chevron {
+.category.open
+.category-header
+.chevron {
     transform: rotate(90deg);
 }
 
 .scale-list {
     display: none;
-
-    padding:
-        0
-        14px
-        12px;
+    padding: 0 14px 12px;
 }
 
 .category.open .scale-list {
@@ -304,6 +306,213 @@ button {
 
 
 /* ==================================================
+   WORKS WELL WITH
+================================================== */
+
+.works-with-wrap {
+    width: min(760px, 100%);
+    margin: 0 auto 22px;
+}
+
+.works-with-button {
+    width: 100%;
+    min-height: 58px;
+    padding: 0 20px;
+    border-radius: 18px;
+    border: 1px solid #414141;
+    background: #1c1c1c;
+    color: #f4f4f4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.works-with-button .arrow {
+    color: #888;
+    font-size: 15px;
+    transition: transform 0.2s ease;
+}
+
+.works-with-button.open .arrow {
+    transform: rotate(90deg);
+}
+
+.works-with-menu {
+    display: none;
+    margin-top: 8px;
+    padding: 10px;
+    background: #1c1c1c;
+    border: 1px solid #414141;
+    border-radius: 20px;
+}
+
+.works-with-menu.open {
+    display: block;
+}
+
+.works-with-title {
+    padding: 8px 12px 10px;
+    color: #888;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
+.works-with-option {
+    width: 100%;
+    min-height: 58px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: #eee;
+    padding: 8px 14px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.works-with-option:hover {
+    background: #292929;
+}
+
+.works-with-option-name {
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.works-with-option-relation {
+    color: #888;
+    font-size: 13px;
+}
+
+/* ==================================================
+   COMPARISON MODE
+================================================== */
+
+.comparison-info {
+    display: none;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.comparison-info.open {
+    display: block;
+}
+
+.comparison-title {
+    font-size: clamp(24px, 4.5vw, 36px);
+    font-weight: 750;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.comparison-subtitle {
+    margin-top: 10px;
+    color: #999;
+    font-size: 15px;
+}
+
+.comparison-legend {
+    margin: 22px auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px 26px;
+    color: #999;
+    font-size: 15px;
+}
+
+.comparison-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comparison-legend-dot {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+}
+
+.comparison-legend-dot.scale-a {
+    background: #f3f3f3;
+}
+
+.comparison-legend-dot.scale-b {
+    background: #777;
+}
+
+.comparison-legend-dot.shared {
+    background: #35c759;
+}
+
+.comparison-legend-dot.root-a {
+    background: #ef334d;
+}
+
+.comparison-legend-dot.root-b {
+    background: #4a9eff;
+}
+
+.note.comparison-a {
+    background: #f3f3f3;
+    color: #151515;
+}
+
+.note.comparison-b {
+    background: #777;
+    color: #fff;
+}
+
+.note.comparison-shared {
+    background: #35c759;
+    color: #fff;
+}
+
+.note.comparison-root-a {
+    background: #ef334d;
+    color: #fff;
+}
+
+.note.comparison-root-b {
+    background: #4a9eff;
+    color: #fff;
+}
+
+.note.comparison-shared-root {
+    background: linear-gradient(135deg, #ef334d 0 50%, #4a9eff 50% 100%);
+    color: #fff;
+}
+
+.comparison-back {
+    display: none;
+    width: min(760px, 100%);
+    margin: 0 auto 18px;
+    min-height: 46px;
+    border-radius: 14px;
+    border: 1px solid #3d3d3d;
+    background: #222;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.comparison-back.open {
+    display: block;
+}
+
+
+/* ==================================================
    DISPLAY
 ================================================== */
 
@@ -316,7 +525,6 @@ button {
     color: #8b8b8b;
 
     font-size: 14px;
-
     letter-spacing: 0.12em;
 
     font-weight: 600;
@@ -362,70 +570,11 @@ button {
 
 
 /* ==================================================
-   STRING ORDER
-================================================== */
-
-.string-order-label {
-    text-align: center;
-
-    margin-top: 0;
-    margin-bottom: 12px;
-
-    color: #8b8b8b;
-
-    font-size: 14px;
-
-    letter-spacing: 0.12em;
-
-    font-weight: 600;
-}
-
-.string-order-toggle {
-    width: min(440px, 100%);
-
-    margin: 0 auto 30px;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    background: #242424;
-
-    border: 1px solid #474747;
-
-    border-radius: 18px;
-
-    padding: 4px;
-}
-
-.string-order-toggle button {
-    height: 52px;
-
-    border: 0;
-    border-radius: 14px;
-
-    background: transparent;
-    color: #999;
-
-    cursor: pointer;
-
-    font-size: 16px;
-}
-
-.string-order-toggle button.active {
-    background: #f1f1f1;
-    color: #151515;
-}
-
-
-/* ==================================================
-   SCALE INFORMATION
+   SCALE INFO
 ================================================== */
 
 .scale-info {
     text-align: center;
-
     margin-bottom: 24px;
 }
 
@@ -449,6 +598,248 @@ button {
         clamp(16px, 2.5vw, 21px);
 
     letter-spacing: 0.06em;
+}
+
+
+/* ==================================================
+   COMPARISON FRETBOARD
+================================================== */
+
+function getScaleNoteMap(scaleKey, root) {
+    const rootPitch = noteIndex(root);
+    const scale = scaleData[scaleKey];
+    const map = new Map();
+
+    scale.intervals.forEach((interval, degreeIndex) => {
+        const pitch = normalizePitch(rootPitch + interval);
+        map.set(pitch, {
+            pitch,
+            interval,
+            name: getScaleNoteNameFor(scaleKey, root, pitch, degreeIndex)
+        });
+    });
+
+    return map;
+}
+
+function getScaleNoteNameFor(scaleKey, root, pitch, degreeIndex) {
+    const normalizedPitch = normalizePitch(pitch);
+    const rootLetter = root.charAt(0);
+    const rootLetterIndex = musicalLetters.indexOf(rootLetter);
+    const letterOffset = scaleLetterOffsets[scaleKey][degreeIndex];
+    const letterIndex = (rootLetterIndex + letterOffset) % 7;
+    const letter = musicalLetters[letterIndex];
+    const naturalPitch = naturalPitches[letter];
+
+    let difference = normalizedPitch - naturalPitch;
+
+    if (difference > 6) difference -= 12;
+    if (difference < -6) difference += 12;
+
+    let accidental = "";
+
+    if (difference > 0) {
+        accidental = "#".repeat(difference);
+    }
+
+    if (difference < 0) {
+        accidental = "b".repeat(Math.abs(difference));
+    }
+
+    return letter + accidental;
+}
+
+function renderComparisonFretboard() {
+    const board = document.getElementById("fretboard");
+    board.innerHTML = "";
+
+    const mapA = getScaleNoteMap(currentScale, currentRoot);
+    const mapB = getScaleNoteMap(comparisonScale, comparisonRoot);
+
+    const position = positions[currentPosition];
+    const startFret = position.start;
+    const endFret = Math.min(position.end, MAX_FRET);
+    const fretCount = endFret - startFret + 1;
+
+    board.style.setProperty("--fret-count", fretCount);
+
+    const displayStrings = stringsReversed ? [...strings].reverse() : strings;
+
+    displayStrings.forEach((string, displayIndex) => {
+        const stringIndex = strings.indexOf(string);
+        const isLastRow = displayIndex === displayStrings.length - 1;
+
+        const label = document.createElement("div");
+        label.className = "string-label";
+        if (isLastRow) label.classList.add("last-row");
+        label.textContent = string.name;
+        board.appendChild(label);
+
+        for (let fret = startFret; fret <= endFret; fret++) {
+            const cell = document.createElement("div");
+            cell.className = "fret";
+
+            if (fret === endFret) cell.classList.add("last-column");
+            if (isLastRow) cell.classList.add("last-row");
+
+            const pitch = normalizePitch(string.pitch + fret);
+            const noteA = mapA.get(pitch);
+            const noteB = mapB.get(pitch);
+
+            if (noteA || noteB) {
+                const note = document.createElement("div");
+                note.className = "note";
+
+                const isRootA = noteA && noteA.interval === 0;
+                const isRootB = noteB && noteB.interval === 0;
+                const isShared = !!noteA && !!noteB;
+
+                if (isShared && isRootA && isRootB) {
+                    note.classList.add("comparison-shared-root");
+                } else if (isRootA) {
+                    note.classList.add("comparison-root-a");
+                } else if (isRootB) {
+                    note.classList.add("comparison-root-b");
+                } else if (isShared) {
+                    note.classList.add("comparison-shared");
+                } else if (noteA) {
+                    note.classList.add("comparison-a");
+                } else {
+                    note.classList.add("comparison-b");
+                }
+
+                const primary = noteA || noteB;
+                const name = document.createElement("div");
+                name.className = "note-name";
+
+                if (isShared) {
+                    name.textContent = noteA.name;
+                } else if (noteA) {
+                    name.textContent = noteA.name;
+                } else {
+                    name.textContent = noteB.name;
+                }
+
+                const intervalLabel = document.createElement("div");
+                intervalLabel.className = "note-interval";
+
+                if (isShared) {
+                    intervalLabel.textContent = `${noteA.interval === 0 ? "R" : getIntervalLabel(noteA.interval)} / ${noteB.interval === 0 ? "R" : getIntervalLabel(noteB.interval)}`;
+                } else {
+                    intervalLabel.textContent = primary.interval === 0
+                        ? "R"
+                        : getIntervalLabel(primary.interval);
+                }
+
+                if (displayMode === "notes") intervalLabel.style.display = "none";
+                if (displayMode === "intervals") name.style.display = "none";
+
+                note.appendChild(name);
+                note.appendChild(intervalLabel);
+                cell.appendChild(note);
+            }
+
+            const fretNumber = document.createElement("span");
+            fretNumber.className = "fret-number";
+            fretNumber.textContent = fret;
+            cell.appendChild(fretNumber);
+
+            board.appendChild(cell);
+        }
+    });
+}
+
+function renderFretboard() {
+    if (comparisonMode) {
+        renderComparisonFretboard();
+    } else {
+        renderSingleFretboard();
+    }
+}
+
+/* ==================================================
+   COMPARISON MODE
+================================================== */
+
+function enterComparison(scale, root) {
+    comparisonScale = scale;
+    comparisonRoot = root;
+    comparisonMode = true;
+    currentPosition = 0;
+
+    document.getElementById("comparisonInfo").classList.add("open");
+    document.getElementById("comparisonBack").classList.add("open");
+    document.getElementById("singleScaleLegend").style.display = "none";
+
+    document.getElementById("comparisonTitle").textContent =
+        `${currentRoot} ${scaleData[currentScale].name} + ${comparisonRoot} ${scaleData[comparisonScale].name}`;
+
+    document.getElementById("comparisonSubtitle").textContent =
+        `${getScaleNotes().map(note => note.name).join(" · ")}  +  ${getComparisonScaleNames().join(" · ")}`;
+
+    document.getElementById("worksWithMenu").classList.remove("open");
+    document.getElementById("worksWithButton").classList.remove("open");
+
+    updatePositionUI();
+    renderFretboard();
+}
+
+function getComparisonScaleNames() {
+    const rootPitch = noteIndex(comparisonRoot);
+    return scaleData[comparisonScale].intervals.map((interval, degreeIndex) => {
+        const pitch = normalizePitch(rootPitch + interval);
+        return getScaleNoteNameFor(comparisonScale, comparisonRoot, pitch, degreeIndex);
+    });
+}
+
+function exitComparison() {
+    comparisonMode = false;
+    comparisonScale = null;
+    comparisonRoot = null;
+
+    document.getElementById("comparisonInfo").classList.remove("open");
+    document.getElementById("comparisonBack").classList.remove("open");
+    document.getElementById("singleScaleLegend").style.display = "flex";
+
+    updateAll();
+}
+
+function renderWorksWellWithOptions() {
+    const container = document.getElementById("worksWithOptions");
+    container.innerHTML = "";
+
+    const options = getWorksWellWithOptions();
+
+    if (options.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "works-with-title";
+        empty.textContent = "No curated pairing for this scale yet.";
+        container.appendChild(empty);
+        return;
+    }
+
+    options.forEach(option => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "works-with-option";
+
+        const name = document.createElement("span");
+        name.className = "works-with-option-name";
+        name.textContent = `${option.root} ${scaleData[option.scale].name}`;
+
+        const relation = document.createElement("span");
+        relation.className = "works-with-option-relation";
+        relation.textContent = option.label;
+
+        button.appendChild(name);
+        button.appendChild(relation);
+
+        button.addEventListener("click", () => {
+            enterComparison(option.scale, option.root);
+        });
+
+        container.appendChild(button);
+    });
 }
 
 
@@ -482,10 +873,10 @@ button {
     border: 1px solid #444;
 
     background: #1d1d1d;
-
     color: #f2f2f2;
 
     font-size: 38px;
+
     line-height: 1;
 
     cursor: pointer;
@@ -493,7 +884,6 @@ button {
 
 .position-center {
     min-width: 0;
-
     text-align: center;
 }
 
@@ -506,12 +896,24 @@ button {
     line-height: 1.15;
 }
 
+.position-shape {
+    margin-top: 5px;
+
+    color: #aaa;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.04em;
+}
+
 .fret-range {
-    margin-top: 7px;
+    margin-top: 5px;
 
-    color: #888;
+    color: #777;
 
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .position-dots {
@@ -529,7 +931,8 @@ button {
     width: 15px;
     height: 15px;
 
-    flex: 0 0 15px;
+    flex:
+        0 0 15px;
 
     border-radius: 50%;
 
@@ -547,7 +950,6 @@ button {
 
 .fretboard-wrap {
     width: 100%;
-
     max-width: 900px;
 
     margin: 0 auto;
@@ -558,20 +960,7 @@ button {
 
 .fretboard {
 
-    /*
-       Five overlapping visual study positions.
-
-       Position 1 = frets 1–6
-       Position 2 = frets 6–11
-       Position 3 = frets 11–16
-       Position 4 = frets 16–21
-       Position 5 = frets 20–24
-
-       These are visual zones of the guitar
-       neck, not theoretical CAGED positions.
-    */
-
-    --fret-count: 6;
+    --fret-count: 5;
     --label-width: 78px;
 
     width: 100%;
@@ -585,13 +974,16 @@ button {
             minmax(0, 1fr)
         );
 
-    border: 4px solid #3b3b3b;
+    border:
+        4px solid #3b3b3b;
 
     border-radius: 24px;
 
     overflow: hidden;
 
     background: #93612d;
+
+    touch-action: pan-y;
 }
 
 
@@ -601,12 +993,12 @@ button {
 
 .string-label {
     min-width: 0;
-
     min-height: 118px;
 
     background: #303030;
 
-    border-right: 3px solid #444;
+    border-right:
+        3px solid #444;
 
     border-bottom:
         2px solid #b17a3e;
@@ -629,7 +1021,6 @@ button {
 
 .fret {
     min-width: 0;
-
     min-height: 118px;
 
     position: relative;
@@ -658,7 +1049,6 @@ button {
 }
 
 
-
 /* ==================================================
    FRET NUMBER
 ================================================== */
@@ -683,14 +1073,12 @@ button {
 ================================================== */
 
 .note {
+
     width:
-        clamp(52px, 6.4vw, 76px);
+        clamp(56px, 7vw, 82px);
 
-    height: auto;
-
-    aspect-ratio: 1 / 1;
-
-    flex: 0 0 auto;
+    height:
+        clamp(56px, 7vw, 82px);
 
     border-radius: 50%;
 
@@ -735,42 +1123,6 @@ button {
     color: white;
 }
 
-.note.alternative-root {
-    background: #ef334d;
-    color: white;
-}
-
-
-/*
-   Alternative notes represent valid scale notes
-   that repeat the last note of the previous string.
-
-   They remain visible, but are visually separated
-   from the main linear study path.
-*/
-
-.note.alternative {
-    border-radius: 0;
-
-    clip-path:
-        polygon(
-            50% 0%,
-            100% 100%,
-            0% 100%
-        );
-
-    padding-top: 11px;
-}
-
-.note.alternative .note-name {
-    font-size:
-        clamp(16px, 2.2vw, 24px);
-}
-
-.note.alternative .note-interval {
-    margin-top: 5px;
-}
-
 
 /* ==================================================
    LEGEND
@@ -812,21 +1164,6 @@ button {
 
 .legend-dot.scale {
     background: #f3f3f3;
-}
-
-.legend-symbol.alternative {
-    width: 18px;
-    height: 18px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    color: #f3f3f3;
-
-    font-size: 22px;
-    line-height: 1;
 }
 
 
@@ -893,12 +1230,8 @@ and (max-height: 600px) {
     }
 
     .note {
-        width: 52px;
-        height: auto;
-
-        aspect-ratio: 1 / 1;
-
-        flex: 0 0 auto;
+        width: 58px;
+        height: 58px;
     }
 
     .note-name {
@@ -920,8 +1253,7 @@ and (max-height: 600px) {
    SMALL PHONES
 ================================================== */
 
-@media
-(max-width: 430px) {
+@media (max-width: 430px) {
 
     .app {
         padding-left: 12px;
@@ -944,16 +1276,17 @@ and (max-height: 600px) {
     }
 
     .root-menu {
-        padding: 20px 14px;
+        padding: 14px;
+        border-radius: 18px;
     }
 
     .root-grid {
-        gap: 8px;
+        gap: 6px;
     }
 
     .root-option {
-        min-height: 54px;
-        font-size: 16px;
+        min-height: 44px;
+        font-size: 15px;
     }
 
     .position-header {
@@ -992,7 +1325,6 @@ and (max-height: 600px) {
         --label-width: 52px;
 
         border-width: 3px;
-
         border-radius: 20px;
     }
 
@@ -1010,20 +1342,16 @@ and (max-height: 600px) {
     }
 
     .note {
-        width: 50px;
-        height: auto;
-
-        aspect-ratio: 1 / 1;
-
-        flex: 0 0 auto;
+        width: 56px;
+        height: 56px;
     }
 
     .note-name {
-        font-size: 16px;
+        font-size: 17px;
     }
 
     .note-interval {
-        font-size: 11px;
+        font-size: 12px;
         margin-top: 5px;
     }
 
@@ -1036,10 +1364,27 @@ and (max-height: 600px) {
         gap: 18px;
         font-size: 14px;
     }
+
+}
+
+
+@media (max-width: 430px) {
+    .works-with-button {
+        min-height: 54px;
+        padding: 0 16px;
+    }
+
+    .works-with-option {
+        min-height: 62px;
+    }
+
+    .comparison-legend {
+        gap: 14px 18px;
+        font-size: 13px;
+    }
 }
 
 </style>
-
 </head>
 
 
@@ -1048,666 +1393,604 @@ and (max-height: 600px) {
 <div class="app">
 
 
-    <!-- ==================================================
-         HEADER
-    ================================================== -->
+<header class="header">
 
-    <header class="header">
+    <div class="logo">
+        ProjectVoul
+    </div>
 
-        <div class="logo">
-            ProjectVoul
-        </div>
+    <div class="subtitle">
+        Guitar · Scales · Notes
+    </div>
 
-        <div class="subtitle">
-            Guitar · Scales · Notes
-        </div>
-
-    </header>
+</header>
 
 
-    <!-- ==================================================
-         CONTROLS
-    ================================================== -->
+<!-- ==================================================
+     CONTROLS
+================================================== -->
 
-    <div class="controls">
+<div class="controls">
 
-        <button
-            class="root-button"
-            id="rootButton">
+    <button
+        class="root-button"
+        id="rootButton">
 
-            C
+        C
+
+    </button>
+
+
+    <button
+        class="scale-button"
+        id="scaleButton">
+
+        <span id="selectedScale">
+            Major / Ionian
+        </span>
+
+        <span class="arrow">
+            ▾
+        </span>
+
+    </button>
+
+</div>
+
+
+<!-- ==================================================
+     ROOT MENU
+================================================== -->
+
+<div
+    class="root-menu"
+    id="rootMenu">
+
+    <div class="root-menu-title">
+        ROOT NOTE
+    </div>
+
+    <div class="root-grid">
+
+        <button class="root-option" data-root="C">C</button>
+        <button class="root-option" data-root="C#">C#</button>
+        <button class="root-option" data-root="Db">Db</button>
+        <button class="root-option" data-root="D">D</button>
+
+        <button class="root-option" data-root="D#">D#</button>
+        <button class="root-option" data-root="Eb">Eb</button>
+        <button class="root-option" data-root="E">E</button>
+        <button class="root-option" data-root="F">F</button>
+
+        <button class="root-option" data-root="F#">F#</button>
+        <button class="root-option" data-root="Gb">Gb</button>
+        <button class="root-option" data-root="G">G</button>
+        <button class="root-option" data-root="G#">G#</button>
+
+        <button class="root-option" data-root="Ab">Ab</button>
+        <button class="root-option" data-root="A">A</button>
+        <button class="root-option" data-root="A#">A#</button>
+        <button class="root-option" data-root="Bb">Bb</button>
+
+        <button class="root-option" data-root="B">B</button>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     SCALE MENU
+================================================== -->
+
+<div
+    class="scale-menu"
+    id="scaleMenu">
+
+
+    <section class="category open">
+
+        <button class="category-header">
+
+            <span>
+                DIATONIC
+            </span>
+
+            <span class="chevron">
+                ›
+            </span>
 
         </button>
 
 
-        <button
-            class="scale-button"
-            id="scaleButton">
+        <div class="scale-list">
 
-            <span id="selectedScale">
+            <button
+                class="scale-option active"
+                data-scale="major">
+
                 Major / Ionian
-            </span>
-
-            <span class="arrow">
-                ▾
-            </span>
-
-        </button>
-
-    </div>
-
-
-    <!-- ==================================================
-         ROOT NOTE MENU
-    ================================================== -->
-
-    <div
-        class="root-menu"
-        id="rootMenu">
-
-        <div class="root-menu-title">
-            ROOT NOTE
-        </div>
-
-        <div
-            class="root-grid"
-            id="rootGrid">
-
-            <button class="root-option active" data-root="C">
-                C
-            </button>
-
-            <button class="root-option" data-root="C#">
-                C#
-            </button>
-
-            <button class="root-option" data-root="Db">
-                Db
-            </button>
-
-            <button class="root-option" data-root="D">
-                D
-            </button>
-
-            <button class="root-option" data-root="D#">
-                D#
-            </button>
-
-            <button class="root-option" data-root="Eb">
-                Eb
-            </button>
-
-            <button class="root-option" data-root="E">
-                E
-            </button>
-
-            <button class="root-option" data-root="F">
-                F
-            </button>
-
-            <button class="root-option" data-root="F#">
-                F#
-            </button>
-
-            <button class="root-option" data-root="Gb">
-                Gb
-            </button>
-
-            <button class="root-option" data-root="G">
-                G
-            </button>
-
-            <button class="root-option" data-root="G#">
-                G#
-            </button>
-
-            <button class="root-option" data-root="Ab">
-                Ab
-            </button>
-
-            <button class="root-option" data-root="A">
-                A
-            </button>
-
-            <button class="root-option" data-root="A#">
-                A#
-            </button>
-
-            <button class="root-option" data-root="Bb">
-                Bb
-            </button>
-
-            <button class="root-option" data-root="B">
-                B
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- ==================================================
-         SCALE MENU
-    ================================================== -->
-
-    <div
-        class="scale-menu"
-        id="scaleMenu">
-
-
-        <section class="category open">
-
-            <button class="category-header">
-
-                <span>
-                    DIATONIC
-                </span>
-
-                <span class="chevron">
-                    ›
-                </span>
 
             </button>
 
 
-            <div class="scale-list">
+            <button
+                class="scale-option"
+                data-scale="dorian">
 
-                <button
-                    class="scale-option active"
-                    data-scale="major">
-
-                    Major / Ionian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="dorian">
-
-                    Dorian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="phrygian">
-
-                    Phrygian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="lydian">
-
-                    Lydian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="mixolydian">
-
-                    Mixolydian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="naturalMinor">
-
-                    Natural Minor / Aeolian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="locrian">
-
-                    Locrian
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <section class="category">
-
-            <button class="category-header">
-
-                <span>
-                    MINOR
-                </span>
-
-                <span class="chevron">
-                    ›
-                </span>
+                Dorian
 
             </button>
 
 
-            <div class="scale-list">
+            <button
+                class="scale-option"
+                data-scale="phrygian">
 
-                <button
-                    class="scale-option"
-                    data-scale="naturalMinor">
-
-                    Natural Minor / Aeolian
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="harmonicMinor">
-
-                    Harmonic Minor
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="melodicMinor">
-
-                    Melodic Minor
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <section class="category">
-
-            <button class="category-header">
-
-                <span>
-                    PENTATONIC &amp; BLUES
-                </span>
-
-                <span class="chevron">
-                    ›
-                </span>
+                Phrygian
 
             </button>
 
 
-            <div class="scale-list">
+            <button
+                class="scale-option"
+                data-scale="lydian">
 
-                <button
-                    class="scale-option"
-                    data-scale="majorPentatonic">
-
-                    Major Pentatonic
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="minorPentatonic">
-
-                    Minor Pentatonic
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="blues">
-
-                    Blues
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <section class="category">
-
-            <button class="category-header">
-
-                <span>
-                    JAZZ
-                </span>
-
-                <span class="chevron">
-                    ›
-                </span>
+                Lydian
 
             </button>
 
 
-            <div class="scale-list">
+            <button
+                class="scale-option"
+                data-scale="mixolydian">
 
-                <button
-                    class="scale-option"
-                    data-scale="lydianDominant">
-
-                    Lydian Dominant
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="altered">
-
-                    Altered
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="wholeTone">
-
-                    Whole Tone
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="halfWholeDiminished">
-
-                    Half-Whole Diminished
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="wholeHalfDiminished">
-
-                    Whole-Half Diminished
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="bebopDominant">
-
-                    Bebop Dominant
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="bebopMajor">
-
-                    Bebop Major
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="bebopMinor">
-
-                    Bebop Minor
-
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <section class="category">
-
-            <button class="category-header">
-
-                <span>
-                    EXOTIC / WORLD
-                </span>
-
-                <span class="chevron">
-                    ›
-                </span>
+                Mixolydian
 
             </button>
 
 
-            <div class="scale-list">
+            <button
+                class="scale-option"
+                data-scale="naturalMinor">
 
-                <button
-                    class="scale-option"
-                    data-scale="phrygianDominant">
+                Natural Minor / Aeolian
 
-                    Phrygian Dominant
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="hirajoshi">
-
-                    Hirajoshi
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="hungarianMinor">
-
-                    Hungarian Minor
-
-                </button>
-
-                <button
-                    class="scale-option"
-                    data-scale="doubleHarmonicMajor">
-
-                    Double Harmonic Major
-
-                </button>
-
-            </div>
-
-        </section>
-
-    </div>
+            </button>
 
 
-    <!-- ==================================================
-         DISPLAY
-    ================================================== -->
+            <button
+                class="scale-option"
+                data-scale="locrian">
 
-    <div class="display-label">
-        DISPLAY
-    </div>
+                Locrian
 
-
-    <div class="display-toggle">
-
-        <button data-display="notes">
-            Notes
-        </button>
-
-        <button data-display="intervals">
-            Intervals
-        </button>
-
-        <button
-            class="active"
-            data-display="both">
-
-            Both
-
-        </button>
-
-    </div>
-
-
-    <!-- ==================================================
-         STRING ORDER
-    ================================================== -->
-
-    <div class="string-order-label">
-        STRING ORDER
-    </div>
-
-
-    <div
-        class="string-order-toggle"
-        id="stringOrderToggle">
-
-        <button
-            class="active"
-            data-string-order="standard">
-
-            Standard
-
-        </button>
-
-        <button
-            data-string-order="tab">
-
-            Tab / Reverse
-
-        </button>
-
-    </div>
-
-
-    <!-- ==================================================
-         SCALE INFORMATION
-    ================================================== -->
-
-    <section class="scale-info">
-
-        <h1
-            class="scale-title"
-            id="scaleTitle">
-
-            C Major / Ionian
-
-        </h1>
-
-
-        <div
-            class="scale-notes"
-            id="scaleNotes">
-
-            C · D · E · F · G · A · B
+            </button>
 
         </div>
 
     </section>
 
 
-    <!-- ==================================================
-         POSITION NAVIGATION
-    ================================================== -->
+    <section class="category">
 
-    <section class="position-header">
+        <button class="category-header">
 
-        <button
-            class="position-arrow"
-            id="previousPosition">
+            <span>
+                MINOR
+            </span>
 
-            ‹
+            <span class="chevron">
+                ›
+            </span>
 
         </button>
 
 
-        <div class="position-center">
+        <div class="scale-list">
 
-            <div
-                class="position-title"
-                id="positionTitle">
+            <button
+                class="scale-option"
+                data-scale="naturalMinor">
 
-                Position 1 / 5
+                Natural Minor / Aeolian
 
-            </div>
-
-
-            <div
-                class="fret-range"
-                id="fretRange">
-
-                Frets 1 – 6
-
-            </div>
+            </button>
 
 
-            <div
-                class="position-dots"
-                id="positionDots">
-            </div>
+            <button
+                class="scale-option"
+                data-scale="harmonicMinor">
+
+                Harmonic Minor
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="melodicMinor">
+
+                Melodic Minor
+
+            </button>
 
         </div>
-
-
-        <button
-            class="position-arrow"
-            id="nextPosition">
-
-            ›
-
-        </button>
 
     </section>
 
 
-    <!-- ==================================================
-         FRETBOARD
-    ================================================== -->
+    <section class="category">
 
-    <div class="fretboard-wrap">
+        <button class="category-header">
+
+            <span>
+                PENTATONIC &amp; BLUES
+            </span>
+
+            <span class="chevron">
+                ›
+            </span>
+
+        </button>
+
+
+        <div class="scale-list">
+
+            <button
+                class="scale-option"
+                data-scale="majorPentatonic">
+
+                Major Pentatonic
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="minorPentatonic">
+
+                Minor Pentatonic
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="blues">
+
+                Blues
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="category">
+
+        <button class="category-header">
+
+            <span>
+                JAZZ
+            </span>
+
+            <span class="chevron">
+                ›
+            </span>
+
+        </button>
+
+
+        <div class="scale-list">
+
+            <button
+                class="scale-option"
+                data-scale="lydianDominant">
+
+                Lydian Dominant
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="altered">
+
+                Altered
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="wholeTone">
+
+                Whole Tone
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="halfWholeDiminished">
+
+                Half-Whole Diminished
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="wholeHalfDiminished">
+
+                Whole-Half Diminished
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="bebopDominant">
+
+                Bebop Dominant
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="bebopMajor">
+
+                Bebop Major
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="bebopMinor">
+
+                Bebop Minor
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="category">
+
+        <button class="category-header">
+
+            <span>
+                EXOTIC / WORLD
+            </span>
+
+            <span class="chevron">
+                ›
+            </span>
+
+        </button>
+
+
+        <div class="scale-list">
+
+            <button
+                class="scale-option"
+                data-scale="phrygianDominant">
+
+                Phrygian Dominant
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="hirajoshi">
+
+                Hirajoshi
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="hungarianMinor">
+
+                Hungarian Minor
+
+            </button>
+
+
+            <button
+                class="scale-option"
+                data-scale="doubleHarmonicMajor">
+
+                Double Harmonic Major
+
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ==================================================
+     DISPLAY
+================================================== -->
+
+<div class="display-label">
+    DISPLAY
+</div>
+
+
+<div class="display-toggle">
+
+    <button data-display="notes">
+        Notes
+    </button>
+
+    <button data-display="intervals">
+        Intervals
+    </button>
+
+    <button
+        class="active"
+        data-display="both">
+
+        Both
+
+    </button>
+
+</div>
+
+
+<!-- ==================================================
+     SCALE INFORMATION
+================================================== -->
+
+<section class="scale-info">
+
+    <h1
+        class="scale-title"
+        id="scaleTitle">
+
+        C Major / Ionian
+
+    </h1>
+
+
+    <div
+        class="scale-notes"
+        id="scaleNotes">
+
+        C · D · E · F · G · A · B
+
+    </div>
+
+</section>
+
+
+<!-- ==================================================
+     POSITION NAVIGATION
+================================================== -->
+
+<section class="position-header">
+
+
+    <button
+        class="position-arrow"
+        id="previousPosition">
+
+        ‹
+
+    </button>
+
+
+    <div class="position-center">
+
 
         <div
-            class="fretboard"
-            id="fretboard">
+            class="position-title"
+            id="positionTitle">
+
+            Position 1 / 5
+
+        </div>
+
+
+        <div
+            class="position-shape"
+            id="positionShape">
+
+            C Shape · CAGED
+
+        </div>
+
+
+        <div
+            class="fret-range"
+            id="fretRange">
+
+            Frets 12 – 15
+
+        </div>
+
+
+        <div
+            class="position-dots"
+            id="positionDots">
+
         </div>
 
     </div>
 
 
-    <!-- ==================================================
-         LEGEND
-    ================================================== -->
+    <button
+        class="position-arrow"
+        id="nextPosition">
 
-    <div class="legend">
+        ›
 
-        <div class="legend-item">
+    </button>
 
-            <span
-                class="legend-dot root">
-            </span>
-
-            <span>
-                Root
-            </span>
-
-        </div>
+</section>
 
 
-        <div class="legend-item">
+<!-- ==================================================
+     FRETBOARD
+================================================== -->
 
-            <span
-                class="legend-dot scale">
-            </span>
+<div class="fretboard-wrap">
 
-            <span>
-                Scale note
-            </span>
-
-        </div>
-
-
-        <div class="legend-item">
-
-            <span
-                class="legend-symbol alternative">
-                △
-            </span>
-
-            <span>
-                Alternative
-            </span>
-
-        </div>
+    <div
+        class="fretboard"
+        id="fretboard">
 
     </div>
+
+</div>
+
+
+<!-- ==================================================
+     LEGEND
+================================================== -->
+
+<div class="legend" id="singleScaleLegend">
+
+
+    <div class="legend-item">
+
+        <span
+            class="legend-dot root">
+        </span>
+
+        <span>
+            Root
+        </span>
+
+    </div>
+
+
+    <div class="legend-item">
+
+        <span
+            class="legend-dot scale">
+        </span>
+
+        <span>
+            Scale note
+        </span>
+
+    </div>
+
+</div>
+
 
 </div>
 
@@ -1719,7 +2002,15 @@ and (max-height: 600px) {
    MUSIC DATA
 ================================================== */
 
+
+/*
+   Chromatic pitch classes.
+
+   We use these internally for pitch calculation.
+*/
+
 const chromatic = [
+
     "C",
     "C#",
     "D",
@@ -1732,395 +2023,625 @@ const chromatic = [
     "A",
     "A#",
     "B"
+
 ];
 
 
-const sharpNames = {
+const naturalPitch = {
 
-    0: "C",
-    1: "C#",
-    2: "D",
-    3: "D#",
-    4: "E",
-    5: "F",
-    6: "F#",
-    7: "G",
-    8: "G#",
-    9: "A",
-    10: "A#",
-    11: "B"
+    C: 0,
+    D: 2,
+    E: 4,
+    F: 5,
+    G: 7,
+    A: 9,
+    B: 11
 
 };
 
 
-const flatNames = {
+const rootData = {
 
-    0: "C",
-    1: "Db",
-    2: "D",
-    3: "Eb",
-    4: "E",
-    5: "F",
-    6: "Gb",
-    7: "G",
-    8: "Ab",
-    9: "A",
-    10: "Bb",
-    11: "B"
+    C:  { pitch: 0,  letter: "C", accidental: 0 },
+    "C#": { pitch: 1, letter: "C", accidental: 1 },
+    Db: { pitch: 1, letter: "D", accidental: -1 },
 
-};
+    D:  { pitch: 2, letter: "D", accidental: 0 },
+    "D#": { pitch: 3, letter: "D", accidental: 1 },
+    Eb: { pitch: 3, letter: "E", accidental: -1 },
 
+    E:  { pitch: 4, letter: "E", accidental: 0 },
 
-/*
-   Scale interval definitions.
+    F:  { pitch: 5, letter: "F", accidental: 0 },
+    "F#": { pitch: 6, letter: "F", accidental: 1 },
+    Gb: { pitch: 6, letter: "G", accidental: -1 },
 
-   Every interval is measured in semitones
-   from the root.
-*/
+    G:  { pitch: 7, letter: "G", accidental: 0 },
+    "G#": { pitch: 8, letter: "G", accidental: 1 },
+    Ab: { pitch: 8, letter: "A", accidental: -1 },
 
-const scaleData = {
+    A:  { pitch: 9, letter: "A", accidental: 0 },
+    "A#": { pitch: 10, letter: "A", accidental: 1 },
+    Bb: { pitch: 10, letter: "B", accidental: -1 },
 
-    major: {
-        name: "Major / Ionian",
-        intervals: [
-            0, 2, 4, 5, 7, 9, 11
-        ]
-    },
-
-    dorian: {
-        name: "Dorian",
-        intervals: [
-            0, 2, 3, 5, 7, 9, 10
-        ]
-    },
-
-    phrygian: {
-        name: "Phrygian",
-        intervals: [
-            0, 1, 3, 5, 7, 8, 10
-        ]
-    },
-
-    lydian: {
-        name: "Lydian",
-        intervals: [
-            0, 2, 4, 6, 7, 9, 11
-        ]
-    },
-
-    mixolydian: {
-        name: "Mixolydian",
-        intervals: [
-            0, 2, 4, 5, 7, 9, 10
-        ]
-    },
-
-    naturalMinor: {
-        name: "Natural Minor / Aeolian",
-        intervals: [
-            0, 2, 3, 5, 7, 8, 10
-        ]
-    },
-
-    locrian: {
-        name: "Locrian",
-        intervals: [
-            0, 1, 3, 5, 6, 8, 10
-        ]
-    },
-
-    harmonicMinor: {
-        name: "Harmonic Minor",
-        intervals: [
-            0, 2, 3, 5, 7, 8, 11
-        ]
-    },
-
-    melodicMinor: {
-        name: "Melodic Minor",
-        intervals: [
-            0, 2, 3, 5, 7, 9, 11
-        ]
-    },
-
-    majorPentatonic: {
-        name: "Major Pentatonic",
-        intervals: [
-            0, 2, 4, 7, 9
-        ]
-    },
-
-    minorPentatonic: {
-        name: "Minor Pentatonic",
-        intervals: [
-            0, 3, 5, 7, 10
-        ]
-    },
-
-    blues: {
-        name: "Blues",
-        intervals: [
-            0, 3, 5, 6, 7, 10
-        ]
-    },
-
-    lydianDominant: {
-        name: "Lydian Dominant",
-        intervals: [
-            0, 2, 4, 6, 7, 9, 10
-        ]
-    },
-
-    altered: {
-        name: "Altered",
-        intervals: [
-            0, 1, 3, 4, 6, 8, 10
-        ]
-    },
-
-    wholeTone: {
-        name: "Whole Tone",
-        intervals: [
-            0, 2, 4, 6, 8, 10
-        ]
-    },
-
-    halfWholeDiminished: {
-        name: "Half-Whole Diminished",
-        intervals: [
-            0, 1, 3, 4, 6, 7, 9, 10
-        ]
-    },
-
-    wholeHalfDiminished: {
-        name: "Whole-Half Diminished",
-        intervals: [
-            0, 2, 3, 5, 6, 8, 9, 11
-        ]
-    },
-
-    bebopDominant: {
-        name: "Bebop Dominant",
-        intervals: [
-            0, 2, 4, 5, 7, 9, 10, 11
-        ]
-    },
-
-    bebopMajor: {
-        name: "Bebop Major",
-        intervals: [
-            0, 2, 4, 5, 7, 8, 9, 11
-        ]
-    },
-
-    bebopMinor: {
-        name: "Bebop Minor",
-        intervals: [
-            0, 2, 3, 4, 5, 7, 9, 10
-        ]
-    },
-
-    phrygianDominant: {
-        name: "Phrygian Dominant",
-        intervals: [
-            0, 1, 4, 5, 7, 8, 10
-        ]
-    },
-
-    hirajoshi: {
-        name: "Hirajoshi",
-        intervals: [
-            0, 2, 3, 7, 8
-        ]
-    },
-
-    hungarianMinor: {
-        name: "Hungarian Minor",
-        intervals: [
-            0, 2, 3, 6, 7, 8, 11
-        ]
-    },
-
-    doubleHarmonicMajor: {
-        name: "Double Harmonic Major",
-        intervals: [
-            0, 1, 4, 5, 7, 8, 11
-        ]
-    }
+    B:  { pitch: 11, letter: "B", accidental: 0 }
 
 };
 
 
 /* ==================================================
-   SCALE SPELLING
+   SCALE DEFINITIONS
 ================================================== */
 
+
 /*
-   Each scale also needs to know which musical letter
-   belongs to each scale degree.
+   intervals = semitones from the tonic.
 
-   This is separate from the pitch calculation.
+   degreeOffsets tell the spelling engine which
+   natural letter each scale degree belongs to.
 
-   Example:
-
-   C# Major
-
-   Pitch calculation:
-   C# D# F F# G# A# C
-
-   Theoretical spelling:
-   C# D# E# F# G# A# B#
-
-   The pitch is the same, but the written note
-   must respect the scale degree.
-
-   0 = root letter
-   1 = next letter
-   2 = next letter
-   etc.
+   accidentals:
+      -2 = double flat
+      -1 = flat
+       0 = natural
+      +1 = sharp
+      +2 = double sharp
 */
 
-const scaleLetterOffsets = {
 
-    major: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+const scaleData = {
 
-    dorian: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
 
-    phrygian: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+    major: {
 
-    lydian: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        name:
+            "Major / Ionian",
 
-    mixolydian: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        intervals:
+            [0, 2, 4, 5, 7, 9, 11],
 
-    naturalMinor: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
 
-    locrian: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        accidentals:
+            [0, 0, 0, 0, 0, 0, 0],
 
-    harmonicMinor: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        system:
+            "CAGED",
 
-    melodicMinor: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        patternCount:
+            5
 
-    majorPentatonic: [
-        0, 1, 2, 4, 5
-    ],
+    },
 
-    minorPentatonic: [
-        0, 2, 3, 4, 6
-    ],
 
-    blues: [
-        0, 2, 3, 4, 4, 6
-    ],
+    dorian: {
 
-    lydianDominant: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        name:
+            "Dorian",
 
-    /*
-       Altered scale:
+        intervals:
+            [0, 2, 3, 5, 7, 9, 10],
 
-       C Db Eb E Gb Ab Bb
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
 
-       Notice the repeated letter E:
-       Eb → E
+        accidentals:
+            [0, 0, -1, 0, 0, 0, -1],
 
-       This is intentional theoretical spelling.
-    */
+        system:
+            "CAGED",
 
-    altered: [
-        0, 1, 2, 2, 4, 5, 6
-    ],
+        patternCount:
+            5
 
-    wholeTone: [
-        0, 1, 2, 3, 4, 5
-    ],
+    },
 
-    /*
-       Half-Whole Diminished:
 
-       C Db Eb E Gb G A Bb
+    phrygian: {
 
-       The scale contains both Eb/E and Gb/G,
-       so some letters are repeated.
-    */
+        name:
+            "Phrygian",
 
-    halfWholeDiminished: [
-        0, 1, 2, 2, 4, 4, 5, 6
-    ],
+        intervals:
+            [0, 1, 3, 5, 7, 8, 10],
 
-    /*
-       Whole-Half Diminished:
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
 
-       C D Eb F Gb Ab A B
-    */
+        accidentals:
+            [0, -1, -1, 0, 0, -1, -1],
 
-    wholeHalfDiminished: [
-        0, 1, 2, 3, 4, 5, 5, 6
-    ],
+        system:
+            "CAGED",
 
-    /*
-       Bebop Dominant:
+        patternCount:
+            5
 
-       C D E F G A Bb B
-    */
+    },
 
-    bebopDominant: [
-        0, 1, 2, 3, 4, 5, 6, 6
-    ],
 
-    /*
-       Bebop Major:
+    lydian: {
 
-       C D E F G Ab A B
-    */
+        name:
+            "Lydian",
 
-    bebopMajor: [
-        0, 1, 2, 3, 4, 5, 5, 6
-    ],
+        intervals:
+            [0, 2, 4, 6, 7, 9, 11],
 
-    /*
-       Bebop Minor:
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
 
-       C D Eb E F G A Bb
-    */
+        accidentals:
+            [0, 0, 0, 1, 0, 0, 0],
 
-    bebopMinor: [
-        0, 1, 2, 2, 3, 4, 5, 6
-    ],
+        system:
+            "CAGED",
 
-    phrygianDominant: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
+        patternCount:
+            5
 
-    hirajoshi: [
-        0, 1, 2, 4, 5
-    ],
+    },
 
-    hungarianMinor: [
-        0, 1, 2, 3, 4, 5, 6
-    ],
 
-    doubleHarmonicMajor: [
-        0, 1, 2, 3, 4, 5, 6
-    ]
+    mixolydian: {
+
+        name:
+            "Mixolydian",
+
+        intervals:
+            [0, 2, 4, 5, 7, 9, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, 0, 0, 0, 0, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    naturalMinor: {
+
+        name:
+            "Natural Minor / Aeolian",
+
+        intervals:
+            [0, 2, 3, 5, 7, 8, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 0, 0, -1, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    locrian: {
+
+        name:
+            "Locrian",
+
+        intervals:
+            [0, 1, 3, 5, 6, 8, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, -1, -1, 0, -1, -1, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    harmonicMinor: {
+
+        name:
+            "Harmonic Minor",
+
+        intervals:
+            [0, 2, 3, 5, 7, 8, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 0, 0, -1, 0],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    melodicMinor: {
+
+        name:
+            "Melodic Minor",
+
+        intervals:
+            [0, 2, 3, 5, 7, 9, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 0, 0, 0, 0],
+
+        system:
+            "CAGED · Ascending / Jazz",
+
+        patternCount:
+            5
+
+    },
+
+
+    majorPentatonic: {
+
+        name:
+            "Major Pentatonic",
+
+        intervals:
+            [0, 2, 4, 7, 9],
+
+        degreeOffsets:
+            [0, 1, 2, 4, 5],
+
+        accidentals:
+            [0, 0, 0, 0, 0],
+
+        system:
+            "Pentatonic",
+
+        patternCount:
+            5
+
+    },
+
+
+    minorPentatonic: {
+
+        name:
+            "Minor Pentatonic",
+
+        intervals:
+            [0, 3, 5, 7, 10],
+
+        degreeOffsets:
+            [0, 2, 3, 4, 6],
+
+        accidentals:
+            [0, -1, 0, 0, -1],
+
+        system:
+            "Pentatonic",
+
+        patternCount:
+            5
+
+    },
+
+
+    blues: {
+
+        name:
+            "Blues",
+
+        intervals:
+            [0, 3, 5, 6, 7, 10],
+
+        degreeOffsets:
+            [0, 2, 3, 4, 4, 6],
+
+        accidentals:
+            [0, -1, 0, -1, 0, -1],
+
+        system:
+            "Pentatonic / Blues",
+
+        patternCount:
+            5
+
+    },
+
+
+    lydianDominant: {
+
+        name:
+            "Lydian Dominant",
+
+        intervals:
+            [0, 2, 4, 6, 7, 9, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, 0, 1, 0, 0, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    altered: {
+
+        name:
+            "Altered",
+
+        intervals:
+            [0, 1, 3, 4, 6, 8, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, -1, -1, 0, -1, -1, -1],
+
+        system:
+            "CAGED · Super Locrian",
+
+        patternCount:
+            5
+
+    },
+
+
+    wholeTone: {
+
+        name:
+            "Whole Tone",
+
+        intervals:
+            [0, 2, 4, 6, 8, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5],
+
+        accidentals:
+            [0, 0, 0, 1, 1, 1],
+
+        system:
+            "Symmetric",
+
+        patternCount:
+            2
+
+    },
+
+
+    halfWholeDiminished: {
+
+        name:
+            "Half-Whole Diminished",
+
+        intervals:
+            [0, 1, 3, 4, 6, 7, 9, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 2, 4, 4, 5, 6],
+
+        accidentals:
+            [0, -1, -1, 0, -1, 0, 0, -1],
+
+        system:
+            "Symmetric",
+
+        patternCount:
+            2
+
+    },
+
+
+    wholeHalfDiminished: {
+
+        name:
+            "Whole-Half Diminished",
+
+        intervals:
+            [0, 2, 3, 5, 6, 8, 9, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 0, -1, -1, 0, 0],
+
+        system:
+            "Symmetric",
+
+        patternCount:
+            2
+
+    },
+
+
+    bebopDominant: {
+
+        name:
+            "Bebop Dominant",
+
+        intervals:
+            [0, 2, 4, 5, 7, 9, 10, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6, 6],
+
+        accidentals:
+            [0, 0, 0, 0, 0, 0, -1, 0],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    bebopMajor: {
+
+        name:
+            "Bebop Major",
+
+        intervals:
+            [0, 2, 4, 5, 7, 8, 9, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 5, 6],
+
+        accidentals:
+            [0, 0, 0, 0, 0, -1, 0, 0],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    bebopMinor: {
+
+        name:
+            "Bebop Minor",
+
+        intervals:
+            [0, 2, 3, 4, 5, 7, 9, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 0, 0, 0, 0, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    phrygianDominant: {
+
+        name:
+            "Phrygian Dominant",
+
+        intervals:
+            [0, 1, 4, 5, 7, 8, 10],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, -1, 0, 0, 0, -1, -1],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    hirajoshi: {
+
+        name:
+            "Hirajoshi",
+
+        intervals:
+            [0, 2, 3, 7, 8],
+
+        degreeOffsets:
+            [0, 1, 2, 4, 5],
+
+        accidentals:
+            [0, 0, -1, 0, -1],
+
+        system:
+            "CAGED-derived",
+
+        patternCount:
+            5
+
+    },
+
+
+    hungarianMinor: {
+
+        name:
+            "Hungarian Minor",
+
+        intervals:
+            [0, 2, 3, 6, 7, 8, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, 0, -1, 1, 0, -1, 0],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    },
+
+
+    doubleHarmonicMajor: {
+
+        name:
+            "Double Harmonic Major",
+
+        intervals:
+            [0, 1, 4, 5, 7, 8, 11],
+
+        degreeOffsets:
+            [0, 1, 2, 3, 4, 5, 6],
+
+        accidentals:
+            [0, -1, 0, 0, 0, -1, 0],
+
+        system:
+            "CAGED",
+
+        patternCount:
+            5
+
+    }
 
 };
 
@@ -2129,10 +2650,11 @@ const scaleLetterOffsets = {
    GUITAR
 ================================================== */
 
-/*
-   Standard tuning:
 
-   Low → High
+/*
+   Standard tuning.
+
+   Low → high:
 
    E A D G B E
 */
@@ -2175,53 +2697,115 @@ const strings = [
 const MAX_FRET = 24;
 
 
+/* ==================================================
+   CAGED POSITION DATABASE
+================================================== */
+
+
 /*
-   Five visual study zones.
+   These are the verified C Major CAGED scale
+   regions used as the reference geometry.
 
-   1 → 1–6
-   2 → 6–11
-   3 → 11–16
-   4 → 16–21
-   5 → 20–24
+   The actual scale notes are NOT hard-coded here.
 
-   The study zones overlap at their boundaries
-   so that adjacent positions can be connected
-   naturally across the fretboard.
+   The scale formula is applied to these regions.
+
+   This means:
+      Major
+      Dorian
+      Harmonic Minor
+      Melodic Minor
+      etc.
+
+   can all use the same underlying fretboard
+   geometry while changing their actual notes.
+
+   The reference regions are:
+
+   E Shape: 7–10
+   D Shape: 9–13
+   C Shape: 12–15
+   A Shape: 2–6
+   G Shape: 5–8
 */
 
-const positions = [
+
+const CAGED_TEMPLATES = [
+
+    /*
+       Canonical CAGED order:
+
+       1. C
+       2. A
+       3. G
+       4. E
+       5. D
+
+       The verified C-major regions themselves are
+       unchanged; only their presentation/numbering
+       order is corrected.
+    */
 
     {
-        start: 1,
+        shape: "C",
+        start: 12,
+        end: 15
+    },
+
+    {
+        shape: "A",
+        start: 2,
         end: 6
     },
 
     {
-        start: 6,
-        end: 11
+        shape: "G",
+        start: 5,
+        end: 8
     },
 
     {
-        start: 11,
-        end: 16
+        shape: "E",
+        start: 7,
+        end: 10
     },
 
     {
-        start: 16,
-        end: 21
-    },
-
-    {
-        start: 20,
-        end: 24
+        shape: "D",
+        start: 9,
+        end: 13
     }
 
 ];
 
 
-const POSITION_COUNT =
-    positions.length;
+/*
+   Symmetric scales don't need five different
+   CAGED shapes.
 
+   We use two complementary repeating regions.
+*/
+
+const SYMMETRIC_TEMPLATES = [
+
+    {
+        shape: "Pattern A",
+        startOffset: -1,
+        endOffset: 4
+    },
+
+    {
+        shape: "Pattern B",
+        startOffset: 5,
+        endOffset: 10
+    }
+
+];
+
+
+/* ==================================================
+   STATE
+================================================== */
 
 let currentRoot = "C";
 
@@ -2231,339 +2815,517 @@ let currentPosition = 0;
 
 let displayMode = "both";
 
-let stringsReversed = false;
+
+/* ==================================================
+   WORKS WELL WITH DATABASE
+
+   17 curated, undirected relationships.
+   The offsets below are measured from the root of
+   the first scale to the root of the second scale.
+================================================== */
+
+const worksWellWith = [
+
+    {
+        a: "major",
+        b: "majorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "major",
+        b: "minorPentatonic",
+        offset: 9,
+        label: "Relative minor"
+    },
+
+    {
+        a: "dorian",
+        b: "minorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "dorian",
+        b: "majorPentatonic",
+        offset: 3,
+        label: "Major Pentatonic ♭III"
+    },
+
+    {
+        a: "phrygian",
+        b: "minorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "phrygian",
+        b: "majorPentatonic",
+        offset: 8,
+        label: "Major Pentatonic ♭VI"
+    },
+
+    {
+        a: "lydian",
+        b: "majorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "lydian",
+        b: "majorPentatonic",
+        offset: 2,
+        label: "Major Pentatonic a whole tone above"
+    },
+
+    {
+        a: "mixolydian",
+        b: "majorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "mixolydian",
+        b: "minorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "mixolydian",
+        b: "minorPentatonic",
+        offset: 5,
+        label: "Minor Pentatonic IV"
+    },
+
+    {
+        a: "naturalMinor",
+        b: "minorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "naturalMinor",
+        b: "majorPentatonic",
+        offset: 3,
+        label: "Major Pentatonic ♭III"
+    },
+
+    {
+        a: "locrian",
+        b: "majorPentatonic",
+        offset: 1,
+        label: "Major Pentatonic ♭II"
+    },
+
+    {
+        a: "harmonicMinor",
+        b: "phrygianDominant",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "melodicMinor",
+        b: "lydianDominant",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+    {
+        a: "blues",
+        b: "minorPentatonic",
+        offset: 0,
+        label: "Same tonic"
+    },
+
+];
+
+function normalizePitch(pitch) {
+    return ((pitch % 12) + 12) % 12;
+}
+
+function transposeRoot(root, semitones) {
+    return chromatic[normalizePitch(noteIndex(root) + semitones)];
+}
+
+function getWorksWellWithOptions() {
+    const options = [];
+
+    worksWellWith.forEach(relation => {
+        if (relation.a === currentScale) {
+            options.push({
+                scale: relation.b,
+                root: transposeRoot(currentRoot, relation.offset),
+                label: relation.label
+            });
+        }
+
+        if (relation.b === currentScale) {
+            options.push({
+                scale: relation.a,
+                root: transposeRoot(currentRoot, -relation.offset),
+                label: relation.label
+            });
+        }
+    });
+
+    return options;
+}
 
 
 /* ==================================================
    HELPERS
 ================================================== */
 
-function noteIndex(note) {
-
-    const sharpIndex =
-        chromatic.indexOf(note);
-
-    if (sharpIndex !== -1) {
-        return sharpIndex;
-    }
-
-
-    const flatToSharp = {
-
-        "Db": 1,
-        "Eb": 3,
-        "Gb": 6,
-        "Ab": 8,
-        "Bb": 10
-
-    };
-
-
-    return flatToSharp[note];
-
-}
-
-
-/*
-   These are the natural pitch values of the
-   seven musical letters.
-
-   C = 0
-   D = 2
-   E = 4
-   F = 5
-   G = 7
-   A = 9
-   B = 11
-*/
-
-const naturalPitches = {
-
-    C: 0,
-    D: 2,
-    E: 4,
-    F: 5,
-    G: 7,
-    A: 9,
-    B: 11
-
-};
-
-
-const musicalLetters = [
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "A",
-    "B"
-];
-
-
-/*
-   Return the correctly spelled note name for a
-   particular scale degree.
-
-   This is the important part of the new system.
-
-   It does NOT simply choose between sharps and flats.
-
-   Instead it determines:
-
-   1. Which musical letter the scale degree requires.
-   2. What accidental is necessary to reach the
-      calculated pitch.
-
-   Example:
-
-   C# Major, third degree:
-
-   Degree letter = E
-   Actual pitch = F
-
-   Therefore:
-
-   E → E#
-
-   Result = E#
-*/
-
-function getScaleNoteName(
-    pitch,
-    degreeIndex
-) {
-
-    const normalizedPitch =
-        (pitch + 12) % 12;
-
-
-    const rootLetter =
-        currentRoot.charAt(0);
-
-
-    const rootLetterIndex =
-        musicalLetters.indexOf(
-            rootLetter
-        );
-
-
-    const letterOffset =
-        scaleLetterOffsets[currentScale][
-            degreeIndex
-        ];
-
-
-    const letterIndex =
-        (
-            rootLetterIndex +
-            letterOffset
-        ) % 7;
-
-
-    const letter =
-        musicalLetters[
-            letterIndex
-        ];
-
-
-    const naturalPitch =
-        naturalPitches[letter];
-
-
-    /*
-       Determine the accidental needed to transform
-       the natural letter into the actual pitch.
-
-       Examples:
-
-       E → F = E#
-       B → C = B#
-       F → E = Fb
-       C → C# = C#
-    */
-
-    let difference =
-        normalizedPitch -
-        naturalPitch;
-
-
-    /*
-       Normalize the difference so that we choose
-       the closest theoretical spelling.
-    */
-
-    if (difference > 6) {
-
-        difference -= 12;
-
-    }
-
-
-    if (difference < -6) {
-
-        difference += 12;
-
-    }
-
-
-    let accidental = "";
-
-
-    if (difference > 0) {
-
-        accidental =
-            "#".repeat(
-                difference
-            );
-
-    }
-
-
-    if (difference < 0) {
-
-        accidental =
-            "b".repeat(
-                Math.abs(
-                    difference
-                )
-            );
-
-    }
-
+function mod12(value) {
 
     return (
-        letter +
-        accidental
-    );
+        (value % 12) + 12
+    ) % 12;
 
 }
 
 
-/*
-   Kept for compatibility with the rest of the
-   application.
+function noteIndex(note) {
 
-   This function determines whether the selected
-   root is conventionally written using flats.
+    return rootData[note]
+        ? rootData[note].pitch
+        : -1;
 
-   It is no longer responsible for scale spelling.
-*/
+}
 
-function usesFlats() {
 
-    const flatRoots = [
-        "Db",
-        "Eb",
-        "Gb",
-        "Ab",
-        "Bb"
+function getNaturalLetterIndex(letter) {
+
+    const letters = [
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "A",
+        "B"
     ];
 
-
-    return flatRoots.includes(
-        currentRoot
-    );
+    return letters.indexOf(letter);
 
 }
 
 
-/*
-   Generic pitch-name helper.
+function accidentalText(value) {
 
-   This is still useful as a fallback for any code
-   that needs a chromatic pitch name independently
-   of a scale.
-
-   Scale notes themselves now use
-   getScaleNoteName().
-*/
-
-function getNoteName(pitch) {
-
-    const normalizedPitch =
-        (pitch + 12) % 12;
-
-
-    if (usesFlats()) {
-
-        return flatNames[
-            normalizedPitch
-        ];
-
+    if (value > 0) {
+        return "#".repeat(value);
     }
 
+    if (value < 0) {
+        return "b".repeat(Math.abs(value));
+    }
 
-    return sharpNames[
-        normalizedPitch
-    ];
+    return "";
 
 }
 
 
-function getIntervalLabel(semitones) {
+/*
+   Generate musically sensible note names.
+
+   This is deliberately not a simple pitch-class
+   lookup. That would turn, for example:
+
+       C# major
+
+   into a mixture of sharps and flats.
+
+   Instead, the scale degree determines the
+   natural letter and the scale definition
+   determines the accidental.
+*/
+
+function getScaleNotes() {
+
+    const root =
+        rootData[currentRoot];
+
+    const scale =
+        scaleData[currentScale];
+
+    const letters = [
+        "C",
+        "D",
+        "E",
+        "F",
+        "G",
+        "A",
+        "B"
+    ];
+
+    const rootLetterIndex =
+        getNaturalLetterIndex(
+            root.letter
+        );
+
+    return scale.intervals.map(
+        (interval, index) => {
+
+            const degreeOffset =
+                scale.degreeOffsets[index];
+
+            const letter =
+                letters[
+                    (
+                        rootLetterIndex
+                        + degreeOffset
+                    ) % 7
+                ];
+
+            const naturalPitch =
+                naturalPitchValue(letter);
+
+            const targetPitch =
+                mod12(
+                    root.pitch + interval
+                );
+
+            /*
+               The scale degree determines the natural letter.
+               The selected root and interval determine the
+               accidental required for that letter.
+
+               Example:
+
+               C# major =
+               C# D# E# F# G# A# B#
+
+               This avoids the previous problem where the
+               accidental table was effectively fixed to C.
+            */
+
+            let accidental =
+                targetPitch -
+                naturalPitch;
+
+            while (accidental > 6) {
+                accidental -= 12;
+            }
+
+            while (accidental < -6) {
+                accidental += 12;
+            }
+
+            return {
+
+                pitch:
+                    targetPitch,
+
+                interval,
+
+                name:
+                    letter +
+                    accidentalText(
+                        accidental
+                    )
+
+            };
+
+        }
+    );
+
+}
+
+/* ==================================================
+   INTERVAL LABELS
+================================================== */
+
+function getIntervalLabel(
+    semitones
+) {
 
     const labels = {
 
         0: "R",
+
         1: "m2",
         2: "M2",
+
         3: "m3",
         4: "M3",
+
         5: "P4",
+
         6: "TT",
+
         7: "P5",
+
         8: "m6",
         9: "M6",
+
         10: "m7",
         11: "M7"
 
     };
 
-
     return labels[
-        semitones % 12
+        mod12(semitones)
     ];
 
 }
 
 
 /* ==================================================
-   SCALE NOTES
+   POSITION DATABASE
 ================================================== */
 
-function getScaleNotes() {
+
+/*
+   The important architectural change:
+
+   Position data is now an actual object.
+
+   The renderer never decides:
+
+       currentPosition * 5 + 1
+
+   anymore.
+
+   It asks the database for the selected
+   pattern and renders that pattern.
+*/
+
+function buildPositionDatabase() {
+
+    const scale =
+        scaleData[currentScale];
 
     const rootPitch =
         noteIndex(currentRoot);
 
 
-    const intervals =
-        scaleData[currentScale]
-            .intervals;
+    if (
+        scale.system === "Symmetric"
+    ) {
 
+        return SYMMETRIC_TEMPLATES
+            .map(template => {
 
-    return intervals.map(
-        (interval, degreeIndex) => {
-
-            const pitch =
-                (
+                let start =
                     rootPitch +
-                    interval
-                ) % 12;
+                    template.startOffset;
+
+                let end =
+                    rootPitch +
+                    template.endOffset;
+
+                /*
+                   Keep the displayed region inside
+                   the normal guitar range.
+
+                   Each symmetric pattern remains a
+                   practical six-fret study region.
+                */
+
+                while (start < 1) {
+
+                    start += 12;
+                    end += 12;
+
+                }
+
+                while (start > 19) {
+
+                    start -= 12;
+                    end -= 12;
+
+                }
+
+                return {
+
+                    shape:
+                        template.shape,
+
+                    startFret:
+                        start,
+
+                    endFret:
+                        end,
+
+                    system:
+                        scale.system
+
+                };
+
+            })
+            .sort(
+                (a, b) =>
+                    a.startFret -
+                    b.startFret
+            );
+
+    }
+
+
+    /*
+       For CAGED-derived scales, transpose the
+       verified C-major reference geometry by
+       the distance from C to the selected root.
+    */
+
+    const transposition =
+        rootPitch;
+
+
+    return CAGED_TEMPLATES.map(
+        template => {
+
+            let start =
+                template.start +
+                transposition;
+
+            let end =
+                template.end +
+                transposition;
+
+
+            /*
+               Fold the template back into the
+               useful 1–24 fret range.
+            */
+
+            while (start > 19) {
+
+                start -= 12;
+                end -= 12;
+
+            }
+
+            while (end < 1) {
+
+                start += 12;
+                end += 12;
+
+            }
 
 
             return {
 
-                pitch,
+                shape:
+                    template.shape,
 
-                name:
-                    getScaleNoteName(
-                        pitch,
-                        degreeIndex
-                    ),
+                startFret:
+                    start,
 
-                interval
+                endFret:
+                    end,
+
+                system:
+                    scale.system
 
             };
 
@@ -2573,40 +3335,13 @@ function getScaleNotes() {
 }
 
 
-/* ==================================================
-   SCALE INFORMATION
-================================================== */
+/*
+   This is the actual Position Database.
 
-function updateScaleInfo() {
+   It is rebuilt whenever root or scale changes.
+*/
 
-    const scale =
-        scaleData[currentScale];
-
-
-    document
-        .getElementById("scaleTitle")
-        .textContent =
-            `${currentRoot} ${scale.name}`;
-
-
-    const notes =
-        getScaleNotes();
-
-
-    document
-        .getElementById("scaleNotes")
-        .textContent =
-            notes
-                .map(note => note.name)
-                .join(" · ");
-
-
-    document
-        .getElementById("selectedScale")
-        .textContent =
-            scale.name;
-
-}
+let positionDatabase = [];
 
 
 /* ==================================================
@@ -2615,20 +3350,50 @@ function updateScaleInfo() {
 
 function updatePositionUI() {
 
+    positionDatabase =
+        buildPositionDatabase();
+
     const position =
-        positions[currentPosition];
+        positionDatabase[
+            currentPosition
+        ];
+
+    const positionTitle =
+        document.getElementById(
+            "positionTitle"
+        );
+
+    const positionShape =
+        document.getElementById(
+            "positionShape"
+        );
+
+    const fretRange =
+        document.getElementById(
+            "fretRange"
+        );
 
 
-    document
-        .getElementById("positionTitle")
-        .textContent =
-            `Position ${currentPosition + 1} / ${POSITION_COUNT}`;
+    positionTitle.textContent =
+        `Position ${
+            currentPosition + 1
+        } / ${
+            positionDatabase.length
+        }`;
 
 
-    document
-        .getElementById("fretRange")
-        .textContent =
-            `Frets ${position.start} – ${position.end}`;
+    positionShape.textContent =
+        position.system === "Symmetric"
+            ? position.shape
+            : `${position.shape} Shape · CAGED`;
+
+
+    fretRange.textContent =
+        `Frets ${
+            position.startFret
+        } – ${
+            position.endFret
+        }`;
 
 
     renderPositionDots();
@@ -2643,19 +3408,19 @@ function renderPositionDots() {
             "positionDots"
         );
 
-
     container.innerHTML = "";
 
 
     for (
         let i = 0;
-        i < POSITION_COUNT;
+        i < positionDatabase.length;
         i++
     ) {
 
         const dot =
-            document.createElement("span");
-
+            document.createElement(
+                "span"
+            );
 
         dot.className =
             "position-dot";
@@ -2672,9 +3437,46 @@ function renderPositionDots() {
         }
 
 
-        container.appendChild(dot);
+        container.appendChild(
+            dot
+        );
 
     }
+
+}
+
+
+/* ==================================================
+   SCALE INFORMATION
+================================================== */
+
+function updateScaleInfo() {
+
+    const scale =
+        scaleData[currentScale];
+
+    document.getElementById(
+        "scaleTitle"
+    ).textContent =
+        `${currentRoot} ${scale.name}`;
+
+
+    const notes =
+        getScaleNotes();
+
+
+    document.getElementById(
+        "scaleNotes"
+    ).textContent =
+        notes
+            .map(note => note.name)
+            .join(" · ");
+
+
+    document.getElementById(
+        "selectedScale"
+    ).textContent =
+        scale.name;
 
 }
 
@@ -2683,13 +3485,12 @@ function renderPositionDots() {
    FRETBOARD
 ================================================== */
 
-function renderFretboard() {
+function renderSingleFretboard() {
 
     const board =
         document.getElementById(
             "fretboard"
         );
-
 
     board.innerHTML = "";
 
@@ -2699,40 +3500,45 @@ function renderFretboard() {
 
 
     /*
-       Store the complete scale-note object,
-       not just its interval.
+       Map pitch → scale information.
 
-       This allows the fretboard to use the
-       theoretically correct spelling.
+       The interval is kept in semitones from
+       the tonic, so display modes continue to
+       work exactly as before.
     */
 
     const scaleMap =
         new Map();
 
 
-    scaleNotes.forEach(note => {
+    scaleNotes.forEach(
+        note => {
 
-        scaleMap.set(
-            note.pitch,
-            note
-        );
+            scaleMap.set(
+                note.pitch,
+                note.interval
+            );
 
-    });
+        }
+    );
 
 
     const position =
-        positions[currentPosition];
+        positionDatabase[
+            currentPosition
+        ];
+
+
+    if (!position) {
+        return;
+    }
 
 
     const startFret =
-        position.start;
-
+        position.startFret;
 
     const endFret =
-        Math.min(
-            position.end,
-            MAX_FRET
-        );
+        position.endFret;
 
 
     const fretCount =
@@ -2747,114 +3553,13 @@ function renderFretboard() {
     );
 
 
-    /*
-       Build the visual study order from the
-       physical guitar order first:
-
-       Low E → A → D → G → B → High E.
-
-       If the first scale note on a new string
-       is identical to the final scale note on
-       the previous string, that occurrence is
-       marked as an alternative.
-
-       This keeps the main path linear without
-       removing any valid scale note.
-    */
-
-    const alternativeNotes =
-        new Set();
-
-
-    let previousLastPitch = null;
-
-
     strings.forEach(
         (string, stringIndex) => {
 
-            const stringNotes = [];
-
-
-            for (
-                let fret = startFret;
-                fret <= endFret;
-                fret++
-            ) {
-
-                const pitch =
-                    (
-                        string.pitch +
-                        fret
-                    ) % 12;
-
-
-                if (
-                    scaleMap.has(pitch)
-                ) {
-
-                    stringNotes.push({
-
-                        fret,
-
-                        pitch
-
-                    });
-
-                }
-
-            }
-
-
-            if (
-                stringNotes.length > 0 &&
-                previousLastPitch !== null &&
-                stringNotes[0].pitch ===
-                    previousLastPitch
-            ) {
-
-                alternativeNotes.add(
-                    `${stringIndex}-${stringNotes[0].fret}`
-                );
-
-            }
-
-
-            if (
-                stringNotes.length > 0
-            ) {
-
-                previousLastPitch =
-                    stringNotes[
-                        stringNotes.length - 1
-                    ].pitch;
-
-            }
-
-        }
-    );
-
-
-    /*
-       The visual order can be reversed independently
-       from the musical sequence logic.
-    */
-
-    const displayStrings =
-        stringsReversed
-            ? [...strings].reverse()
-            : strings;
-
-
-    displayStrings.forEach(
-        (string, displayIndex) => {
-
-            const stringIndex =
-                strings.indexOf(string);
-
 
             const isLastRow =
-                displayIndex ===
-                displayStrings.length - 1;
+                stringIndex ===
+                strings.length - 1;
 
 
             const label =
@@ -2862,14 +3567,11 @@ function renderFretboard() {
                     "div"
                 );
 
-
             label.className =
                 "string-label";
 
 
-            if (
-                isLastRow
-            ) {
+            if (isLastRow) {
 
                 label.classList.add(
                     "last-row"
@@ -2893,6 +3595,7 @@ function renderFretboard() {
                 fret++
             ) {
 
+
                 const cell =
                     document.createElement(
                         "div"
@@ -2914,9 +3617,7 @@ function renderFretboard() {
                 }
 
 
-                if (
-                    isLastRow
-                ) {
+                if (isLastRow) {
 
                     cell.classList.add(
                         "last-row"
@@ -2925,39 +3626,32 @@ function renderFretboard() {
                 }
 
 
-                /*
-                   Calculate the exact pitch
-                   at this string/fret.
-                */
-
                 const pitch =
-                    (
+                    mod12(
                         string.pitch +
                         fret
-                    ) % 12;
+                    );
 
-
-                /*
-                   Only display notes belonging
-                   to the selected scale.
-                */
 
                 if (
-                    scaleMap.has(pitch)
+                    scaleMap.has(
+                        pitch
+                    )
                 ) {
-
-                    /*
-                       Retrieve the complete scale note
-                       including its theoretical name
-                       and interval.
-                    */
-
-                    const scaleNote =
-                        scaleMap.get(pitch);
 
 
                     const interval =
-                        scaleNote.interval;
+                        scaleMap.get(
+                            pitch
+                        );
+
+
+                    const scaleNote =
+                        scaleNotes.find(
+                            note =>
+                                note.pitch ===
+                                pitch
+                        );
 
 
                     const note =
@@ -2969,46 +3663,8 @@ function renderFretboard() {
                     note.className =
                         "note";
 
-                    note.dataset.stringIndex =
-                        stringIndex;
-
-                    note.dataset.fret =
-                        fret;
-
-
-                    const isAlternative =
-                        alternativeNotes.has(
-                            `${stringIndex}-${fret}`
-                        );
-
-
-                    /*
-                       Interval 0 is always the root.
-
-                       The root remains visually dominant
-                       even when the same pitch also appears
-                       as a boundary duplicate.
-                    */
 
                     if (
-                        isAlternative
-                    ) {
-
-                        note.classList.add(
-                            "alternative"
-                        );
-
-                        if (
-                            interval === 0
-                        ) {
-
-                            note.classList.add(
-                                "alternative-root"
-                            );
-
-                        }
-
-                    } else if (
                         interval === 0
                     ) {
 
@@ -3029,12 +3685,6 @@ function renderFretboard() {
                         "note-name";
 
 
-                    /*
-                       Use the name belonging to the
-                       selected scale, rather than deriving
-                       the name only from the pitch.
-                    */
-
                     name.textContent =
                         scaleNote.name;
 
@@ -3054,12 +3704,8 @@ function renderFretboard() {
                             ? "R"
                             : getIntervalLabel(
                                 interval
-                              );
+                            );
 
-
-                    /*
-                       DISPLAY MODE
-                    */
 
                     if (
                         displayMode ===
@@ -3087,7 +3733,6 @@ function renderFretboard() {
                         name
                     );
 
-
                     note.appendChild(
                         intervalLabel
                     );
@@ -3099,10 +3744,6 @@ function renderFretboard() {
 
                 }
 
-
-                /*
-                   Fret number
-                */
 
                 const fretNumber =
                     document.createElement(
@@ -3130,54 +3771,7 @@ function renderFretboard() {
             }
 
         }
-
     );
-
-
-
-}
-
-
-/* ==================================================
-   POSITION NAVIGATION
-================================================== */
-
-function nextPosition() {
-
-    currentPosition++;
-
-
-    if (
-        currentPosition >=
-        POSITION_COUNT
-    ) {
-
-        currentPosition = 0;
-
-    }
-
-
-    updateAll();
-
-}
-
-
-function previousPosition() {
-
-    currentPosition--;
-
-
-    if (
-        currentPosition < 0
-    ) {
-
-        currentPosition =
-            POSITION_COUNT - 1;
-
-    }
-
-
-    updateAll();
 
 }
 
@@ -3190,93 +3784,30 @@ function updateAll() {
 
     updateScaleInfo();
 
+    positionDatabase =
+        buildPositionDatabase();
+
+
+    /*
+       Make sure the selected position still
+       exists after changing scale.
+    */
+
+    if (
+        currentPosition >=
+        positionDatabase.length
+    ) {
+
+        currentPosition = 0;
+
+    }
+
+
     updatePositionUI();
 
     renderFretboard();
 
 }
-
-
-/* ==================================================
-   ROOT MENU
-================================================== */
-
-const rootButton =
-    document.getElementById(
-        "rootButton"
-    );
-
-
-const rootMenu =
-    document.getElementById(
-        "rootMenu"
-    );
-
-
-rootButton.addEventListener(
-    "click",
-    () => {
-
-        rootMenu.classList.toggle(
-            "open"
-        );
-
-
-        scaleMenu.classList.remove(
-            "open"
-        );
-
-    }
-);
-
-
-document
-    .querySelectorAll(
-        ".root-option"
-    )
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                currentRoot =
-                    button.dataset.root;
-
-
-                rootButton.textContent =
-                    currentRoot;
-
-
-                document
-                    .querySelectorAll(
-                        ".root-option"
-                    )
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    });
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                rootMenu.classList.remove(
-                    "open"
-                );
-
-
-                updateAll();
-
-            }
-        );
-
-    });
 
 
 /* ==================================================
@@ -3303,7 +3834,6 @@ scaleButton.addEventListener(
             "open"
         );
 
-
         rootMenu.classList.remove(
             "open"
         );
@@ -3312,113 +3842,134 @@ scaleButton.addEventListener(
 );
 
 
-/* ==================================================
-   SCALE CATEGORIES
-================================================== */
-
 document
     .querySelectorAll(
         ".category-header"
     )
-    .forEach(header => {
+    .forEach(
+        header => {
 
-        header.addEventListener(
-            "click",
-            () => {
+            header.addEventListener(
+                "click",
+                () => {
 
-                const category =
-                    header.parentElement;
+                    const category =
+                        header.parentElement;
 
+                    category.classList.toggle(
+                        "open"
+                    );
 
-                category.classList.toggle(
-                    "open"
-                );
+                }
+            );
 
-            }
-        );
+        }
+    );
 
-    });
-
-
-/* ==================================================
-   SCALE SELECTION
-================================================== */
 
 document
     .querySelectorAll(
         ".scale-option"
     )
-    .forEach(button => {
+    .forEach(
+        option => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            option.addEventListener(
+                "click",
+                () => {
 
-                currentScale =
-                    button.dataset.scale;
+                    currentScale =
+                        option.dataset.scale;
 
 
-                document
-                    .querySelectorAll(
-                        ".scale-option"
-                    )
-                    .forEach(item => {
+                    document
+                        .querySelectorAll(
+                            ".scale-option"
+                        )
+                        .forEach(
+                            item => {
 
-                        item.classList.remove(
-                            "active"
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
                         );
 
-                    });
+
+                    option.classList.add(
+                        "active"
+                    );
 
 
-                /*
-                   A scale can appear in more than
-                   one category.
-
-                   Activate all matching entries.
-                */
-
-                document
-                    .querySelectorAll(
-                        `.scale-option[data-scale="${currentScale}"]`
-                    )
-                    .forEach(item => {
-
-                        item.classList.add(
-                            "active"
-                        );
-
-                    });
+                    scaleMenu.classList.remove(
+                        "open"
+                    );
 
 
-                scaleMenu.classList.remove(
-                    "open"
-                );
+                    currentPosition =
+                        0;
 
 
-                currentPosition = 0;
+                    updateAll();
 
+                }
+            );
 
-                updateAll();
-
-            }
-        );
-
-    });
+        }
+    );
 
 
 /* ==================================================
-   POSITION ARROWS
+   POSITION NAVIGATION
 ================================================== */
 
-document
-    .getElementById(
-        "nextPosition"
-    )
-    .addEventListener(
-        "click",
-        nextPosition
-    );
+function nextPosition() {
+
+    positionDatabase =
+        buildPositionDatabase();
+
+
+    currentPosition++;
+
+
+    if (
+        currentPosition >=
+        positionDatabase.length
+    ) {
+
+        currentPosition = 0;
+
+    }
+
+
+    updateAll();
+
+}
+
+
+function previousPosition() {
+
+    positionDatabase =
+        buildPositionDatabase();
+
+
+    currentPosition--;
+
+
+    if (
+        currentPosition < 0
+    ) {
+
+        currentPosition =
+            positionDatabase.length - 1;
+
+    }
+
+
+    updateAll();
+
+}
 
 
 document
@@ -3431,43 +3982,18 @@ document
     );
 
 
-/* ==================================================
-   CLOSE MENUS WHEN CLICKING OUTSIDE
-================================================== */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        if (
-            !rootMenu.contains(event.target) &&
-            !rootButton.contains(event.target)
-        ) {
-
-            rootMenu.classList.remove(
-                "open"
-            );
-
-        }
-
-
-        if (
-            !scaleMenu.contains(event.target) &&
-            !scaleButton.contains(event.target)
-        ) {
-
-            scaleMenu.classList.remove(
-                "open"
-            );
-
-        }
-
-    }
-);
+document
+    .getElementById(
+        "nextPosition"
+    )
+    .addEventListener(
+        "click",
+        nextPosition
+    );
 
 
 /* ==================================================
-   SWIPE POSITION NAVIGATION
+   SWIPE
 ================================================== */
 
 const fretboardElement =
@@ -3489,7 +4015,7 @@ fretboardElement.addEventListener(
     event => {
 
         const touch =
-            event.touches[0];
+            event.changedTouches[0];
 
 
         touchStartX =
@@ -3525,8 +4051,7 @@ fretboardElement.addEventListener(
 
 
         /*
-           Ignore vertical gestures.
-           This preserves normal page scrolling.
+           Ignore primarily vertical gestures.
         */
 
         if (
@@ -3539,10 +4064,6 @@ fretboardElement.addEventListener(
         }
 
 
-        /*
-           Ignore short movements.
-        */
-
         if (
             Math.abs(deltaX) <
             SWIPE_THRESHOLD
@@ -3552,14 +4073,6 @@ fretboardElement.addEventListener(
 
         }
 
-
-        /*
-           Swipe left:
-           next visual position.
-
-           Swipe right:
-           previous visual position.
-        */
 
         if (
             deltaX < 0
@@ -3585,85 +4098,192 @@ document
     .querySelectorAll(
         ".display-toggle button"
     )
-    .forEach(button => {
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                displayMode =
-                    button.dataset.display;
+                    displayMode =
+                        button.dataset.display;
 
 
-                document
-                    .querySelectorAll(
-                        ".display-toggle button"
-                    )
-                    .forEach(item => {
+                    document
+                        .querySelectorAll(
+                            ".display-toggle button"
+                        )
+                        .forEach(
+                            item => {
 
-                        item.classList.remove(
-                            "active"
+                                item.classList.remove(
+                                    "active"
+                                );
+
+                            }
                         );
 
-                    });
+
+                    button.classList.add(
+                        "active"
+                    );
 
 
-                button.classList.add(
-                    "active"
-                );
+                    renderFretboard();
 
+                }
+            );
 
-                renderFretboard();
-
-            }
-        );
-
-    });
+        }
+    );
 
 
 /* ==================================================
-   STRING ORDER
+   ROOT SELECTOR
 ================================================== */
 
-document
-    .querySelectorAll(
-        ".string-order-toggle button"
-    )
-    .forEach(button => {
+const rootButton =
+    document.getElementById(
+        "rootButton"
+    );
 
-        button.addEventListener(
+
+const rootMenu =
+    document.getElementById(
+        "rootMenu"
+    );
+
+
+const rootOptions =
+    document.querySelectorAll(
+        ".root-option"
+    );
+
+
+function updateRootMenu() {
+
+    rootOptions.forEach(
+        option => {
+
+            option.classList.toggle(
+                "active",
+                option.dataset.root ===
+                    currentRoot
+            );
+
+        }
+    );
+
+}
+
+
+rootButton.addEventListener(
+    "click",
+    () => {
+
+        rootMenu.classList.toggle(
+            "open"
+        );
+
+        scaleMenu.classList.remove(
+            "open"
+        );
+
+        updateRootMenu();
+
+    }
+);
+
+
+rootOptions.forEach(
+    option => {
+
+        option.addEventListener(
             "click",
             () => {
 
-                stringsReversed =
-                    button.dataset.stringOrder ===
-                    "tab";
+                currentRoot =
+                    option.dataset.root;
 
+                currentPosition = 0;
 
-                document
-                    .querySelectorAll(
-                        ".string-order-toggle button"
-                    )
-                    .forEach(item => {
+                rootButton.textContent =
+                    currentRoot;
 
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    });
-
-
-                button.classList.add(
-                    "active"
+                rootMenu.classList.remove(
+                    "open"
                 );
 
-
-                renderFretboard();
+                updateAll();
 
             }
         );
 
-    });
+    }
+);
+
+
+/*
+   Clicking outside either menu closes it.
+*/
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            !rootMenu.contains(event.target) &&
+            event.target !== rootButton
+        ) {
+
+            rootMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+        if (
+            !scaleMenu.contains(event.target) &&
+            event.target !== scaleButton
+        ) {
+
+            scaleMenu.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   WORKS WELL WITH EVENTS
+================================================== */
+
+const worksWithButton = document.getElementById("worksWithButton");
+const worksWithMenu = document.getElementById("worksWithMenu");
+
+worksWithButton.addEventListener("click", event => {
+    event.stopPropagation();
+
+    worksWithMenu.classList.toggle("open");
+    worksWithButton.classList.toggle("open");
+
+    rootMenu.classList.remove("open");
+    scaleMenu.classList.remove("open");
+
+    renderWorksWellWithOptions();
+});
+
+document.getElementById("comparisonBack").addEventListener("click", exitComparison);
+
+document.addEventListener("click", event => {
+    if (!worksWithMenu.contains(event.target) && !worksWithButton.contains(event.target)) {
+        worksWithMenu.classList.remove("open");
+        worksWithButton.classList.remove("open");
+    }
+});
 
 
 /* ==================================================
