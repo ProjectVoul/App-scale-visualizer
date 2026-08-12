@@ -734,6 +734,11 @@ button {
     color: white;
 }
 
+.note.alternative-root {
+    background: #ef334d;
+    color: white;
+}
+
 
 /*
    Alternative notes represent valid scale notes
@@ -1692,7 +1697,7 @@ and (max-height: 600px) {
 
             <span
                 class="legend-symbol alternative">
-                ▽
+                △
             </span>
 
             <span>
@@ -2979,19 +2984,29 @@ function renderFretboard() {
                     */
 
                     if (
-                        interval === 0
-                    ) {
-
-                        note.classList.add(
-                            "root"
-                        );
-
-                    } else if (
                         isAlternative
                     ) {
 
                         note.classList.add(
                             "alternative"
+                        );
+
+                        if (
+                            interval === 0
+                        ) {
+
+                            note.classList.add(
+                                "alternative-root"
+                            );
+
+                        }
+
+                    } else if (
+                        interval === 0
+                    ) {
+
+                        note.classList.add(
+                            "root"
                         );
 
                     }
