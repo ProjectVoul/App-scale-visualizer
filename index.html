@@ -448,11 +448,13 @@ button {
 }
 
 .comparison-legend-dot.scale-b {
-    background: #777;
+    background: #111;
+    border: 1px solid #555;
 }
 
 .comparison-legend-dot.shared {
-    background: #35c759;
+    background: #f3f3f3;
+    border: 3px solid #777;
 }
 
 .comparison-legend-dot.root-a {
@@ -469,13 +471,14 @@ button {
 }
 
 .note.comparison-b {
-    background: #777;
+    background: #111;
     color: #fff;
 }
 
 .note.comparison-shared {
-    background: #35c759;
-    color: #fff;
+    background: #f3f3f3;
+    color: #151515;
+    box-shadow: 0 0 0 4px #777;
 }
 
 .note.comparison-root-a {
@@ -489,8 +492,9 @@ button {
 }
 
 .note.comparison-shared-root {
-    background: linear-gradient(135deg, #ef334d 0 50%, #4a9eff 50% 100%);
+    background: #ef334d;
     color: #fff;
+    box-shadow: 0 0 0 4px #4a9eff;
 }
 
 .comparison-back {
@@ -598,248 +602,6 @@ button {
         clamp(16px, 2.5vw, 21px);
 
     letter-spacing: 0.06em;
-}
-
-
-/* ==================================================
-   COMPARISON FRETBOARD
-================================================== */
-
-function getScaleNoteMap(scaleKey, root) {
-    const rootPitch = noteIndex(root);
-    const scale = scaleData[scaleKey];
-    const map = new Map();
-
-    scale.intervals.forEach((interval, degreeIndex) => {
-        const pitch = normalizePitch(rootPitch + interval);
-        map.set(pitch, {
-            pitch,
-            interval,
-            name: getScaleNoteNameFor(scaleKey, root, pitch, degreeIndex)
-        });
-    });
-
-    return map;
-}
-
-function getScaleNoteNameFor(scaleKey, root, pitch, degreeIndex) {
-    const normalizedPitch = normalizePitch(pitch);
-    const rootLetter = root.charAt(0);
-    const rootLetterIndex = musicalLetters.indexOf(rootLetter);
-    const letterOffset = scaleLetterOffsets[scaleKey][degreeIndex];
-    const letterIndex = (rootLetterIndex + letterOffset) % 7;
-    const letter = musicalLetters[letterIndex];
-    const naturalPitch = naturalPitches[letter];
-
-    let difference = normalizedPitch - naturalPitch;
-
-    if (difference > 6) difference -= 12;
-    if (difference < -6) difference += 12;
-
-    let accidental = "";
-
-    if (difference > 0) {
-        accidental = "#".repeat(difference);
-    }
-
-    if (difference < 0) {
-        accidental = "b".repeat(Math.abs(difference));
-    }
-
-    return letter + accidental;
-}
-
-function renderComparisonFretboard() {
-    const board = document.getElementById("fretboard");
-    board.innerHTML = "";
-
-    const mapA = getScaleNoteMap(currentScale, currentRoot);
-    const mapB = getScaleNoteMap(comparisonScale, comparisonRoot);
-
-    const position = positions[currentPosition];
-    const startFret = position.start;
-    const endFret = Math.min(position.end, MAX_FRET);
-    const fretCount = endFret - startFret + 1;
-
-    board.style.setProperty("--fret-count", fretCount);
-
-    const displayStrings = stringsReversed ? [...strings].reverse() : strings;
-
-    displayStrings.forEach((string, displayIndex) => {
-        const stringIndex = strings.indexOf(string);
-        const isLastRow = displayIndex === displayStrings.length - 1;
-
-        const label = document.createElement("div");
-        label.className = "string-label";
-        if (isLastRow) label.classList.add("last-row");
-        label.textContent = string.name;
-        board.appendChild(label);
-
-        for (let fret = startFret; fret <= endFret; fret++) {
-            const cell = document.createElement("div");
-            cell.className = "fret";
-
-            if (fret === endFret) cell.classList.add("last-column");
-            if (isLastRow) cell.classList.add("last-row");
-
-            const pitch = normalizePitch(string.pitch + fret);
-            const noteA = mapA.get(pitch);
-            const noteB = mapB.get(pitch);
-
-            if (noteA || noteB) {
-                const note = document.createElement("div");
-                note.className = "note";
-
-                const isRootA = noteA && noteA.interval === 0;
-                const isRootB = noteB && noteB.interval === 0;
-                const isShared = !!noteA && !!noteB;
-
-                if (isShared && isRootA && isRootB) {
-                    note.classList.add("comparison-shared-root");
-                } else if (isRootA) {
-                    note.classList.add("comparison-root-a");
-                } else if (isRootB) {
-                    note.classList.add("comparison-root-b");
-                } else if (isShared) {
-                    note.classList.add("comparison-shared");
-                } else if (noteA) {
-                    note.classList.add("comparison-a");
-                } else {
-                    note.classList.add("comparison-b");
-                }
-
-                const primary = noteA || noteB;
-                const name = document.createElement("div");
-                name.className = "note-name";
-
-                if (isShared) {
-                    name.textContent = noteA.name;
-                } else if (noteA) {
-                    name.textContent = noteA.name;
-                } else {
-                    name.textContent = noteB.name;
-                }
-
-                const intervalLabel = document.createElement("div");
-                intervalLabel.className = "note-interval";
-
-                if (isShared) {
-                    intervalLabel.textContent = `${noteA.interval === 0 ? "R" : getIntervalLabel(noteA.interval)} / ${noteB.interval === 0 ? "R" : getIntervalLabel(noteB.interval)}`;
-                } else {
-                    intervalLabel.textContent = primary.interval === 0
-                        ? "R"
-                        : getIntervalLabel(primary.interval);
-                }
-
-                if (displayMode === "notes") intervalLabel.style.display = "none";
-                if (displayMode === "intervals") name.style.display = "none";
-
-                note.appendChild(name);
-                note.appendChild(intervalLabel);
-                cell.appendChild(note);
-            }
-
-            const fretNumber = document.createElement("span");
-            fretNumber.className = "fret-number";
-            fretNumber.textContent = fret;
-            cell.appendChild(fretNumber);
-
-            board.appendChild(cell);
-        }
-    });
-}
-
-function renderFretboard() {
-    if (comparisonMode) {
-        renderComparisonFretboard();
-    } else {
-        renderSingleFretboard();
-    }
-}
-
-/* ==================================================
-   COMPARISON MODE
-================================================== */
-
-function enterComparison(scale, root) {
-    comparisonScale = scale;
-    comparisonRoot = root;
-    comparisonMode = true;
-    currentPosition = 0;
-
-    document.getElementById("comparisonInfo").classList.add("open");
-    document.getElementById("comparisonBack").classList.add("open");
-    document.getElementById("singleScaleLegend").style.display = "none";
-
-    document.getElementById("comparisonTitle").textContent =
-        `${currentRoot} ${scaleData[currentScale].name} + ${comparisonRoot} ${scaleData[comparisonScale].name}`;
-
-    document.getElementById("comparisonSubtitle").textContent =
-        `${getScaleNotes().map(note => note.name).join(" · ")}  +  ${getComparisonScaleNames().join(" · ")}`;
-
-    document.getElementById("worksWithMenu").classList.remove("open");
-    document.getElementById("worksWithButton").classList.remove("open");
-
-    updatePositionUI();
-    renderFretboard();
-}
-
-function getComparisonScaleNames() {
-    const rootPitch = noteIndex(comparisonRoot);
-    return scaleData[comparisonScale].intervals.map((interval, degreeIndex) => {
-        const pitch = normalizePitch(rootPitch + interval);
-        return getScaleNoteNameFor(comparisonScale, comparisonRoot, pitch, degreeIndex);
-    });
-}
-
-function exitComparison() {
-    comparisonMode = false;
-    comparisonScale = null;
-    comparisonRoot = null;
-
-    document.getElementById("comparisonInfo").classList.remove("open");
-    document.getElementById("comparisonBack").classList.remove("open");
-    document.getElementById("singleScaleLegend").style.display = "flex";
-
-    updateAll();
-}
-
-function renderWorksWellWithOptions() {
-    const container = document.getElementById("worksWithOptions");
-    container.innerHTML = "";
-
-    const options = getWorksWellWithOptions();
-
-    if (options.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "works-with-title";
-        empty.textContent = "No curated pairing for this scale yet.";
-        container.appendChild(empty);
-        return;
-    }
-
-    options.forEach(option => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "works-with-option";
-
-        const name = document.createElement("span");
-        name.className = "works-with-option-name";
-        name.textContent = `${option.root} ${scaleData[option.scale].name}`;
-
-        const relation = document.createElement("span");
-        relation.className = "works-with-option-relation";
-        relation.textContent = option.label;
-
-        button.appendChild(name);
-        button.appendChild(relation);
-
-        button.addEventListener("click", () => {
-            enterComparison(option.scale, option.root);
-        });
-
-        container.appendChild(button);
-    });
 }
 
 
@@ -1818,6 +1580,97 @@ and (max-height: 600px) {
     </section>
 
 </div>
+
+
+<!-- ==================================================
+     WORKS WELL WITH
+================================================== -->
+
+<div class="works-with-wrap" id="worksWithWrap">
+
+    <button
+        class="works-with-button"
+        id="worksWithButton"
+        type="button">
+
+        <span>
+            WORKS WELL WITH
+        </span>
+
+        <span class="arrow">
+            ›
+        </span>
+
+    </button>
+
+    <div
+        class="works-with-menu"
+        id="worksWithMenu">
+
+        <div class="works-with-title">
+            CURATED PAIRINGS
+        </div>
+
+        <div id="worksWithOptions"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     COMPARISON INFO
+================================================== -->
+
+<section class="comparison-info" id="comparisonInfo">
+
+    <h2
+        class="comparison-title"
+        id="comparisonTitle">
+    </h2>
+
+    <div
+        class="comparison-subtitle"
+        id="comparisonSubtitle">
+    </div>
+
+    <div class="comparison-legend">
+
+        <div class="comparison-legend-item">
+            <span class="comparison-legend-dot scale-a"></span>
+            <span>Scale 1</span>
+        </div>
+
+        <div class="comparison-legend-item">
+            <span class="comparison-legend-dot scale-b"></span>
+            <span>Scale 2</span>
+        </div>
+
+        <div class="comparison-legend-item">
+            <span class="comparison-legend-dot shared"></span>
+            <span>Shared</span>
+        </div>
+
+        <div class="comparison-legend-item">
+            <span class="comparison-legend-dot root-a"></span>
+            <span>Root 1</span>
+        </div>
+
+        <div class="comparison-legend-item">
+            <span class="comparison-legend-dot root-b"></span>
+            <span>Root 2</span>
+        </div>
+
+    </div>
+
+</section>
+
+<button
+    class="comparison-back"
+    id="comparisonBack"
+    type="button">
+    ← Back to single scale
+</button>
 
 
 <!-- ==================================================
@@ -2815,6 +2668,12 @@ let currentPosition = 0;
 
 let displayMode = "both";
 
+let stringsReversed = false;
+
+let comparisonMode = false;
+let comparisonScale = null;
+let comparisonRoot = null;
+
 
 /* ==================================================
    WORKS WELL WITH DATABASE
@@ -3139,6 +2998,232 @@ function getScaleNotes() {
     );
 
 }
+
+
+/* ==================================================
+   COMPARISON MODE
+================================================== */
+
+function getScaleNoteMap(scaleKey, root) {
+
+    const rootDataEntry = rootData[root];
+    const scale = scaleData[scaleKey];
+    const map = new Map();
+
+    scale.intervals.forEach((interval, degreeIndex) => {
+
+        const pitch = mod12(rootDataEntry.pitch + interval);
+        const degreeOffset = scale.degreeOffsets[degreeIndex];
+        const letters = ["C", "D", "E", "F", "G", "A", "B"];
+        const rootLetterIndex = getNaturalLetterIndex(rootDataEntry.letter);
+        const letter = letters[(rootLetterIndex + degreeOffset) % 7];
+        const natural = naturalPitchValue(letter);
+
+        let accidental = pitch - natural;
+        while (accidental > 6) accidental -= 12;
+        while (accidental < -6) accidental += 12;
+
+        map.set(pitch, {
+            pitch,
+            interval,
+            name: letter + accidentalText(accidental)
+        });
+    });
+
+    return map;
+}
+
+
+function getComparisonScaleNames() {
+
+    const map = getScaleNoteMap(comparisonScale, comparisonRoot);
+    return [...map.values()].map(note => note.name);
+
+}
+
+
+function renderComparisonFretboard() {
+
+    const board = document.getElementById("fretboard");
+    board.innerHTML = "";
+
+    const mapA = getScaleNoteMap(currentScale, currentRoot);
+    const mapB = getScaleNoteMap(comparisonScale, comparisonRoot);
+    const position = positionDatabase[currentPosition];
+
+    if (!position) return;
+
+    const startFret = position.startFret;
+    const endFret = position.endFret;
+    const fretCount = endFret - startFret + 1;
+
+    board.style.setProperty("--fret-count", fretCount);
+
+    const displayStrings = stringsReversed ? [...strings].reverse() : strings;
+
+    displayStrings.forEach((string, displayIndex) => {
+
+        const isLastRow = displayIndex === displayStrings.length - 1;
+        const label = document.createElement("div");
+        label.className = "string-label";
+        if (isLastRow) label.classList.add("last-row");
+        label.textContent = string.name;
+        board.appendChild(label);
+
+        for (let fret = startFret; fret <= endFret; fret++) {
+
+            const cell = document.createElement("div");
+            cell.className = "fret";
+            if (fret === endFret) cell.classList.add("last-column");
+            if (isLastRow) cell.classList.add("last-row");
+
+            const pitch = mod12(string.pitch + fret);
+            const noteA = mapA.get(pitch);
+            const noteB = mapB.get(pitch);
+
+            if (noteA || noteB) {
+
+                const note = document.createElement("div");
+                note.className = "note";
+
+                const shared = !!noteA && !!noteB;
+                const rootA = noteA && noteA.interval === 0;
+                const rootB = noteB && noteB.interval === 0;
+
+                if (shared && rootA && rootB) {
+                    note.classList.add("comparison-shared-root");
+                } else if (rootA) {
+                    note.classList.add("comparison-root-a");
+                } else if (rootB) {
+                    note.classList.add("comparison-root-b");
+                } else if (shared) {
+                    note.classList.add("comparison-shared");
+                } else if (noteA) {
+                    note.classList.add("comparison-a");
+                } else {
+                    note.classList.add("comparison-b");
+                }
+
+                const primary = noteA || noteB;
+                const name = document.createElement("div");
+                name.className = "note-name";
+                name.textContent = primary.name;
+
+                const intervalLabel = document.createElement("div");
+                intervalLabel.className = "note-interval";
+
+                if (shared) {
+                    intervalLabel.textContent =
+                        `${noteA.interval === 0 ? "R" : getIntervalLabel(noteA.interval)} / ${noteB.interval === 0 ? "R" : getIntervalLabel(noteB.interval)}`;
+                } else {
+                    intervalLabel.textContent =
+                        primary.interval === 0 ? "R" : getIntervalLabel(primary.interval);
+                }
+
+                if (displayMode === "notes") intervalLabel.style.display = "none";
+                if (displayMode === "intervals") name.style.display = "none";
+
+                note.appendChild(name);
+                note.appendChild(intervalLabel);
+                cell.appendChild(note);
+            }
+
+            const fretNumber = document.createElement("span");
+            fretNumber.className = "fret-number";
+            fretNumber.textContent = fret;
+            cell.appendChild(fretNumber);
+            board.appendChild(cell);
+        }
+    });
+}
+
+
+function renderFretboard() {
+
+    if (comparisonMode) {
+        renderComparisonFretboard();
+    } else {
+        renderSingleFretboard();
+    }
+
+}
+
+
+function enterComparison(scale, root) {
+
+    comparisonScale = scale;
+    comparisonRoot = root;
+    comparisonMode = true;
+    currentPosition = 0;
+
+    document.getElementById("comparisonInfo").classList.add("open");
+    document.getElementById("comparisonBack").classList.add("open");
+    document.getElementById("singleScaleLegend").style.display = "none";
+
+    document.getElementById("comparisonTitle").textContent =
+        `${currentRoot} ${scaleData[currentScale].name} + ${comparisonRoot} ${scaleData[comparisonScale].name}`;
+
+    document.getElementById("comparisonSubtitle").textContent =
+        `${getScaleNotes().map(note => note.name).join(" · ")}  +  ${getComparisonScaleNames().join(" · ")}`;
+
+    document.getElementById("worksWithMenu").classList.remove("open");
+    document.getElementById("worksWithButton").classList.remove("open");
+
+    updateAll();
+}
+
+
+function exitComparison() {
+
+    comparisonMode = false;
+    comparisonScale = null;
+    comparisonRoot = null;
+
+    document.getElementById("comparisonInfo").classList.remove("open");
+    document.getElementById("comparisonBack").classList.remove("open");
+    document.getElementById("singleScaleLegend").style.display = "flex";
+
+    updateAll();
+}
+
+
+function renderWorksWellWithOptions() {
+
+    const container = document.getElementById("worksWithOptions");
+    container.innerHTML = "";
+
+    const options = getWorksWellWithOptions();
+
+    if (options.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "works-with-title";
+        empty.textContent = "No curated pairing for this scale yet.";
+        container.appendChild(empty);
+        return;
+    }
+
+    options.forEach(option => {
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "works-with-option";
+
+        const name = document.createElement("span");
+        name.className = "works-with-option-name";
+        name.textContent = `${option.root} ${scaleData[option.scale].name}`;
+
+        const relation = document.createElement("span");
+        relation.className = "works-with-option-relation";
+        relation.textContent = option.label;
+
+        button.appendChild(name);
+        button.appendChild(relation);
+
+        button.addEventListener("click", () => enterComparison(option.scale, option.root));
+        container.appendChild(button);
+    });
+}
+
 
 /* ==================================================
    INTERVAL LABELS
@@ -3881,6 +3966,10 @@ document
                     currentScale =
                         option.dataset.scale;
 
+                    if (comparisonMode) {
+                        exitComparison();
+                    }
+
 
                     document
                         .querySelectorAll(
@@ -4091,6 +4180,29 @@ fretboardElement.addEventListener(
 
 
 /* ==================================================
+   STRING ORDER
+================================================== */
+
+document
+    .querySelectorAll(".string-order-toggle button")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            stringsReversed =
+                button.dataset.stringOrder === "tab";
+
+            document
+                .querySelectorAll(".string-order-toggle button")
+                .forEach(item => item.classList.remove("active"));
+
+            button.classList.add("active");
+            renderFretboard();
+        });
+    });
+
+
+/* ==================================================
    DISPLAY MODE
 ================================================== */
 
@@ -4204,6 +4316,10 @@ rootOptions.forEach(
 
                 currentRoot =
                     option.dataset.root;
+
+                if (comparisonMode) {
+                    exitComparison();
+                }
 
                 currentPosition = 0;
 
