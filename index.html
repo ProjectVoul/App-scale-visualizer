@@ -576,6 +576,8 @@ button {
 
     width: 100%;
 
+    position: relative;
+
     display: grid;
 
     grid-template-columns:
@@ -592,6 +594,39 @@ button {
     overflow: hidden;
 
     background: #93612d;
+}
+
+/* ==================================================
+   POSITION CONNECTIONS
+================================================== */
+
+.connection-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.connection-line {
+    fill: none;
+    stroke: #f3f3f3;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.9;
+    vector-effect: non-scaling-stroke;
+}
+
+.connection-end {
+    fill: #f3f3f3;
+}
+
+/* Keep the connection layer behind every note. */
+.note {
+    z-index: 2;
 }
 
 
@@ -655,43 +690,6 @@ button {
 .string-label.last-row,
 .fret.last-row {
     border-bottom: 0;
-}
-
-
-
-/* ==================================================
-   FRET CONNECTIONS
-================================================== */
-
-.fretboard {
-    position: relative;
-}
-
-.connection-layer {
-    position: absolute;
-    inset: 0;
-
-    width: 100%;
-    height: 100%;
-
-    pointer-events: none;
-
-    overflow: visible;
-
-    z-index: 1;
-}
-
-.connection-line {
-    fill: none;
-
-    stroke: rgba(255,255,255,0.86);
-
-    stroke-width: 3.5;
-
-    stroke-linecap: round;
-    stroke-linejoin: round;
-
-    vector-effect: non-scaling-stroke;
 }
 
 
@@ -2716,742 +2714,261 @@ function renderPositionDots() {
 
 
 /* ==================================================
-   FRET CONNECTIONS
+   FRETBOARD
 ================================================== */
 
-/*
-   GOAL
+function getPositionScaleNotes(positionIndex) {
 
-   A connection is a bridge from the LAST REAL SCALE NOTE
-   on a string in the current position to the FIRST REAL
-   SCALE NOTE on the same / adjacent string in the next
-   position.
+    const position = positions[positionIndex];
 
-   We do NOT connect arbitrary notes inside the same
-   position.
+    const scaleNotes = getScaleNotes();
 
-   We do NOT draw one line per fret.
+    const scaleMap = new Map();
 
-   The musical priority is:
-   1. continuation in scale-degree order;
-   2. physically sensible string movement;
-   3. small fret movement.
+    scaleNotes.forEach(note => {
+        scaleMap.set(note.pitch, note);
+    });
 
-   For each source note, possible targets are limited to:
-   - same string;
-   - one string above;
-   - one string below.
+    return strings.map((string, stringIndex) => {
 
-   We show at most one target per direction from a source,
-   and at most four strongest connections for a transition.
-*/
+        const notes = [];
 
-const CONNECTION_FRETS_AT_EDGE = 2;
-const CONNECTION_MAX_PER_SOURCE = 3;
-const CONNECTION_MAX_TOTAL = 4;
-const CONNECTION_MAX_FRET_JUMP = 4;
+        for (
+            let fret = position.start;
+            fret <= Math.min(position.end, MAX_FRET);
+            fret++
+        ) {
 
+            const pitch =
+                (string.pitch + fret) % 12;
 
-/* --------------------------------------------------
-   SCALE / NOTE HELPERS
--------------------------------------------------- */
+            if (scaleMap.has(pitch)) {
 
-function connectionScaleDegree(
-    pitch
-) {
-
-    return getScaleNotes()
-        .findIndex(
-            note =>
-                note.pitch === pitch
-        );
-}
-
-
-function connectionDegreeDistance(
-    fromPitch,
-    toPitch
-) {
-
-    const scaleLength =
-        getScaleNotes().length;
-
-    const fromDegree =
-        connectionScaleDegree(
-            fromPitch
-        );
-
-    const toDegree =
-        connectionScaleDegree(
-            toPitch
-        );
-
-    if (
-        fromDegree === -1 ||
-        toDegree === -1
-    ) {
-        return Infinity;
-    }
-
-    const ascending =
-        (
-            toDegree -
-            fromDegree +
-            scaleLength
-        ) % scaleLength;
-
-    const descending =
-        (
-            fromDegree -
-            toDegree +
-            scaleLength
-        ) % scaleLength;
-
-    return Math.min(
-        ascending,
-        descending
-    );
-}
-
-
-/* --------------------------------------------------
-   LAST NOTE ON EACH STRING
--------------------------------------------------- */
-
-function getLastNotesForPosition(
-    positionIndex
-) {
-
-    const position =
-        positions[positionIndex];
-
-    const scaleNotes =
-        getScaleNotes();
-
-    const result = [];
-
-    strings.forEach(
-        (string, stringIndex) => {
-
-            let lastNote = null;
-
-            for (
-                let fret = position.start;
-                fret <= position.end;
-                fret++
-            ) {
-
-                const pitch =
-                    (
-                        string.pitch +
-                        fret
-                    ) % 12;
-
-                const scaleNote =
-                    scaleNotes.find(
-                        note =>
-                            note.pitch ===
-                            pitch
-                    );
-
-                if (
-                    scaleNote
-                ) {
-
-                    lastNote = {
-
-                        stringIndex,
-
-                        fret,
-
-                        pitch,
-
-                        interval:
-                            scaleNote.interval
-
-                    };
-
-                }
-
-            }
-
-            if (
-                lastNote
-            ) {
-
-                result.push(
-                    lastNote
-                );
+                notes.push({
+                    stringIndex,
+                    fret,
+                    pitch,
+                    scaleNote: scaleMap.get(pitch)
+                });
 
             }
 
         }
-    );
 
-    return result;
+        return {
+            stringIndex,
+            first: notes.length ? notes[0] : null,
+            last: notes.length ? notes[notes.length - 1] : null
+        };
+
+    });
+
 }
 
 
-/* --------------------------------------------------
-   FIRST NOTE ON EACH STRING
--------------------------------------------------- */
-
-function getFirstNotesForPosition(
-    positionIndex
-) {
-
-    const position =
-        positions[positionIndex];
-
-    const scaleNotes =
-        getScaleNotes();
-
-    const result = [];
-
-    strings.forEach(
-        (string, stringIndex) => {
-
-            let firstNote = null;
-
-            for (
-                let fret = position.start;
-                fret <= position.end;
-                fret++
-            ) {
-
-                const pitch =
-                    (
-                        string.pitch +
-                        fret
-                    ) % 12;
-
-                const scaleNote =
-                    scaleNotes.find(
-                        note =>
-                            note.pitch ===
-                            pitch
-                    );
-
-                if (
-                    scaleNote
-                ) {
-
-                    firstNote = {
-
-                        stringIndex,
-
-                        fret,
-
-                        pitch,
-
-                        interval:
-                            scaleNote.interval
-
-                    };
-
-                    break;
-                }
-
-            }
-
-            if (
-                firstNote
-            ) {
-
-                result.push(
-                    firstNote
-                );
-
-            }
-
-        }
-    );
-
-    return result;
-}
-
-
-/* --------------------------------------------------
-   CANDIDATE RANKING
--------------------------------------------------- */
-
-function scoreConnectionCandidate(
-    source,
-    target
-) {
-
-    const stringDistance =
-        Math.abs(
-            source.stringIndex -
-            target.stringIndex
-        );
-
-    if (
-        stringDistance > 1
-    ) {
-        return Infinity;
-    }
-
-    const fretDistance =
-        Math.abs(
-            source.fret -
-            target.fret
-        );
-
-    if (
-        fretDistance >
-        CONNECTION_MAX_FRET_JUMP
-    ) {
-        return Infinity;
-    }
-
-    const degreeDistance =
-        connectionDegreeDistance(
-            source.pitch,
-            target.pitch
-        );
+function getConnectionCandidates(positionIndex) {
 
     /*
-       We want a true continuation.
+       Connections describe the movement from the end of
+       one position into the beginning of the next one.
 
-       0 = same scale degree / octave-equivalent
-       1 = immediately adjacent degree
-       >1 = increasingly unrelated
+       They are deliberately NOT based on visual proximity alone.
+       A candidate must:
 
-       For a primary connection we allow:
-       - one scale step;
-       - same pitch as a secondary option.
+       1. start from the final scale note on a string;
+       2. land on the first scale note of the next position;
+       3. stay on the same string or an adjacent string;
+       4. make musical sense as a nearby continuation of the scale.
     */
 
-    if (
-        degreeDistance > 1
-    ) {
-        return Infinity;
-    }
-
-    let score = 0;
-
-    /*
-       Strongest preference:
-       same string.
-    */
-
-    score +=
-        stringDistance * 6;
-
-    /*
-       Then physical distance.
-    */
-
-    score +=
-        fretDistance * 3;
-
-    /*
-       Prefer the next-position first note over a
-       later target when all else is equal.
-    */
-
-    score +=
-        target.fret * 0.1;
-
-    /*
-       Adjacent scale-degree movement is more useful
-       than a repeated pitch.
-    */
-
-    if (
-        source.pitch === target.pitch
-    ) {
-        score += 8;
-    } else {
-        score -= 4;
-    }
-
-    return score;
-}
-
-
-/* --------------------------------------------------
-   BUILD A SINGLE TRANSITION
--------------------------------------------------- */
-
-function buildTransitionConnections(
-    currentIndex
-) {
-
-    if (
-        currentIndex >=
-        POSITION_COUNT - 1
-    ) {
+    if (positionIndex >= POSITION_COUNT - 1) {
         return [];
     }
 
-    const current =
-        positions[currentIndex];
+    const currentNotes =
+        getPositionScaleNotes(positionIndex);
 
-    const next =
-        positions[currentIndex + 1];
+    const nextNotes =
+        getPositionScaleNotes(positionIndex + 1);
 
-    const lastNotes =
-        getLastNotesForPosition(
-            currentIndex
+    const scaleIntervals =
+        scaleData[currentScale].intervals;
+
+    const degreeByPitch = new Map();
+
+    scaleIntervals.forEach((interval, index) => {
+        degreeByPitch.set(
+            (noteIndex(currentRoot) + interval) % 12,
+            index
         );
+    });
 
-    const firstNotes =
-        getFirstNotesForPosition(
-            currentIndex + 1
-        );
-
-    /*
-       IMPORTANT:
-
-       We do not compare every note to every note.
-
-       A source is valid only if it is one of the last
-       real scale notes on a string of the current position.
-
-       A target is valid only if it is the first real scale
-       note on a string of the next position.
-    */
+    const scaleLength = scaleIntervals.length;
 
     const candidates = [];
 
-    lastNotes.forEach(
-        source => {
+    currentNotes.forEach(sourceData => {
 
-            firstNotes.forEach(
-                target => {
-
-                    /*
-                       Only same / adjacent strings.
-                    */
-
-                    const stringDistance =
-                        Math.abs(
-                            source.stringIndex -
-                            target.stringIndex
-                        );
-
-                    if (
-                        stringDistance > 1
-                    ) {
-                        return;
-                    }
-
-                    /*
-                       The target must belong to the next
-                       position in the actual forward direction.
-                    */
-
-                    if (
-                        target.fret <
-                        next.start
-                    ) {
-                        return;
-                    }
-
-                    /*
-                       The source is near the current position's
-                       final edge by definition.
-                    */
-
-                    if (
-                        source.fret <
-                        current.end -
-                        CONNECTION_FRETS_AT_EDGE +
-                        1
-                    ) {
-                        return;
-                    }
-
-                    const score =
-                        scoreConnectionCandidate(
-                            source,
-                            target
-                        );
-
-                    if (
-                        !Number.isFinite(
-                            score
-                        )
-                    ) {
-                        return;
-                    }
-
-                    candidates.push({
-
-                        source,
-
-                        target,
-
-                        score
-
-                    });
-
-                }
-            );
-
+        if (!sourceData.last) {
+            return;
         }
-    );
+
+        const source = sourceData.last;
+        const sourceDegree = degreeByPitch.get(source.pitch);
+
+        nextNotes.forEach(targetData => {
+
+            if (!targetData.first) {
+                return;
+            }
+
+            const target = targetData.first;
+
+            /* Only same / adjacent strings. */
+            const stringDistance =
+                Math.abs(
+                    target.stringIndex - source.stringIndex
+                );
+
+            if (stringDistance > 1) {
+                return;
+            }
+
+            /* A repeated pitch is not a useful connection. */
+            if (target.pitch === source.pitch) {
+                return;
+            }
+
+            const targetDegree =
+                degreeByPitch.get(target.pitch);
+
+            if (
+                sourceDegree === undefined ||
+                targetDegree === undefined
+            ) {
+                return;
+            }
+
+            const forwardDegrees =
+                (targetDegree - sourceDegree + scaleLength) % scaleLength;
+
+            const backwardDegrees =
+                (sourceDegree - targetDegree + scaleLength) % scaleLength;
+
+            const degreeDistance =
+                Math.min(
+                    forwardDegrees,
+                    backwardDegrees
+                );
+
+            /*
+               We want nearby melodic movement, not arbitrary
+               scale-note jumps. One to three scale degrees are
+               useful; anything larger is rejected.
+            */
+            if (degreeDistance > 3) {
+                return;
+            }
+
+            const pitchDistance =
+                Math.min(
+                    (target.pitch - source.pitch + 12) % 12,
+                    (source.pitch - target.pitch + 12) % 12
+                );
+
+            if (pitchDistance > 7) {
+                return;
+            }
+
+            let score = 0;
+
+            /* Strong preference for stepwise / close melodic motion. */
+            if (degreeDistance === 1) score += 100;
+            else if (degreeDistance === 2) score += 72;
+            else if (degreeDistance === 3) score += 48;
+
+            /* Physical reach: same string is easiest, adjacent is next. */
+            if (stringDistance === 0) score += 28;
+            else score += 18;
+
+            /* Small pitch movement is preferable. */
+            if (pitchDistance <= 2) score += 25;
+            else if (pitchDistance <= 4) score += 16;
+            else score += 7;
+
+            /* Prefer the closest fret transition. */
+            const fretDistance =
+                Math.abs(target.fret - source.fret);
+
+            if (fretDistance <= 2) score += 14;
+            else if (fretDistance <= 3) score += 8;
+            else score -= Math.min(12, fretDistance - 3);
+
+            candidates.push({
+                source,
+                target,
+                score,
+                stringDistance,
+                degreeDistance,
+                pitchDistance
+            });
+
+        });
+
+    });
 
     /*
-       Rank globally so we do not automatically generate
-       one connection per source string.
+       Keep the system informative rather than exhaustive.
+       Each source gets at most two connections:
+       the strongest path and, only when clearly useful,
+       one adjacent-string alternative.
     */
-
-    candidates.sort(
-        (a, b) =>
-            a.score -
-            b.score
-    );
 
     const selected = [];
 
-    const sourceCount =
-        new Map();
+    currentNotes.forEach(sourceData => {
 
-    const targetCount =
-        new Map();
-
-    for (
-        const candidate of candidates
-    ) {
-
-        const sourceKey =
-            `${candidate.source.stringIndex}-${candidate.source.fret}`;
-
-        const targetKey =
-            `${candidate.target.stringIndex}-${candidate.target.fret}`;
-
-        const existingSourceCount =
-            sourceCount.get(
-                sourceKey
-            ) || 0;
-
-        const existingTargetCount =
-            targetCount.get(
-                targetKey
-            ) || 0;
-
-        if (
-            existingSourceCount >=
-            CONNECTION_MAX_PER_SOURCE
-        ) {
-            continue;
+        if (!sourceData.last) {
+            return;
         }
 
-        /*
-           A destination should not receive several
-           visually overlapping lines.
-        */
+        const sourceCandidates =
+            candidates
+                .filter(candidate =>
+                    candidate.source.stringIndex ===
+                    sourceData.stringIndex
+                )
+                .sort((a, b) => b.score - a.score);
 
-        if (
-            existingTargetCount >= 1
-        ) {
-            continue;
+        if (!sourceCandidates.length) {
+            return;
         }
 
-        selected.push(
-            candidate
-        );
+        const best = sourceCandidates[0];
 
-        sourceCount.set(
-            sourceKey,
-            existingSourceCount + 1
-        );
-
-        targetCount.set(
-            targetKey,
-            existingTargetCount + 1
-        );
-
-        if (
-            selected.length >=
-            CONNECTION_MAX_TOTAL
-        ) {
-            break;
+        if (best.score >= 95) {
+            selected.push(best);
         }
 
-    }
+        const alternative =
+            sourceCandidates.find(candidate =>
+                candidate !== best &&
+                candidate.stringDistance === 1 &&
+                candidate.score >= 70
+            );
+
+        if (alternative) {
+            selected.push(alternative);
+        }
+
+    });
 
     return selected;
 
 }
 
 
-/* --------------------------------------------------
-   RENDERING HELPERS
--------------------------------------------------- */
-
-function getNoteCenterForConnection(
-    stringIndex,
-    fret
-) {
-
-    const board =
-        document.getElementById(
-            "fretboard"
-        );
-
-    const note =
-        board.querySelector(
-            `.note[data-string-index="${stringIndex}"][data-fret="${fret}"]`
-        );
-
-    if (!note) {
-        return null;
-    }
-
-    const boardRect =
-        board.getBoundingClientRect();
-
-    const noteRect =
-        note.getBoundingClientRect();
-
-    return {
-
-        x:
-            noteRect.left -
-            boardRect.left +
-            noteRect.width / 2,
-
-        y:
-            noteRect.top -
-            boardRect.top +
-            noteRect.height / 2
-
-    };
-
-}
-
-
-function drawConnectionLine(
-    svg,
-    from,
-    to
-) {
-
-    if (
-        !from ||
-        !to
-    ) {
-        return;
-    }
-
-    const dx =
-        to.x -
-        from.x;
-
-    const direction =
-        dx >= 0
-            ? 1
-            : -1;
-
-    /*
-       Gentle curve instead of a dead-straight line.
-       This also makes adjacent-string movement readable.
-    */
-
-    const curve =
-        Math.max(
-            24,
-            Math.min(
-                60,
-                Math.abs(dx) * 0.20
-            )
-        );
-
-    const path =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
-
-    path.classList.add(
-        "connection-line"
-    );
-
-    path.setAttribute(
-        "d",
-        [
-            `M ${from.x} ${from.y}`,
-            `C ${
-                from.x +
-                curve * direction
-            } ${from.y},`,
-            `${
-                to.x -
-                curve * direction
-            } ${to.y},`,
-            `${to.x} ${to.y}`
-        ].join(" ")
-    );
-
-    svg.appendChild(
-        path
-    );
-
-}
-
-
-/*
-   The user sees only one side of the bridge at a time.
-
-   CURRENT POSITION:
-   source note → right edge
-
-   NEXT POSITION:
-   left edge → target note
-
-   The line therefore never pretends that two positions
-   coexist on one fretboard.
-*/
-
-function renderFretConnections() {
-
-    const board =
-        document.getElementById(
-            "fretboard"
-        );
-
-    const oldLayer =
-        board.querySelector(
-            ".connection-layer"
-        );
-
-    if (
-        oldLayer
-    ) {
-        oldLayer.remove();
-    }
-
-    /*
-       Build only the transition immediately after the
-       current position.
-    */
-
-    if (
-        currentPosition >=
-        POSITION_COUNT - 1
-    ) {
-        return;
-    }
-
-    const connections =
-        buildTransitionConnections(
-            currentPosition
-        );
-
-    if (
-        !connections.length
-    ) {
-        return;
-    }
-
-    /*
-       We create the SVG after the notes have been rendered,
-       but insert it before them so the lines stay underneath.
-    */
+function createConnectionLayer(board) {
 
     const svg =
         document.createElementNS(
@@ -3459,188 +2976,189 @@ function renderFretConnections() {
             "svg"
         );
 
-    svg.classList.add(
-        "connection-layer"
-    );
+    svg.classList.add("connection-layer");
 
-    svg.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+    svg.setAttribute("aria-hidden", "true");
 
-    board.insertBefore(
-        svg,
-        board.firstChild
-    );
+    board.appendChild(svg);
 
-    requestAnimationFrame(
-        () => {
-
-            const boardRect =
-                board.getBoundingClientRect();
-
-            if (
-                boardRect.width === 0 ||
-                boardRect.height === 0
-            ) {
-                return;
-            }
-
-            svg.setAttribute(
-                "viewBox",
-                `0 0 ${boardRect.width} ${boardRect.height}`
-            );
-
-            connections.forEach(
-                connection => {
-
-                    const sourceCenter =
-                        getNoteCenterForConnection(
-                            connection.source.stringIndex,
-                            connection.source.fret
-                        );
-
-                    const targetCenter =
-                        getNoteCenterForConnection(
-                            connection.target.stringIndex,
-                            connection.target.fret
-                        );
-
-                    /*
-                       On the CURRENT screen we show the
-                       source half of the bridge only.
-
-                       The target is outside the current
-                       position's intended study area.
-                    */
-
-                    if (
-                        currentPosition <
-                        POSITION_COUNT - 1
-                    ) {
-
-                        const edgeTarget = {
-
-                            x:
-                                boardRect.width -
-                                8,
-
-                            y:
-                                targetCenter
-                                    ? targetCenter.y
-                                    : (
-                                        sourceCenter
-                                            ? sourceCenter.y
-                                            : boardRect.height / 2
-                                    )
-
-                        };
-
-                        drawConnectionLine(
-                            svg,
-                            sourceCenter,
-                            edgeTarget
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
+    return svg;
 
 }
 
 
-/*
-   When the user moves to the next position, we also
-   want the incoming half to remain understandable.
+function renderPositionConnections(
+    board,
+    startFret,
+    endFret
+) {
 
-   The current render shows outgoing connections only.
-   A separate incoming layer is added after a swipe.
-*/
+    const connections =
+        getConnectionCandidates(currentPosition);
 
-function renderIncomingFretConnections() {
-
-    const board =
-        document.getElementById(
-            "fretboard"
-        );
-
-    const currentIndex =
-        currentPosition;
-
-    if (
-        currentIndex <= 0
-    ) {
+    if (!connections.length) {
         return;
     }
 
-    const previousConnections =
-        buildTransitionConnections(
-            currentIndex - 1
-        );
-
-    if (
-        !previousConnections.length
-    ) {
-        return;
-    }
-
-    const layer =
-        board.querySelector(
-            ".connection-layer"
-        );
-
-    if (!layer) {
-        return;
-    }
+    const svg =
+        createConnectionLayer(board);
 
     const boardRect =
         board.getBoundingClientRect();
 
-    previousConnections.forEach(
-        connection => {
+    const boardWidth =
+        board.clientWidth;
 
-            const targetCenter =
-                getNoteCenterForConnection(
-                    connection.target.stringIndex,
-                    connection.target.fret
-                );
+    const boardHeight =
+        board.clientHeight;
 
-            if (!targetCenter) {
-                return;
-            }
+    svg.setAttribute("viewBox", `0 0 ${boardWidth} ${boardHeight}`);
 
-            /*
-               The incoming half enters from the left edge.
-            */
+    /*
+       The grid contains one string-label column plus the fret columns.
+       We calculate coordinates from actual cells, so this remains accurate
+       on desktop, tablets and small phones.
+    */
 
-            const sourceEdge = {
+    const labelWidth =
+        board
+            .querySelector(".string-label")
+            .getBoundingClientRect()
+            .width;
 
-                x: 8,
+    const fretWidth =
+        board
+            .querySelector(".fret")
+            .getBoundingClientRect()
+            .width;
 
-                y:
-                    targetCenter.y
+    const rowHeight =
+        board
+            .querySelector(".string-label")
+            .getBoundingClientRect()
+            .height;
 
-            };
+    const noteCenters = new Map();
 
-            drawConnectionLine(
-                layer,
-                sourceEdge,
-                targetCenter
+    board
+        .querySelectorAll(".note")
+        .forEach(note => {
+
+            const cell = note.parentElement;
+            const cellRect = cell.getBoundingClientRect();
+            const noteRect = note.getBoundingClientRect();
+
+            const stringIndex =
+                Number(cell.dataset.stringIndex);
+
+            const fret =
+                Number(cell.dataset.fret);
+
+            noteCenters.set(
+                `${stringIndex}-${fret}`,
+                {
+                    x:
+                        cellRect.left - boardRect.left +
+                        cellRect.width / 2,
+                    y:
+                        noteRect.top - boardRect.top +
+                        noteRect.height / 2
+                }
             );
 
+        });
+
+    connections.forEach(connection => {
+
+        const sourceKey =
+            `${connection.source.stringIndex}-${connection.source.fret}`;
+
+        const sourcePoint =
+            noteCenters.get(sourceKey);
+
+        if (!sourcePoint) {
+            return;
         }
-    );
+
+        /*
+           The destination belongs to the next position and is therefore
+           normally outside the current six-fret view.
+
+           We project that destination onto the right edge of the current
+           board at the exact vertical level of its string. This makes the
+           diagonal itself communicate the string change without drawing
+           meaningless horizontal lines across the fretboard.
+        */
+
+        const displayIndex =
+            stringsReversed
+                ? strings.length - 1 - connection.target.stringIndex
+                : connection.target.stringIndex;
+
+        const targetY =
+            displayIndex * rowHeight +
+            rowHeight / 2;
+
+        const rightEdge =
+            boardWidth - 5;
+
+        /*
+           Start just outside the note's visual circle so the line never
+           cuts through the note itself.
+        */
+
+        const dx =
+            rightEdge - sourcePoint.x;
+
+        const dy =
+            targetY - sourcePoint.y;
+
+        const length =
+            Math.sqrt(dx * dx + dy * dy) || 1;
+
+        const startInset = 28;
+
+        const startX =
+            sourcePoint.x +
+            (dx / length) * startInset;
+
+        const startY =
+            sourcePoint.y +
+            (dy / length) * startInset;
+
+        const line =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+        line.classList.add("connection-line");
+
+        line.setAttribute("x1", startX);
+        line.setAttribute("y1", startY);
+        line.setAttribute("x2", rightEdge);
+        line.setAttribute("y2", targetY);
+
+        svg.appendChild(line);
+
+        const end =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "circle"
+            );
+
+        end.classList.add("connection-end");
+
+        end.setAttribute("cx", rightEdge);
+        end.setAttribute("cy", targetY);
+        end.setAttribute("r", "3.5");
+
+        svg.appendChild(end);
+
+    });
 
 }
 
-
-/* ==================================================
-   FRETBOARD
-================================================== */
 
 function renderFretboard() {
 
@@ -3649,43 +3167,23 @@ function renderFretboard() {
             "fretboard"
         );
 
-
     board.innerHTML = "";
-
 
     const scaleNotes =
         getScaleNotes();
 
-
-    /*
-       Store the complete scale-note object,
-       not just its interval.
-
-       This allows the fretboard to use the
-       theoretically correct spelling.
-    */
-
     const scaleMap =
         new Map();
 
-
     scaleNotes.forEach(note => {
-
-        scaleMap.set(
-            note.pitch,
-            note
-        );
-
+        scaleMap.set(note.pitch, note);
     });
-
 
     const position =
         positions[currentPosition];
 
-
     const startFret =
         position.start;
-
 
     const endFret =
         Math.min(
@@ -3693,46 +3191,25 @@ function renderFretboard() {
             MAX_FRET
         );
 
-
     const fretCount =
         endFret -
         startFret +
         1;
-
 
     board.style.setProperty(
         "--fret-count",
         fretCount
     );
 
-
-    /*
-       Build the visual study order from the
-       physical guitar order first:
-
-       Low E → A → D → G → B → High E.
-
-       If the first scale note on a new string
-       is identical to the final scale note on
-       the previous string, that occurrence is
-       marked as an alternative.
-
-       This keeps the main path linear without
-       removing any valid scale note.
-    */
-
     const alternativeNotes =
         new Set();
 
-
     let previousLastPitch = null;
-
 
     strings.forEach(
         (string, stringIndex) => {
 
             const stringNotes = [];
-
 
             for (
                 let fret = startFret;
@@ -3746,29 +3223,19 @@ function renderFretboard() {
                         fret
                     ) % 12;
 
-
-                if (
-                    scaleMap.has(pitch)
-                ) {
-
+                if (scaleMap.has(pitch)) {
                     stringNotes.push({
-
                         fret,
-
                         pitch
-
                     });
-
                 }
 
             }
 
-
             if (
                 stringNotes.length > 0 &&
                 previousLastPitch !== null &&
-                stringNotes[0].pitch ===
-                    previousLastPitch
+                stringNotes[0].pitch === previousLastPitch
             ) {
 
                 alternativeNotes.add(
@@ -3777,32 +3244,20 @@ function renderFretboard() {
 
             }
 
-
-            if (
-                stringNotes.length > 0
-            ) {
-
+            if (stringNotes.length > 0) {
                 previousLastPitch =
                     stringNotes[
                         stringNotes.length - 1
                     ].pitch;
-
             }
 
         }
     );
 
-
-    /*
-       The visual order can be reversed independently
-       from the musical sequence logic.
-    */
-
     const displayStrings =
         stringsReversed
             ? [...strings].reverse()
             : strings;
-
 
     displayStrings.forEach(
         (string, displayIndex) => {
@@ -3810,41 +3265,24 @@ function renderFretboard() {
             const stringIndex =
                 strings.indexOf(string);
 
-
             const isLastRow =
                 displayIndex ===
                 displayStrings.length - 1;
 
-
             const label =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             label.className =
                 "string-label";
 
-
-            if (
-                isLastRow
-            ) {
-
-                label.classList.add(
-                    "last-row"
-                );
-
+            if (isLastRow) {
+                label.classList.add("last-row");
             }
-
 
             label.textContent =
                 string.name;
 
-
-            board.appendChild(
-                label
-            );
-
+            board.appendChild(label);
 
             for (
                 let fret = startFret;
@@ -3853,41 +3291,23 @@ function renderFretboard() {
             ) {
 
                 const cell =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
+                cell.className = "fret";
 
-                cell.className =
-                    "fret";
+                cell.dataset.stringIndex =
+                    stringIndex;
 
+                cell.dataset.fret =
+                    fret;
 
-                if (
-                    fret === endFret
-                ) {
-
-                    cell.classList.add(
-                        "last-column"
-                    );
-
+                if (fret === endFret) {
+                    cell.classList.add("last-column");
                 }
 
-
-                if (
-                    isLastRow
-                ) {
-
-                    cell.classList.add(
-                        "last-row"
-                    );
-
+                if (isLastRow) {
+                    cell.classList.add("last-row");
                 }
-
-
-                /*
-                   Calculate the exact pitch
-                   at this string/fret.
-                */
 
                 const pitch =
                     (
@@ -3895,210 +3315,93 @@ function renderFretboard() {
                         fret
                     ) % 12;
 
-
-                /*
-                   Only display notes belonging
-                   to the selected scale.
-                */
-
-                if (
-                    scaleMap.has(pitch)
-                ) {
-
-                    /*
-                       Retrieve the complete scale note
-                       including its theoretical name
-                       and interval.
-                    */
+                if (scaleMap.has(pitch)) {
 
                     const scaleNote =
                         scaleMap.get(pitch);
 
-
                     const interval =
                         scaleNote.interval;
 
-
                     const note =
-                        document.createElement(
-                            "div"
-                        );
+                        document.createElement("div");
 
-
-                    note.className =
-                        "note";
-
-                    note.dataset.stringIndex =
-                        stringIndex;
-
-                    note.dataset.fret =
-                        fret;
-
+                    note.className = "note";
 
                     const isAlternative =
                         alternativeNotes.has(
                             `${stringIndex}-${fret}`
                         );
 
+                    if (isAlternative) {
 
-                    /*
-                       Interval 0 is always the root.
+                        note.classList.add("alternative");
 
-                       The root remains visually dominant
-                       even when the same pitch also appears
-                       as a boundary duplicate.
-                    */
-
-                    if (
-                        isAlternative
-                    ) {
-
-                        note.classList.add(
-                            "alternative"
-                        );
-
-                        if (
-                            interval === 0
-                        ) {
-
-                            note.classList.add(
-                                "alternative-root"
-                            );
-
+                        if (interval === 0) {
+                            note.classList.add("alternative-root");
                         }
 
-                    } else if (
-                        interval === 0
-                    ) {
-
-                        note.classList.add(
-                            "root"
-                        );
-
+                    } else if (interval === 0) {
+                        note.classList.add("root");
                     }
 
-
                     const name =
-                        document.createElement(
-                            "div"
-                        );
+                        document.createElement("div");
 
-
-                    name.className =
-                        "note-name";
-
-
-                    /*
-                       Use the name belonging to the
-                       selected scale, rather than deriving
-                       the name only from the pitch.
-                    */
-
-                    name.textContent =
-                        scaleNote.name;
-
+                    name.className = "note-name";
+                    name.textContent = scaleNote.name;
 
                     const intervalLabel =
-                        document.createElement(
-                            "div"
-                        );
-
+                        document.createElement("div");
 
                     intervalLabel.className =
                         "note-interval";
 
-
                     intervalLabel.textContent =
                         interval === 0
                             ? "R"
-                            : getIntervalLabel(
-                                interval
-                              );
+                            : getIntervalLabel(interval);
 
-
-                    /*
-                       DISPLAY MODE
-                    */
-
-                    if (
-                        displayMode ===
-                        "notes"
-                    ) {
-
-                        intervalLabel.style.display =
-                            "none";
-
+                    if (displayMode === "notes") {
+                        intervalLabel.style.display = "none";
                     }
 
-
-                    if (
-                        displayMode ===
-                        "intervals"
-                    ) {
-
-                        name.style.display =
-                            "none";
-
+                    if (displayMode === "intervals") {
+                        name.style.display = "none";
                     }
 
-
-                    note.appendChild(
-                        name
-                    );
-
-
-                    note.appendChild(
-                        intervalLabel
-                    );
-
-
-                    cell.appendChild(
-                        note
-                    );
+                    note.appendChild(name);
+                    note.appendChild(intervalLabel);
+                    cell.appendChild(note);
 
                 }
 
-
-                /*
-                   Fret number
-                */
-
                 const fretNumber =
-                    document.createElement(
-                        "span"
-                    );
+                    document.createElement("span");
 
+                fretNumber.className = "fret-number";
+                fretNumber.textContent = fret;
 
-                fretNumber.className =
-                    "fret-number";
-
-
-                fretNumber.textContent =
-                    fret;
-
-
-                cell.appendChild(
-                    fretNumber
-                );
-
-
-                board.appendChild(
-                    cell
-                );
+                cell.appendChild(fretNumber);
+                board.appendChild(cell);
 
             }
 
         }
-
     );
 
-    renderFretConnections();
-
-    requestAnimationFrame(
-        () => {
-            renderIncomingFretConnections();
-        }
-    );
+    /*
+       The SVG is created only after the grid exists, so all note and
+       string coordinates are real DOM measurements. This prevents the
+       previous problem where lines were guessed from grid dimensions.
+    */
+    requestAnimationFrame(() => {
+        renderPositionConnections(
+            board,
+            startFret,
+            endFret
+        );
+    });
 
 }
 
@@ -4629,40 +3932,6 @@ document
         );
 
     });
-
-
-/* ==================================================
-   CONNECTION RESIZE REFRESH
-================================================== */
-
-let connectionResizeTimer = null;
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        clearTimeout(
-            connectionResizeTimer
-        );
-
-        connectionResizeTimer =
-            setTimeout(
-                () => {
-
-                    renderFretConnections();
-
-                    requestAnimationFrame(
-                        () => {
-                            renderIncomingFretConnections();
-                        }
-                    );
-
-                },
-                100
-            );
-
-    }
-);
 
 
 /* ==================================================
