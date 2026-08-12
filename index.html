@@ -362,6 +362,64 @@ button {
 
 
 /* ==================================================
+   STRING ORDER
+================================================== */
+
+.string-order-label {
+    text-align: center;
+
+    margin-top: 0;
+    margin-bottom: 12px;
+
+    color: #8b8b8b;
+
+    font-size: 14px;
+
+    letter-spacing: 0.12em;
+
+    font-weight: 600;
+}
+
+.string-order-toggle {
+    width: min(440px, 100%);
+
+    margin: 0 auto 30px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    background: #242424;
+
+    border: 1px solid #474747;
+
+    border-radius: 18px;
+
+    padding: 4px;
+}
+
+.string-order-toggle button {
+    height: 52px;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: transparent;
+    color: #999;
+
+    cursor: pointer;
+
+    font-size: 16px;
+}
+
+.string-order-toggle button.active {
+    background: #f1f1f1;
+    color: #151515;
+}
+
+
+/* ==================================================
    SCALE INFORMATION
 ================================================== */
 
@@ -501,7 +559,7 @@ button {
 .fretboard {
 
     /*
-       Five visual study positions.
+       Five overlapping visual study positions.
 
        Position 1 = frets 1–6
        Position 2 = frets 6–11
@@ -509,8 +567,8 @@ button {
        Position 4 = frets 16–21
        Position 5 = frets 20–24
 
-       These are overlapping visual zones of the
-       guitar neck, not theoretical CAGED positions.
+       These are visual zones of the guitar
+       neck, not theoretical CAGED positions.
     */
 
     --fret-count: 6;
@@ -677,6 +735,37 @@ button {
 }
 
 
+/*
+   Alternative notes represent valid scale notes
+   that repeat the last note of the previous string.
+
+   They remain visible, but are visually separated
+   from the main linear study path.
+*/
+
+.note.alternative {
+    border-radius: 0;
+
+    clip-path:
+        polygon(
+            50% 0%,
+            100% 100%,
+            0% 100%
+        );
+
+    padding-top: 11px;
+}
+
+.note.alternative .note-name {
+    font-size:
+        clamp(16px, 2.2vw, 24px);
+}
+
+.note.alternative .note-interval {
+    margin-top: 5px;
+}
+
+
 /* ==================================================
    LEGEND
 ================================================== */
@@ -717,6 +806,21 @@ button {
 
 .legend-dot.scale {
     background: #f3f3f3;
+}
+
+.legend-symbol.alternative {
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #f3f3f3;
+
+    font-size: 22px;
+    line-height: 1;
 }
 
 
@@ -1428,6 +1532,37 @@ and (max-height: 600px) {
 
 
     <!-- ==================================================
+         STRING ORDER
+    ================================================== -->
+
+    <div class="string-order-label">
+        STRING ORDER
+    </div>
+
+
+    <div
+        class="string-order-toggle"
+        id="stringOrderToggle">
+
+        <button
+            class="active"
+            data-string-order="standard">
+
+            Standard
+
+        </button>
+
+        <button
+            data-string-order="tab">
+
+            Tab / Reverse
+
+        </button>
+
+    </div>
+
+
+    <!-- ==================================================
          SCALE INFORMATION
     ================================================== -->
 
@@ -1548,6 +1683,20 @@ and (max-height: 600px) {
 
             <span>
                 Scale note
+            </span>
+
+        </div>
+
+
+        <div class="legend-item">
+
+            <span
+                class="legend-symbol alternative">
+                ▽
+            </span>
+
+            <span>
+                Alternative
             </span>
 
         </div>
@@ -2076,6 +2225,8 @@ let currentPosition = 0;
 
 let displayMode = "both";
 
+let stringsReversed = false;
+
 
 /* ==================================================
    HELPERS
@@ -2590,13 +2741,114 @@ function renderFretboard() {
     );
 
 
+    /*
+       Build the visual study order from the
+       physical guitar order first:
+
+       Low E → A → D → G → B → High E.
+
+       If the first scale note on a new string
+       is identical to the final scale note on
+       the previous string, that occurrence is
+       marked as an alternative.
+
+       This keeps the main path linear without
+       removing any valid scale note.
+    */
+
+    const alternativeNotes =
+        new Set();
+
+
+    let previousLastPitch = null;
+
+
     strings.forEach(
         (string, stringIndex) => {
 
+            const stringNotes = [];
+
+
+            for (
+                let fret = startFret;
+                fret <= endFret;
+                fret++
+            ) {
+
+                const pitch =
+                    (
+                        string.pitch +
+                        fret
+                    ) % 12;
+
+
+                if (
+                    scaleMap.has(pitch)
+                ) {
+
+                    stringNotes.push({
+
+                        fret,
+
+                        pitch
+
+                    });
+
+                }
+
+            }
+
+
+            if (
+                stringNotes.length > 0 &&
+                previousLastPitch !== null &&
+                stringNotes[0].pitch ===
+                    previousLastPitch
+            ) {
+
+                alternativeNotes.add(
+                    `${stringIndex}-${stringNotes[0].fret}`
+                );
+
+            }
+
+
+            if (
+                stringNotes.length > 0
+            ) {
+
+                previousLastPitch =
+                    stringNotes[
+                        stringNotes.length - 1
+                    ].pitch;
+
+            }
+
+        }
+    );
+
+
+    /*
+       The visual order can be reversed independently
+       from the musical sequence logic.
+    */
+
+    const displayStrings =
+        stringsReversed
+            ? [...strings].reverse()
+            : strings;
+
+
+    displayStrings.forEach(
+        (string, displayIndex) => {
+
+            const stringIndex =
+                strings.indexOf(string);
+
 
             const isLastRow =
-                stringIndex ===
-                strings.length - 1;
+                displayIndex ===
+                displayStrings.length - 1;
 
 
             const label =
@@ -2609,7 +2861,9 @@ function renderFretboard() {
                 "string-label";
 
 
-            if (isLastRow) {
+            if (
+                isLastRow
+            ) {
 
                 label.classList.add(
                     "last-row"
@@ -2622,7 +2876,9 @@ function renderFretboard() {
                 string.name;
 
 
-            board.appendChild(label);
+            board.appendChild(
+                label
+            );
 
 
             for (
@@ -2630,7 +2886,6 @@ function renderFretboard() {
                 fret <= endFret;
                 fret++
             ) {
-
 
                 const cell =
                     document.createElement(
@@ -2653,7 +2908,9 @@ function renderFretboard() {
                 }
 
 
-                if (isLastRow) {
+                if (
+                    isLastRow
+                ) {
 
                     cell.classList.add(
                         "last-row"
@@ -2683,7 +2940,6 @@ function renderFretboard() {
                     scaleMap.has(pitch)
                 ) {
 
-
                     /*
                        Retrieve the complete scale note
                        including its theoretical name
@@ -2708,8 +2964,18 @@ function renderFretboard() {
                         "note";
 
 
+                    const isAlternative =
+                        alternativeNotes.has(
+                            `${stringIndex}-${fret}`
+                        );
+
+
                     /*
                        Interval 0 is always the root.
+
+                       The root remains visually dominant
+                       even when the same pitch also appears
+                       as a boundary duplicate.
                     */
 
                     if (
@@ -2718,6 +2984,14 @@ function renderFretboard() {
 
                         note.classList.add(
                             "root"
+                        );
+
+                    } else if (
+                        isAlternative
+                    ) {
+
+                        note.classList.add(
+                            "alternative"
                         );
 
                     }
@@ -2734,20 +3008,9 @@ function renderFretboard() {
 
 
                     /*
-                       IMPORTANT:
-
                        Use the name belonging to the
                        selected scale, rather than deriving
                        the name only from the pitch.
-
-                       This is what gives us:
-
-                       C# Major:
-                       C# D# E# F# G# A# B#
-
-                       instead of:
-
-                       C# D# F F# G# A# C
                     */
 
                     name.textContent =
@@ -2769,7 +3032,7 @@ function renderFretboard() {
                             ? "R"
                             : getIntervalLabel(
                                 interval
-                            );
+                              );
 
 
                     /*
@@ -2798,14 +3061,19 @@ function renderFretboard() {
                     }
 
 
-                    note.appendChild(name);
+                    note.appendChild(
+                        name
+                    );
+
 
                     note.appendChild(
                         intervalLabel
                     );
 
 
-                    cell.appendChild(note);
+                    cell.appendChild(
+                        note
+                    );
 
                 }
 
@@ -2939,7 +3207,9 @@ rootButton.addEventListener(
 
 
 document
-    .querySelectorAll(".root-option")
+    .querySelectorAll(
+        ".root-option"
+    )
     .forEach(button => {
 
         button.addEventListener(
@@ -3077,9 +3347,24 @@ document
                     });
 
 
-                button.classList.add(
-                    "active"
-                );
+                /*
+                   A scale can appear in more than
+                   one category.
+
+                   Activate all matching entries.
+                */
+
+                document
+                    .querySelectorAll(
+                        `.scale-option[data-scale="${currentScale}"]`
+                    )
+                    .forEach(item => {
+
+                        item.classList.add(
+                            "active"
+                        );
+
+                    });
 
 
                 scaleMenu.classList.remove(
@@ -3168,6 +3453,7 @@ const fretboardElement =
 
 
 let touchStartX = 0;
+
 let touchStartY = 0;
 
 
@@ -3199,7 +3485,6 @@ fretboardElement.addEventListener(
 fretboardElement.addEventListener(
     "touchend",
     event => {
-
 
         const touch =
             event.changedTouches[0];
@@ -3278,11 +3563,9 @@ document
     )
     .forEach(button => {
 
-
         button.addEventListener(
             "click",
             () => {
-
 
                 displayMode =
                     button.dataset.display;
@@ -3291,6 +3574,51 @@ document
                 document
                     .querySelectorAll(
                         ".display-toggle button"
+                    )
+                    .forEach(item => {
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                renderFretboard();
+
+            }
+        );
+
+    });
+
+
+/* ==================================================
+   STRING ORDER
+================================================== */
+
+document
+    .querySelectorAll(
+        ".string-order-toggle button"
+    )
+    .forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                stringsReversed =
+                    button.dataset.stringOrder ===
+                    "tab";
+
+
+                document
+                    .querySelectorAll(
+                        ".string-order-toggle button"
                     )
                     .forEach(item => {
 
