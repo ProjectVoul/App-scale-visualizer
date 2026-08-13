@@ -1,1 +1,1834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ProjectVoul · Chords</title>
 
+<style>
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #101010;
+    color: #f4f4f4;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body { overflow-x: hidden; }
+button { font: inherit; }
+
+.app {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px max(18px, env(safe-area-inset-right)) 40px max(18px, env(safe-area-inset-left));
+}
+
+/* HEADER */
+.header { text-align: center; margin-bottom: 22px; }
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+
+.subtitle {
+    margin-top: 5px;
+    color: #888;
+    font-size: 14px;
+}
+
+.mode-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.mode-nav a {
+    min-width: 92px;
+    height: 40px;
+    padding: 0 16px;
+    border-radius: 13px;
+    border: 1px solid #414141;
+    background: #1c1c1c;
+    color: #aaa;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.mode-nav a.active {
+    background: #f2f2f2;
+    color: #151515;
+}
+
+/* CONTROLS */
+.controls {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: 12px;
+    max-width: 760px;
+    margin: 0 auto 18px;
+}
+
+.root-button,
+.chord-button {
+    height: 64px;
+    border-radius: 18px;
+    border: 1px solid #484848;
+    background: #222;
+    color: #f4f4f4;
+    cursor: pointer;
+}
+
+.root-button { font-size: 20px; }
+
+.chord-button {
+    padding: 0 22px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chord-button .arrow,
+.category-header .chevron {
+    color: #888;
+    font-size: 15px;
+}
+
+.root-menu,
+.chord-menu {
+    max-width: 760px;
+    margin: 0 auto 14px;
+    padding: 18px;
+    background: #1c1c1c;
+    border: 1px solid #414141;
+    border-radius: 22px;
+    display: none;
+    position: relative;
+    z-index: 20;
+}
+
+.root-menu.open,
+.chord-menu.open { display: block; }
+
+.root-menu-title,
+.chord-menu-title {
+    margin-bottom: 14px;
+    color: #888;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+
+.root-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.root-option {
+    min-height: 48px;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    background: #242424;
+    color: #eee;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.root-option.active {
+    background: #f2f2f2;
+    color: #151515;
+}
+
+.category { border-bottom: 1px solid #333; }
+.category:last-child { border-bottom: 0; }
+
+.category-header {
+    width: 100%;
+    min-height: 62px;
+    padding: 0 24px;
+    background: transparent;
+    border: 0;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    cursor: pointer;
+}
+
+.category-header .chevron { transition: transform .2s ease; }
+.category.open .category-header .chevron { transform: rotate(90deg); }
+
+.chord-list {
+    display: none;
+    padding: 0 14px 12px;
+}
+
+.category.open .chord-list { display: block; }
+
+.chord-option {
+    width: 100%;
+    min-height: 54px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: #eee;
+    text-align: left;
+    padding: 0 14px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.chord-option:hover { background: #292929; }
+
+.chord-option.active {
+    background: #f2f2f2;
+    color: #151515;
+}
+
+/* DISPLAY */
+.display-label {
+    text-align: center;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    color: #8b8b8b;
+    font-size: 14px;
+    letter-spacing: .12em;
+    font-weight: 600;
+}
+
+.display-toggle {
+    width: min(560px, 100%);
+    margin: 0 auto 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #242424;
+    border: 1px solid #474747;
+    border-radius: 18px;
+    padding: 4px;
+}
+
+.display-toggle button {
+    height: 52px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: #999;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.display-toggle button.active {
+    background: #f1f1f1;
+    color: #151515;
+}
+
+/* CHORD INFO */
+.chord-info {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.chord-title {
+    font-size: clamp(27px, 5vw, 42px);
+    font-weight: 750;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.chord-formula {
+    margin-top: 12px;
+    color: #aaa;
+    font-size: clamp(16px, 2.5vw, 21px);
+    letter-spacing: .06em;
+}
+
+/* VOICING NAVIGATION */
+.position-header {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) 72px;
+    align-items: center;
+    width: min(760px, 100%);
+    margin: 0 auto 18px;
+    column-gap: 14px;
+}
+
+.position-arrow {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid #444;
+    background: #1d1d1d;
+    color: #f2f2f2;
+    font-size: 38px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.position-center {
+    min-width: 0;
+    text-align: center;
+}
+
+.position-title {
+    font-size: clamp(23px, 4vw, 30px);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.position-subtitle {
+    margin-top: 6px;
+    color: #aaa;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.fret-range {
+    margin-top: 5px;
+    color: #777;
+    font-size: 14px;
+}
+
+.position-dots {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.position-dot {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 15px;
+    border-radius: 50%;
+    background: #3d3d3d;
+}
+
+.position-dot.active { background: #f1f1f1; }
+
+/* FRETBOARD */
+.fretboard-wrap {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 8px;
+}
+
+.fretboard {
+    --fret-count: 5;
+    --label-width: 78px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: var(--label-width) repeat(var(--fret-count), minmax(0, 1fr));
+    border: 4px solid #3b3b3b;
+    border-radius: 24px;
+    overflow: hidden;
+    background: #93612d;
+    touch-action: pan-y;
+}
+
+.string-label {
+    min-width: 0;
+    min-height: 118px;
+    background: #303030;
+    border-right: 3px solid #444;
+    border-bottom: 2px solid #b17a3e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(20px, 3vw, 30px);
+    font-weight: 600;
+}
+
+.string-label.last-row,
+.fret.last-row { border-bottom: 0; }
+
+.fret {
+    min-width: 0;
+    min-height: 118px;
+    position: relative;
+    background: #99632e;
+    border-right: 3px solid #bc8242;
+    border-bottom: 2px solid #bc8242;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fret.last-column { border-right: 0; }
+
+.fret-number {
+    position: absolute;
+    right: 7px;
+    bottom: 4px;
+    color: rgba(255,255,255,.65);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.note {
+    width: clamp(58px, 7vw, 82px);
+    height: clamp(58px, 7vw, 82px);
+    border-radius: 50%;
+    background: #f3f3f3;
+    color: #151515;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.note.root {
+    background: #ef334d;
+    color: white;
+}
+
+.note-name { font-size: clamp(18px, 2.4vw, 26px); }
+.note-interval {
+    margin-top: 6px;
+    font-size: clamp(12px, 1.7vw, 17px);
+    font-weight: 700;
+}
+.note-finger {
+    margin-top: 5px;
+    font-size: clamp(11px, 1.5vw, 15px);
+    font-weight: 800;
+    opacity: .95;
+}
+
+/* BARRE */
+.barre-marker {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    height: 28px;
+    border-radius: 14px;
+    background: #222;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    pointer-events: none;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+/* OPEN / MUTED */
+.mute-marker {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 3px solid #777;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.open-marker {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 3px solid #777;
+    color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+/* VOICING META */
+.voicing-meta {
+    margin: 18px auto 0;
+    width: min(760px, 100%);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    color: #888;
+    font-size: 14px;
+}
+
+.invert-wrap {
+    width: min(440px, 100%);
+    margin: 20px auto 0;
+}
+
+.invert-button {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 16px;
+    border: 1px solid #414141;
+    background: #1c1c1c;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.invert-button.active {
+    background: #f1f1f1;
+    color: #151515;
+}
+
+/* LEGEND */
+.legend {
+    margin: 22px auto 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    color: #999;
+    font-size: 16px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.legend-dot {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+}
+
+.legend-dot.root { background: #ef334d; }
+.legend-dot.note { background: #f3f3f3; }
+.legend-dot.barre { background: #222; }
+
+/* LANDSCAPE */
+@media (orientation: landscape) and (max-height: 600px) {
+    .app { padding-top: 14px; padding-bottom: 24px; }
+    .header { margin-bottom: 14px; }
+    .logo { font-size: 22px; }
+    .subtitle { display: none; }
+    .display-label { margin-top: 16px; }
+    .chord-info { margin-bottom: 14px; }
+    .position-header { margin-bottom: 12px; }
+    .position-arrow { width: 58px; height: 58px; }
+    .position-header { grid-template-columns: 58px minmax(0,1fr) 58px; }
+    .fretboard { --label-width: 64px; }
+    .string-label, .fret { min-height: 86px; }
+    .note { width: 58px; height: 58px; }
+    .note-name { font-size: 17px; }
+    .note-interval { font-size: 12px; margin-top: 4px; }
+    .note-finger { font-size: 11px; margin-top: 3px; }
+    .legend { margin-top: 14px; }
+}
+
+@media (max-width: 430px) {
+    .app { padding-left: 12px; padding-right: 12px; }
+
+    .controls { grid-template-columns: 92px minmax(0,1fr); }
+
+    .root-button, .chord-button { height: 58px; }
+    .chord-button { padding: 0 16px; }
+
+    .root-menu, .chord-menu {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .root-grid { gap: 6px; }
+    .root-option { min-height: 44px; font-size: 15px; }
+
+    .display-toggle button { font-size: 13px; }
+
+    .position-header {
+        grid-template-columns: 58px minmax(0,1fr) 58px;
+        column-gap: 8px;
+    }
+
+    .position-arrow {
+        width: 58px;
+        height: 58px;
+        font-size: 31px;
+    }
+
+    .position-dots { gap: 9px; }
+    .position-dot { width: 12px; height: 12px; flex-basis: 12px; }
+
+    .fretboard-wrap { padding-left: 2px; padding-right: 2px; }
+
+    .fretboard {
+        --label-width: 52px;
+        border-width: 3px;
+        border-radius: 20px;
+    }
+
+    .string-label, .fret { min-height: 100px; }
+    .string-label { border-right-width: 2px; }
+    .fret { border-right-width: 2px; }
+
+    .note { width: 56px; height: 56px; }
+    .note-name { font-size: 17px; }
+    .note-interval { font-size: 11px; margin-top: 4px; }
+    .note-finger { font-size: 10px; margin-top: 3px; }
+
+    .fret-number { right: 5px; font-size: 12px; }
+
+    .legend { gap: 18px; font-size: 14px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="header">
+    <div class="logo">ProjectVoul</div>
+    <div class="subtitle">Guitar · Chords</div>
+
+    <nav class="mode-nav">
+        <a href="index.html">Scales</a>
+        <a href="chords.html" class="active">Chords</a>
+    </nav>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+    <button class="root-button" id="rootButton">C</button>
+
+    <button class="chord-button" id="chordButton" type="button">
+        <span id="selectedChord">Major</span>
+        <span class="arrow">▾</span>
+    </button>
+</div>
+
+<!-- ROOT MENU -->
+<div class="root-menu" id="rootMenu">
+    <div class="root-menu-title">ROOT NOTE</div>
+
+    <div class="root-grid">
+        <button class="root-option" data-root="C">C</button>
+        <button class="root-option" data-root="C#">C#</button>
+        <button class="root-option" data-root="Db">Db</button>
+        <button class="root-option" data-root="D">D</button>
+
+        <button class="root-option" data-root="D#">D#</button>
+        <button class="root-option" data-root="Eb">Eb</button>
+        <button class="root-option" data-root="E">E</button>
+        <button class="root-option" data-root="F">F</button>
+
+        <button class="root-option" data-root="F#">F#</button>
+        <button class="root-option" data-root="Gb">Gb</button>
+        <button class="root-option" data-root="G">G</button>
+        <button class="root-option" data-root="G#">G#</button>
+
+        <button class="root-option" data-root="Ab">Ab</button>
+        <button class="root-option" data-root="A">A</button>
+        <button class="root-option" data-root="A#">A#</button>
+        <button class="root-option" data-root="Bb">Bb</button>
+
+        <button class="root-option" data-root="B">B</button>
+    </div>
+</div>
+
+<!-- CHORD MENU -->
+<div class="chord-menu" id="chordMenu">
+    <div class="chord-menu-title">CHORD TYPE</div>
+
+    <section class="category open">
+        <button class="category-header">
+            <span>TRIADS</span>
+            <span class="chevron">›</span>
+        </button>
+
+        <div class="chord-list">
+            <button class="chord-option active" data-chord="major">Major</button>
+            <button class="chord-option" data-chord="minor">Minor</button>
+            <button class="chord-option" data-chord="diminished">Diminished</button>
+            <button class="chord-option" data-chord="augmented">Augmented</button>
+            <button class="chord-option" data-chord="sus2">Sus2</button>
+            <button class="chord-option" data-chord="sus4">Sus4</button>
+        </div>
+    </section>
+
+    <section class="category">
+        <button class="category-header">
+            <span>SEVENTHS</span>
+            <span class="chevron">›</span>
+        </button>
+
+        <div class="chord-list">
+            <button class="chord-option" data-chord="dominant7">7</button>
+            <button class="chord-option" data-chord="major7">maj7</button>
+            <button class="chord-option" data-chord="minor7">m7</button>
+            <button class="chord-option" data-chord="diminished7">dim7</button>
+            <button class="chord-option" data-chord="minor7b5">m7♭5</button>
+        </div>
+    </section>
+</div>
+
+<!-- DISPLAY -->
+<div class="display-label">DISPLAY</div>
+
+<div class="display-toggle">
+    <button data-display="notes">Notes</button>
+    <button data-display="intervals">Intervals</button>
+    <button data-display="fingering">Fingering</button>
+    <button class="active" data-display="all">All</button>
+</div>
+
+<!-- CHORD INFO -->
+<section class="chord-info">
+    <h1 class="chord-title" id="chordTitle">C Major</h1>
+    <div class="chord-formula" id="chordFormula">R · 3 · 5</div>
+</section>
+
+<!-- VOICING NAVIGATION -->
+<section class="position-header">
+    <button class="position-arrow" id="previousVoicing">‹</button>
+
+    <div class="position-center">
+        <div class="position-title" id="positionTitle">Voicing 1 / 4</div>
+        <div class="position-subtitle" id="positionSubtitle">Open</div>
+        <div class="fret-range" id="fretRange">Frets 1 – 3</div>
+
+        <div class="position-dots" id="positionDots"></div>
+    </div>
+
+    <button class="position-arrow" id="nextVoicing">›</button>
+</section>
+
+<!-- FRETBOARD -->
+<div class="fretboard-wrap">
+    <div class="fretboard" id="fretboard"></div>
+</div>
+
+<div class="voicing-meta" id="voicingMeta"></div>
+
+<div class="invert-wrap">
+    <button class="invert-button" id="invertButton" type="button">
+        ↕ Invert Fretboard
+    </button>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+    <div class="legend-item">
+        <span class="legend-dot root"></span>
+        <span>Root</span>
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-dot note"></span>
+        <span>Chord note</span>
+    </div>
+
+    <div class="legend-item">
+        <span class="legend-dot barre"></span>
+        <span>Barré</span>
+    </div>
+</div>
+
+</div>
+
+<script>
+/* ==================================================
+   MUSIC DATA
+================================================== */
+
+const chromatic = [
+    "C","C#","D","D#","E","F",
+    "F#","G","G#","A","A#","B"
+];
+
+const naturalPitch = {
+    C: 0, D: 2, E: 4, F: 5,
+    G: 7, A: 9, B: 11
+};
+
+const rootData = {
+    C:  { pitch: 0, letter: "C" },
+    "C#": { pitch: 1, letter: "C" },
+    Db: { pitch: 1, letter: "D" },
+    D:  { pitch: 2, letter: "D" },
+    "D#": { pitch: 3, letter: "D" },
+    Eb: { pitch: 3, letter: "E" },
+    E:  { pitch: 4, letter: "E" },
+    F:  { pitch: 5, letter: "F" },
+    "F#": { pitch: 6, letter: "F" },
+    Gb: { pitch: 6, letter: "G" },
+    G:  { pitch: 7, letter: "G" },
+    "G#": { pitch: 8, letter: "G" },
+    Ab: { pitch: 8, letter: "A" },
+    A:  { pitch: 9, letter: "A" },
+    "A#": { pitch: 10, letter: "A" },
+    Bb: { pitch: 10, letter: "B" },
+    B:  { pitch: 11, letter: "B" }
+};
+
+const strings = [
+    { name: "E", pitch: 4 },
+    { name: "A", pitch: 9 },
+    { name: "D", pitch: 2 },
+    { name: "G", pitch: 7 },
+    { name: "B", pitch: 11 },
+    { name: "E", pitch: 4 }
+];
+
+const MAX_FRET = 24;
+
+/*
+   Every voicing is stored using C as the musical reference.
+
+   frets:
+      X = muted string
+      0 = open string
+      number = fret
+
+   fingers:
+      0 = open string
+      1–4 = fretting finger
+      null = muted
+
+   barre:
+      Optional visual barre definition.
+      fromString / toString use 6 = low E ... 1 = high E.
+*/
+const chordData = {
+
+    major: {
+        name: "Major",
+        formula: ["R", "3", "5"],
+        intervals: [0, 4, 7],
+        degreeOffsets: [0, 2, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 2, 0, 1, 0],
+                fingers: [null, 3, 2, 0, 1, 0],
+                baseFret: 1,
+                label: "Open"
+            },
+            {
+                frets: ["X", 3, 5, 5, 5, 3],
+                fingers: [null, 1, 3, 4, 2, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: [8, 10, 10, 9, 8, 8],
+                fingers: [1, 3, 4, 2, 1, 1],
+                barre: { fret: 8, fromString: 6, toString: 1 },
+                baseFret: 8,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 12, 13, 12],
+                fingers: [null, null, 1, 3, 4, 2],
+                baseFret: 10,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    minor: {
+        name: "Minor",
+        formula: ["R", "♭3", "5"],
+        intervals: [0, 3, 7],
+        degreeOffsets: [0, 2, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 1, 0, "X", "X"],
+                fingers: [null, 3, 1, 0, null, null],
+                baseFret: 1,
+                label: "Compact"
+            },
+            {
+                frets: [8, 10, 10, 8, 8, 8],
+                fingers: [1, 3, 4, 1, 1, 1],
+                barre: { fret: 8, fromString: 6, toString: 1 },
+                baseFret: 8,
+                label: "Barre"
+            },
+            {
+                frets: ["X", 3, 5, 5, 4, 3],
+                fingers: [null, 1, 3, 4, 2, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 12, 13, 11],
+                fingers: [null, null, 1, 3, 4, 2],
+                baseFret: 10,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    dominant7: {
+        name: "7",
+        formula: ["R", "3", "5", "♭7"],
+        intervals: [0, 4, 7, 10],
+        degreeOffsets: [0, 2, 4, 6],
+        voicings: [
+            {
+                frets: ["X", 3, 2, 3, 1, 0],
+                fingers: [null, 3, 2, 4, 1, 0],
+                baseFret: 1,
+                label: "Open"
+            },
+            {
+                frets: [8, 10, 8, 9, 8, 8],
+                fingers: [1, 3, 1, 2, 1, 1],
+                barre: { fret: 8, fromString: 6, toString: 1 },
+                baseFret: 8,
+                label: "Barre"
+            },
+            {
+                frets: ["X", 3, 5, 3, 5, 3],
+                fingers: [null, 1, 3, 1, 4, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 9, 11, "X"],
+                fingers: [null, null, 3, 2, 4, null],
+                baseFret: 9,
+                label: "Shell voicing"
+            }
+        ]
+    },
+
+    major7: {
+        name: "maj7",
+        formula: ["R", "3", "5", "7"],
+        intervals: [0, 4, 7, 11],
+        degreeOffsets: [0, 2, 4, 6],
+        voicings: [
+            {
+                frets: ["X", 3, 2, 0, 0, 0],
+                fingers: [null, 3, 2, 0, 0, 0],
+                baseFret: 1,
+                label: "Open"
+            },
+            {
+                frets: [8, "X", 9, 9, 8, 7],
+                fingers: [1, null, 2, 3, 4, 1],
+                baseFret: 7,
+                label: "Upper voicing"
+            },
+            {
+                frets: ["X", 3, 5, 4, 5, 3],
+                fingers: [null, 1, 3, 2, 4, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 9, 8, 7],
+                fingers: [null, null, 4, 3, 2, 1],
+                baseFret: 7,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    minor7: {
+        name: "m7",
+        formula: ["R", "♭3", "5", "♭7"],
+        intervals: [0, 3, 7, 10],
+        degreeOffsets: [0, 2, 4, 6],
+        voicings: [
+            {
+                frets: ["X", 3, 1, 3, 1, "X"],
+                fingers: [null, 3, 1, 4, 1, null],
+                baseFret: 1,
+                label: "Compact"
+            },
+            {
+                frets: [8, "X", 8, 8, 8, "X"],
+                fingers: [1, null, 3, 4, 2, null],
+                barre: { fret: 8, fromString: 4, toString: 2 },
+                baseFret: 8,
+                label: "Barre"
+            },
+            {
+                frets: ["X", 3, 5, 3, 4, 3],
+                fingers: [null, 1, 3, 1, 2, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 8, 8, 6],
+                fingers: [null, null, 3, 1, 2, 1],
+                baseFret: 6,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    sus2: {
+        name: "sus2",
+        formula: ["R", "2", "5"],
+        intervals: [0, 2, 7],
+        degreeOffsets: [0, 1, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 0, 0, 3, 3],
+                fingers: [null, 3, 0, 0, 1, 2],
+                baseFret: 1,
+                label: "Open"
+            },
+            {
+                frets: ["X", 3, 5, 5, 3, 3],
+                fingers: [null, 1, 3, 4, 1, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 7, 8, 8],
+                fingers: [null, null, 4, 1, 2, 3],
+                baseFret: 7,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    sus4: {
+        name: "sus4",
+        formula: ["R", "4", "5"],
+        intervals: [0, 5, 7],
+        degreeOffsets: [0, 3, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 3, 0, 1, 1],
+                fingers: [null, 3, 2, 0, 1, 1],
+                baseFret: 1,
+                label: "Open"
+            },
+            {
+                frets: ["X", 3, 5, 5, 6, 3],
+                fingers: [null, 1, 3, 4, 2, 1],
+                barre: { fret: 3, fromString: 5, toString: 1 },
+                baseFret: 3,
+                label: "Barre"
+            },
+            {
+                frets: ["X", "X", 10, 12, 13, 13],
+                fingers: [null, null, 1, 3, 4, 4],
+                baseFret: 10,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    diminished: {
+        name: "Diminished",
+        formula: ["R", "♭3", "♭5"],
+        intervals: [0, 3, 6],
+        degreeOffsets: [0, 2, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 4, 5, 4, "X"],
+                fingers: [null, 1, 2, 3, 2, null],
+                baseFret: 3,
+                label: "Compact"
+            },
+            {
+                frets: ["X", "X", 10, 8, 7, 8],
+                fingers: [null, null, 3, 2, 1, 4],
+                baseFret: 7,
+                label: "Upper voicing"
+            },
+            {
+                frets: ["X", "X", "X", 5, 4, 2],
+                fingers: [null, null, null, 3, 2, 1],
+                baseFret: 2,
+                label: "Compact"
+            }
+        ]
+    },
+
+    augmented: {
+        name: "Augmented",
+        formula: ["R", "3", "♯5"],
+        intervals: [0, 4, 8],
+        degreeOffsets: [0, 2, 4],
+        voicings: [
+            {
+                frets: ["X", 3, 2, 1, 1, "X"],
+                fingers: [null, 3, 2, 1, 1, null],
+                baseFret: 1,
+                label: "Compact"
+            },
+            {
+                frets: ["X", "X", "X", 5, 5, 4],
+                fingers: [null, null, null, 1, 2, 3],
+                baseFret: 4,
+                label: "Upper voicing"
+            }
+        ]
+    },
+
+    minor7b5: {
+        name: "m7♭5",
+        formula: ["R", "♭3", "♭5", "♭7"],
+        intervals: [0, 3, 6, 10],
+        degreeOffsets: [0, 2, 4, 6],
+        voicings: [
+            {
+                frets: ["X", "X", 10, 11, 11, 11],
+                fingers: [null, null, 1, 2, 3, 4],
+                baseFret: 10,
+                label: "Upper voicing"
+            },
+            {
+                frets: [8, "X", 8, 8, 7, "X"],
+                fingers: [1, null, 3, 4, 2, null],
+                baseFret: 7,
+                label: "Compact"
+            },
+            {
+                frets: ["X", 3, 4, 3, 4, "X"],
+                fingers: [null, 1, 2, 1, 3, null],
+                baseFret: 3,
+                label: "Compact"
+            }
+        ]
+    },
+
+    diminished7: {
+        name: "dim7",
+        formula: ["R", "♭3", "♭5", "𝄫7"],
+        intervals: [0, 3, 6, 9],
+        degreeOffsets: [0, 2, 4, 6],
+        voicings: [
+            {
+                frets: ["X", 3, 4, 2, 4, "X"],
+                fingers: [null, 1, 2, 1, 3, null],
+                baseFret: 2,
+                label: "Compact"
+            },
+            {
+                frets: [8, "X", 7, 8, 7, "X"],
+                fingers: [1, null, 2, 3, 1, null],
+                baseFret: 7,
+                label: "Compact"
+            },
+            {
+                frets: ["X", "X", 10, 11, 10, 11],
+                fingers: [null, null, 1, 2, 1, 3],
+                baseFret: 10,
+                label: "Upper voicing"
+            }
+        ]
+    }
+};
+
+/* ==================================================
+   STATE
+================================================== */
+
+let currentRoot = "C";
+let currentChord = "major";
+let currentVoicing = 0;
+let displayMode = "all";
+let stringsReversed = false;
+
+/* ==================================================
+   HELPERS
+================================================== */
+
+function mod12(value) {
+    return ((value % 12) + 12) % 12;
+}
+
+function noteIndex(note) {
+    return rootData[note].pitch;
+}
+
+function accidentalText(value) {
+    if (value > 0) return "#".repeat(value);
+    if (value < 0) return "b".repeat(Math.abs(value));
+    return "";
+}
+
+function naturalLetterIndex(letter) {
+    return ["C","D","E","F","G","A","B"].indexOf(letter);
+}
+
+/*
+   Creates the theoretically correct spelling for every
+   pitch used by the selected chord.
+*/
+function getChordNoteMap() {
+    const chord = chordData[currentChord];
+    const root = rootData[currentRoot];
+    const letters = ["C","D","E","F","G","A","B"];
+    const map = new Map();
+
+    chord.intervals.forEach((interval, index) => {
+        const pitch = mod12(root.pitch + interval);
+        const letter = letters[
+            (naturalLetterIndex(root.letter) + chord.degreeOffsets[index]) % 7
+        ];
+
+        let accidental = pitch - naturalPitch[letter];
+
+        while (accidental > 6) accidental -= 12;
+        while (accidental < -6) accidental += 12;
+
+        map.set(pitch, {
+            pitch,
+            interval,
+            name: letter + accidentalText(accidental)
+        });
+    });
+
+    return map;
+}
+
+/*
+   The curated C voicings are movable shapes.
+
+   We transpose every fretted reference position by the
+   root distance. If that would go below the nut, the shape
+   is moved up an octave. If there is more than one valid
+   octave, the lowest practical one is selected.
+
+   This deliberately preserves the curated shape geometry.
+*/
+function getTransposedVoicing(reference) {
+    const offset = noteIndex(currentRoot);
+    let frets = reference.frets.map(value => {
+        if (value === "X") return "X";
+        return value + offset;
+    });
+
+    const numeric = () => frets.filter(value => typeof value === "number");
+
+    let candidates = [];
+    for (let octave = -2; octave <= 2; octave++) {
+        const candidate = frets.map(value => {
+            if (value === "X") return "X";
+            return value + octave * 12;
+        });
+
+        const nums = candidate.filter(value => typeof value === "number");
+
+        if (nums.every(value => value >= 0 && value <= MAX_FRET)) {
+            const lowest = Math.min(...nums);
+            const highest = Math.max(...nums);
+
+            candidates.push({
+                frets: candidate,
+                lowest,
+                highest,
+                score: lowest
+            });
+        }
+    }
+
+    if (candidates.length) {
+        candidates.sort((a, b) => {
+            if (a.score !== b.score) return a.score - b.score;
+            return a.highest - b.highest;
+        });
+
+        frets = candidates[0].frets;
+    }
+
+    /*
+       Reference open strings become fretted notes when the
+       shape is transposed. We therefore create a practical
+       finger assignment for those newly fretted notes.
+       Curated barre information remains attached to the
+       shape where applicable.
+    */
+    let fingers = reference.fingers.map((finger, index) => {
+        if (frets[index] === "X") return null;
+        return finger;
+    });
+
+    const originalHadOpen = reference.frets.some(value => value === 0);
+
+    if (originalHadOpen && offset !== 0) {
+        const uniqueFrets = [...new Set(
+            frets.filter(value => typeof value === "number" && value > 0)
+        )].sort((a, b) => a - b);
+
+        const generated = new Map();
+        uniqueFrets.forEach((fret, index) => {
+            generated.set(fret, Math.min(index + 1, 4));
+        });
+
+        fingers = frets.map((fret, index) => {
+            if (fret === "X") return null;
+            if (fret === 0) return 0;
+            return generated.get(fret) || 1;
+        });
+    }
+
+    let barre = reference.barre ? { ...reference.barre } : null;
+
+    if (barre) {
+        barre.fret += offset;
+
+        /*
+           Apply the same octave displacement used for the
+           selected candidate.
+        */
+        const targetLowest = Math.min(
+            ...frets.filter(value => typeof value === "number")
+        );
+        const originalLowest = Math.min(
+            ...reference.frets.filter(value => typeof value === "number")
+        );
+        const appliedShift = targetLowest - (originalLowest + offset);
+
+        barre.fret += appliedShift;
+    }
+
+    const nums = frets.filter(value => typeof value === "number");
+    const fretted = nums.filter(value => value > 0);
+
+    return {
+        ...reference,
+        frets,
+        fingers,
+        barre,
+        baseFret: fretted.length ? Math.min(...fretted) : 1
+    };
+}
+
+function getCurrentVoicings() {
+    return chordData[currentChord].voicings
+        .map(getTransposedVoicing)
+        .sort((a, b) => {
+            if (a.baseFret !== b.baseFret) {
+                return a.baseFret - b.baseFret;
+            }
+            return Math.max(...a.frets.filter(v => typeof v === "number")) -
+                   Math.max(...b.frets.filter(v => typeof v === "number"));
+        });
+}
+
+function getIntervalLabel(interval) {
+    const labels = {
+        0: "R",
+        1: "♭2",
+        2: "2",
+        3: "♭3",
+        4: "3",
+        5: "4",
+        6: "♭5",
+        7: "5",
+        8: "♯5",
+        9: "6",
+        10: "♭7",
+        11: "7"
+    };
+
+    return labels[mod12(interval)];
+}
+
+function getChordNoteAtPitch(pitch) {
+    return getChordNoteMap().get(mod12(pitch));
+}
+
+function getDisplayInterval(note) {
+    return note.interval === 0 ? "R" : getIntervalLabel(note.interval);
+}
+
+/* ==================================================
+   UI
+================================================== */
+
+function updateRootMenu() {
+    document.querySelectorAll(".root-option").forEach(option => {
+        option.classList.toggle(
+            "active",
+            option.dataset.root === currentRoot
+        );
+    });
+}
+
+function updateChordMenu() {
+    document.querySelectorAll(".chord-option").forEach(option => {
+        option.classList.toggle(
+            "active",
+            option.dataset.chord === currentChord
+        );
+    });
+}
+
+function updateChordInfo() {
+    const chord = chordData[currentChord];
+
+    document.getElementById("chordTitle").textContent =
+        `${currentRoot} ${chord.name}`;
+
+    document.getElementById("chordFormula").textContent =
+        chord.formula.join(" · ");
+
+    document.getElementById("selectedChord").textContent =
+        chord.name;
+}
+
+function renderPositionDots() {
+    const container = document.getElementById("positionDots");
+    const voicings = getCurrentVoicings();
+
+    container.innerHTML = "";
+
+    voicings.forEach((_, index) => {
+        const dot = document.createElement("span");
+        dot.className = "position-dot";
+
+        if (index === currentVoicing) {
+            dot.classList.add("active");
+        }
+
+        container.appendChild(dot);
+    });
+}
+
+function updatePositionUI() {
+    const voicings = getCurrentVoicings();
+
+    if (currentVoicing >= voicings.length) {
+        currentVoicing = 0;
+    }
+
+    const voicing = voicings[currentVoicing];
+    const nums = voicing.frets.filter(value => typeof value === "number");
+    const fretted = nums.filter(value => value > 0);
+
+    const minFret = fretted.length ? Math.min(...fretted) : 1;
+    const maxFret = fretted.length ? Math.max(...fretted) : 1;
+
+    document.getElementById("positionTitle").textContent =
+        `Voicing ${currentVoicing + 1} / ${voicings.length}`;
+
+    document.getElementById("positionSubtitle").textContent =
+        voicing.label || "Voicing";
+
+    document.getElementById("fretRange").textContent =
+        maxFret === minFret
+            ? `Fret ${minFret}`
+            : `Frets ${minFret} – ${maxFret}`;
+
+    renderPositionDots();
+}
+
+/* ==================================================
+   FRETBOARD
+================================================== */
+
+function renderFretboard() {
+    const board = document.getElementById("fretboard");
+    board.innerHTML = "";
+
+    const voicings = getCurrentVoicings();
+    const voicing = voicings[currentVoicing];
+
+    if (!voicing) return;
+
+    const fretNumbers = voicing.frets.filter(value => typeof value === "number");
+    const fretted = fretNumbers.filter(value => value > 0);
+
+    let startFret = fretted.length ? Math.min(...fretted) : 1;
+    let endFret = fretted.length ? Math.max(...fretted) : 1;
+
+    /*
+       Keep a minimum three-fret visual window for compact shapes,
+       while still allowing higher voicings to show their complete span.
+    */
+    if (endFret - startFret < 2) {
+        endFret = startFret + 2;
+    }
+
+    /*
+       Do not create a huge empty fretboard if a shape sits near 24.
+    */
+    if (endFret > MAX_FRET) {
+        endFret = MAX_FRET;
+    }
+
+    const fretCount = endFret - startFret + 1;
+    board.style.setProperty("--fret-count", fretCount);
+
+    let displayStrings = strings.map((string, index) => ({
+        ...string,
+        index
+    }));
+
+    if (stringsReversed) {
+        displayStrings.reverse();
+    }
+
+    displayStrings.forEach((string, displayIndex) => {
+        const isLastRow = displayIndex === displayStrings.length - 1;
+
+        const label = document.createElement("div");
+        label.className = "string-label";
+
+        if (isLastRow) label.classList.add("last-row");
+
+        label.textContent = string.name;
+        board.appendChild(label);
+
+        for (let fret = startFret; fret <= endFret; fret++) {
+            const cell = document.createElement("div");
+            cell.className = "fret";
+
+            if (fret === endFret) cell.classList.add("last-column");
+            if (isLastRow) cell.classList.add("last-row");
+
+            /*
+               The fretboard is showing a local window, but the
+               stored shape contains absolute frets.
+            */
+            const shapeFret = voicing.frets[string.index];
+
+            if (shapeFret === "X") {
+                /*
+                   X is attached to the nut/first displayed fret
+                   rather than to a fret number.
+                */
+                if (fret === startFret) {
+                    const mute = document.createElement("div");
+                    mute.className = "mute-marker";
+                    mute.textContent = "X";
+                    cell.appendChild(mute);
+                }
+            } else if (shapeFret === 0) {
+                /*
+                   Open strings are shown at the first displayed
+                   column.
+                */
+                if (fret === startFret) {
+                    const open = document.createElement("div");
+                    open.className = "open-marker";
+                    open.textContent = "O";
+                    cell.appendChild(open);
+                }
+            } else if (shapeFret === fret) {
+                const noteInfo = getChordNoteAtPitch(
+                    string.pitch + shapeFret
+                );
+
+                if (noteInfo) {
+                    const note = document.createElement("div");
+                    note.className = "note";
+
+                    if (noteInfo.interval === 0) {
+                        note.classList.add("root");
+                    }
+
+                    const name = document.createElement("div");
+                    name.className = "note-name";
+                    name.textContent = noteInfo.name;
+
+                    const interval = document.createElement("div");
+                    interval.className = "note-interval";
+                    interval.textContent = getDisplayInterval(noteInfo);
+
+                    const finger = document.createElement("div");
+                    finger.className = "note-finger";
+
+                    const fingerValue = voicing.fingers[string.index];
+
+                    if (fingerValue === 0) {
+                        finger.textContent = "O";
+                    } else if (fingerValue) {
+                        finger.textContent = fingerValue;
+                    }
+
+                    if (displayMode === "notes") {
+                        interval.style.display = "none";
+                        finger.style.display = "none";
+                    }
+
+                    if (displayMode === "intervals") {
+                        name.style.display = "none";
+                        finger.style.display = "none";
+                    }
+
+                    if (displayMode === "fingering") {
+                        name.style.display = "none";
+                        interval.style.display = "none";
+                    }
+
+                    if (displayMode === "all") {
+                        /*
+                           All = note + interval + finger.
+                        */
+                    }
+
+                    note.appendChild(name);
+                    note.appendChild(interval);
+                    note.appendChild(finger);
+
+                    cell.appendChild(note);
+                }
+            }
+
+            const fretNumber = document.createElement("span");
+            fretNumber.className = "fret-number";
+            fretNumber.textContent = fret;
+            cell.appendChild(fretNumber);
+
+            board.appendChild(cell);
+        }
+    });
+
+    /*
+       Draw the barre as an overlay inside the first cell of the
+       barre fret. This keeps it visually contained within the
+       fretboard instead of creating the square overflow we had
+       in the comparison view of the scale system.
+    */
+    if (voicing.barre) {
+        const barre = voicing.barre;
+
+        if (barre.fret >= startFret && barre.fret <= endFret) {
+            const rowStart = stringsReversed
+                ? strings.length - barre.fromString + 1
+                : barre.fromString;
+
+            const rowEnd = stringsReversed
+                ? strings.length - barre.toString + 1
+                : barre.toString;
+
+            /*
+               CSS grid row 1 is the low-E label row. Fret columns
+               begin at column 2 because column 1 is the label.
+            */
+            const marker = document.createElement("div");
+            marker.className = "barre-marker";
+            marker.textContent = "1";
+
+            marker.style.gridRow =
+                `${Math.min(rowStart, rowEnd) + 1} / ${Math.max(rowStart, rowEnd) + 2}`;
+
+            marker.style.gridColumn =
+                `${barre.fret - startFret + 2} / ${barre.fret - startFret + 3}`;
+
+            board.appendChild(marker);
+        }
+    }
+}
+
+function updateAll() {
+    updateChordInfo();
+    updatePositionUI();
+    renderFretboard();
+}
+
+/* ==================================================
+   NAVIGATION
+================================================== */
+
+function nextVoicing() {
+    const voicings = getCurrentVoicings();
+
+    currentVoicing++;
+
+    if (currentVoicing >= voicings.length) {
+        currentVoicing = 0;
+    }
+
+    updateAll();
+}
+
+function previousVoicing() {
+    const voicings = getCurrentVoicings();
+
+    currentVoicing--;
+
+    if (currentVoicing < 0) {
+        currentVoicing = voicings.length - 1;
+    }
+
+    updateAll();
+}
+
+document.getElementById("nextVoicing")
+    .addEventListener("click", nextVoicing);
+
+document.getElementById("previousVoicing")
+    .addEventListener("click", previousVoicing);
+
+/* ==================================================
+   SWIPE
+================================================== */
+
+const fretboardElement = document.getElementById("fretboard");
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+fretboardElement.addEventListener("touchstart", event => {
+    const touch = event.changedTouches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+}, { passive: true });
+
+fretboardElement.addEventListener("touchend", event => {
+    const touch = event.changedTouches[0];
+
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+
+    if (Math.abs(deltaY) > Math.abs(deltaX)) return;
+    if (Math.abs(deltaX) < 50) return;
+
+    if (deltaX < 0) {
+        nextVoicing();
+    } else {
+        previousVoicing();
+    }
+});
+
+/* ==================================================
+   ROOT SELECTOR
+================================================== */
+
+const rootButton = document.getElementById("rootButton");
+const rootMenu = document.getElementById("rootMenu");
+
+rootButton.addEventListener("click", event => {
+    event.stopPropagation();
+
+    rootMenu.classList.toggle("open");
+    document.getElementById("chordMenu").classList.remove("open");
+    updateRootMenu();
+});
+
+document.querySelectorAll(".root-option").forEach(option => {
+    option.addEventListener("click", () => {
+        currentRoot = option.dataset.root;
+        currentVoicing = 0;
+
+        rootButton.textContent = currentRoot;
+        rootMenu.classList.remove("open");
+
+        updateRootMenu();
+        updateAll();
+    });
+});
+
+/* ==================================================
+   CHORD SELECTOR
+================================================== */
+
+const chordButton = document.getElementById("chordButton");
+const chordMenu = document.getElementById("chordMenu");
+
+chordButton.addEventListener("click", event => {
+    event.stopPropagation();
+
+    chordMenu.classList.toggle("open");
+    rootMenu.classList.remove("open");
+});
+
+document.querySelectorAll(".category-header").forEach(header => {
+    header.addEventListener("click", () => {
+        header.parentElement.classList.toggle("open");
+    });
+});
+
+document.querySelectorAll(".chord-option").forEach(option => {
+    option.addEventListener("click", () => {
+        currentChord = option.dataset.chord;
+        currentVoicing = 0;
+
+        updateChordMenu();
+        chordMenu.classList.remove("open");
+
+        updateAll();
+    });
+});
+
+/* ==================================================
+   DISPLAY
+================================================== */
+
+document.querySelectorAll(".display-toggle button").forEach(button => {
+    button.addEventListener("click", () => {
+        displayMode = button.dataset.display;
+
+        document.querySelectorAll(".display-toggle button")
+            .forEach(item => item.classList.remove("active"));
+
+        button.classList.add("active");
+
+        renderFretboard();
+    });
+});
+
+/* ==================================================
+   INVERT FRETBOARD
+================================================== */
+
+const invertButton = document.getElementById("invertButton");
+
+invertButton.addEventListener("click", () => {
+    stringsReversed = !stringsReversed;
+    invertButton.classList.toggle("active", stringsReversed);
+    renderFretboard();
+});
+
+/* ==================================================
+   OUTSIDE CLICK
+================================================== */
+
+document.addEventListener("click", event => {
+    if (!rootMenu.contains(event.target) && event.target !== rootButton) {
+        rootMenu.classList.remove("open");
+    }
+
+    if (!chordMenu.contains(event.target) && event.target !== chordButton) {
+        chordMenu.classList.remove("open");
+    }
+});
+
+/* ==================================================
+   INITIAL RENDER
+================================================== */
+
+updateRootMenu();
+updateChordMenu();
+updateAll();
+
+</script>
+</body>
+</html>
