@@ -393,6 +393,7 @@ button {
     font-size: 13px;
 }
 
+
 /* ==================================================
    COMPARISON MODE
 ================================================== */
@@ -537,7 +538,7 @@ button {
 .display-toggle {
     width: min(440px, 100%);
 
-    margin: 0 auto 30px;
+    margin: 0 auto 16px;
 
     display: grid;
 
@@ -570,6 +571,43 @@ button {
 .display-toggle button.active {
     background: #f1f1f1;
     color: #151515;
+}
+
+
+/* ==================================================
+   STRING ORDER / FRETBOARD INVERSION
+================================================== */
+
+.string-order-toggle {
+    width: min(440px, 100%);
+
+    margin: 0 auto 30px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.string-order-toggle button {
+    min-height: 46px;
+
+    width: 100%;
+
+    border-radius: 14px;
+
+    border: 1px solid #414141;
+
+    background: #222;
+    color: #bbb;
+
+    cursor: pointer;
+
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.string-order-toggle button:hover {
+    background: #292929;
+    color: #f1f1f1;
 }
 
 
@@ -1131,6 +1169,7 @@ and (max-height: 600px) {
 
 
 @media (max-width: 430px) {
+
     .works-with-button {
         min-height: 54px;
         padding: 0 16px;
@@ -1144,6 +1183,12 @@ and (max-height: 600px) {
         gap: 14px 18px;
         font-size: 13px;
     }
+
+    .string-order-toggle button {
+        min-height: 44px;
+        font-size: 13px;
+    }
+
 }
 
 </style>
@@ -1665,11 +1710,14 @@ and (max-height: 600px) {
 
 </section>
 
+
 <button
     class="comparison-back"
     id="comparisonBack"
     type="button">
+
     ← Back to single scale
+
 </button>
 
 
@@ -1697,6 +1745,23 @@ and (max-height: 600px) {
         data-display="both">
 
         Both
+
+    </button>
+
+</div>
+
+
+<!-- ==================================================
+     STRING ORDER
+================================================== -->
+
+<div class="string-order-toggle">
+
+    <button
+        id="stringOrderButton"
+        type="button">
+
+        ⇅ Invert Fretboard
 
     </button>
 
@@ -1761,7 +1826,7 @@ and (max-height: 600px) {
             class="position-shape"
             id="positionShape">
 
-            C Shape · CAGED
+            Frets 1 – 6
 
         </div>
 
@@ -1770,7 +1835,7 @@ and (max-height: 600px) {
             class="fret-range"
             id="fretRange">
 
-            Frets 12 – 15
+            Frets 1 – 6
 
         </div>
 
@@ -1855,13 +1920,6 @@ and (max-height: 600px) {
    MUSIC DATA
 ================================================== */
 
-
-/*
-   Chromatic pitch classes.
-
-   We use these internally for pitch calculation.
-*/
-
 const chromatic = [
 
     "C",
@@ -1900,7 +1958,7 @@ function naturalPitchValue(letter) {
 
 const rootData = {
 
-    C:  { pitch: 0,  letter: "C", accidental: 0 },
+    C:  { pitch: 0, letter: "C", accidental: 0 },
     "C#": { pitch: 1, letter: "C", accidental: 1 },
     Db: { pitch: 1, letter: "D", accidental: -1 },
 
@@ -1931,22 +1989,6 @@ const rootData = {
    SCALE DEFINITIONS
 ================================================== */
 
-
-/*
-   intervals = semitones from the tonic.
-
-   degreeOffsets tell the spelling engine which
-   natural letter each scale degree belongs to.
-
-   accidentals:
-      -2 = double flat
-      -1 = flat
-       0 = natural
-      +1 = sharp
-      +2 = double sharp
-*/
-
-
 const scaleData = {
 
 
@@ -1965,7 +2007,7 @@ const scaleData = {
             [0, 0, 0, 0, 0, 0, 0],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -1988,7 +2030,7 @@ const scaleData = {
             [0, 0, -1, 0, 0, 0, -1],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2011,7 +2053,7 @@ const scaleData = {
             [0, -1, -1, 0, 0, -1, -1],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2034,7 +2076,7 @@ const scaleData = {
             [0, 0, 0, 1, 0, 0, 0],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2057,7 +2099,7 @@ const scaleData = {
             [0, 0, 0, 0, 0, 0, -1],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2080,7 +2122,7 @@ const scaleData = {
             [0, 0, -1, 0, 0, -1, -1],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2103,7 +2145,7 @@ const scaleData = {
             [0, -1, -1, 0, -1, -1, -1],
 
         system:
-            "CAGED",
+            "Diatonic",
 
         patternCount:
             5
@@ -2126,7 +2168,7 @@ const scaleData = {
             [0, 0, -1, 0, 0, -1, 0],
 
         system:
-            "CAGED",
+            "Minor",
 
         patternCount:
             5
@@ -2149,7 +2191,7 @@ const scaleData = {
             [0, 0, -1, 0, 0, 0, 0],
 
         system:
-            "CAGED · Ascending / Jazz",
+            "Minor · Ascending / Jazz",
 
         patternCount:
             5
@@ -2241,7 +2283,7 @@ const scaleData = {
             [0, 0, 0, 1, 0, 0, -1],
 
         system:
-            "CAGED",
+            "Jazz",
 
         patternCount:
             5
@@ -2264,7 +2306,7 @@ const scaleData = {
             [0, -1, -1, 0, -1, -1, -1],
 
         system:
-            "CAGED · Super Locrian",
+            "Jazz · Super Locrian",
 
         patternCount:
             5
@@ -2356,7 +2398,7 @@ const scaleData = {
             [0, 0, 0, 0, 0, 0, -1, 0],
 
         system:
-            "CAGED",
+            "Jazz",
 
         patternCount:
             5
@@ -2379,7 +2421,7 @@ const scaleData = {
             [0, 0, 0, 0, 0, -1, 0, 0],
 
         system:
-            "CAGED",
+            "Jazz",
 
         patternCount:
             5
@@ -2402,7 +2444,7 @@ const scaleData = {
             [0, 0, -1, 0, 0, 0, 0, -1],
 
         system:
-            "CAGED",
+            "Jazz",
 
         patternCount:
             5
@@ -2425,7 +2467,7 @@ const scaleData = {
             [0, -1, 0, 0, 0, -1, -1],
 
         system:
-            "CAGED",
+            "Exotic / World",
 
         patternCount:
             5
@@ -2448,7 +2490,7 @@ const scaleData = {
             [0, 0, -1, 0, -1],
 
         system:
-            "CAGED-derived",
+            "Exotic / World",
 
         patternCount:
             5
@@ -2471,7 +2513,7 @@ const scaleData = {
             [0, 0, -1, 1, 0, -1, 0],
 
         system:
-            "CAGED",
+            "Exotic / World",
 
         patternCount:
             5
@@ -2494,7 +2536,7 @@ const scaleData = {
             [0, -1, 0, 0, 0, -1, 0],
 
         system:
-            "CAGED",
+            "Exotic / World",
 
         patternCount:
             5
@@ -2507,15 +2549,6 @@ const scaleData = {
 /* ==================================================
    GUITAR
 ================================================== */
-
-
-/*
-   Standard tuning.
-
-   Low → high:
-
-   E A D G B E
-*/
 
 const strings = [
 
@@ -2556,106 +2589,48 @@ const MAX_FRET = 24;
 
 
 /* ==================================================
-   CAGED POSITION DATABASE
+   POSITION WINDOWS
 ================================================== */
 
-
 /*
-   These are the verified C Major CAGED scale
-   regions used as the reference geometry.
+   Five freely movable fretboard study regions.
 
-   The actual scale notes are NOT hard-coded here.
+   Each position overlaps the previous one so that
+   moving between positions does not create a hard
+   boundary.
 
-   The scale formula is applied to these regions.
-
-   This means:
-      Major
-      Dorian
-      Harmonic Minor
-      Melodic Minor
-      etc.
-
-   can all use the same underlying fretboard
-   geometry while changing their actual notes.
-
-   The reference regions are:
-
-   E Shape: 7–10
-   D Shape: 9–13
-   C Shape: 12–15
-   A Shape: 2–6
-   G Shape: 5–8
+   Position 1: 1–6
+   Position 2: 6–11
+   Position 3: 11–16
+   Position 4: 16–21
+   Position 5: 20–24
 */
 
-
-const CAGED_TEMPLATES = [
-
-    /*
-       Canonical CAGED order:
-
-       1. C
-       2. A
-       3. G
-       4. E
-       5. D
-
-       The verified C-major regions themselves are
-       unchanged; only their presentation/numbering
-       order is corrected.
-    */
+const POSITION_WINDOWS = [
 
     {
-        shape: "C",
-        start: 12,
-        end: 15
+        startFret: 1,
+        endFret: 6
     },
 
     {
-        shape: "A",
-        start: 2,
-        end: 6
+        startFret: 6,
+        endFret: 11
     },
 
     {
-        shape: "G",
-        start: 5,
-        end: 8
+        startFret: 11,
+        endFret: 16
     },
 
     {
-        shape: "E",
-        start: 7,
-        end: 10
+        startFret: 16,
+        endFret: 21
     },
 
     {
-        shape: "D",
-        start: 9,
-        end: 13
-    }
-
-];
-
-
-/*
-   Symmetric scales don't need five different
-   CAGED shapes.
-
-   We use two complementary repeating regions.
-*/
-
-const SYMMETRIC_TEMPLATES = [
-
-    {
-        shape: "Pattern A",
-        startOffset: -1,
-        endOffset: 4
-    },
-
-    {
-        shape: "Pattern B",
-        startOffset: 5,
-        endOffset: 10
+        startFret: 20,
+        endFret: 24
     }
 
 ];
@@ -2682,10 +2657,6 @@ let comparisonRoot = null;
 
 /* ==================================================
    WORKS WELL WITH DATABASE
-
-   12 curated, undirected relationships.
-   The offsets below are measured from the root of
-   the first scale to the root of the second scale.
 ================================================== */
 
 const worksWellWith = [
@@ -2800,40 +2771,91 @@ const worksWellWith = [
         b: "minorPentatonic",
         offset: 0,
         label: "Same tonic"
-    },
+    }
 
 ];
 
+
 function normalizePitch(pitch) {
-    return ((pitch % 12) + 12) % 12;
+
+    return (
+        (pitch % 12) + 12
+    ) % 12;
+
 }
+
 
 function transposeRoot(root, semitones) {
-    return chromatic[normalizePitch(noteIndex(root) + semitones)];
+
+    return chromatic[
+        normalizePitch(
+            noteIndex(root) +
+            semitones
+        )
+    ];
+
 }
 
+
 function getWorksWellWithOptions() {
+
     const options = [];
 
-    worksWellWith.forEach(relation => {
-        if (relation.a === currentScale) {
-            options.push({
-                scale: relation.b,
-                root: transposeRoot(currentRoot, relation.offset),
-                label: relation.label
-            });
-        }
+    worksWellWith.forEach(
+        relation => {
 
-        if (relation.b === currentScale) {
-            options.push({
-                scale: relation.a,
-                root: transposeRoot(currentRoot, -relation.offset),
-                label: relation.label
-            });
+            if (
+                relation.a ===
+                currentScale
+            ) {
+
+                options.push({
+
+                    scale:
+                        relation.b,
+
+                    root:
+                        transposeRoot(
+                            currentRoot,
+                            relation.offset
+                        ),
+
+                    label:
+                        relation.label
+
+                });
+
+            }
+
+
+            if (
+                relation.b ===
+                currentScale
+            ) {
+
+                options.push({
+
+                    scale:
+                        relation.a,
+
+                    root:
+                        transposeRoot(
+                            currentRoot,
+                            -relation.offset
+                        ),
+
+                    label:
+                        relation.label
+
+                });
+
+            }
+
         }
-    });
+    );
 
     return options;
+
 }
 
 
@@ -2883,28 +2905,15 @@ function accidentalText(value) {
     }
 
     if (value < 0) {
-        return "b".repeat(Math.abs(value));
+        return "b".repeat(
+            Math.abs(value)
+        );
     }
 
     return "";
 
 }
 
-
-/*
-   Generate musically sensible note names.
-
-   This is deliberately not a simple pitch-class
-   lookup. That would turn, for example:
-
-       C# major
-
-   into a mixture of sharps and flats.
-
-   Instead, the scale degree determines the
-   natural letter and the scale definition
-   determines the accidental.
-*/
 
 function getScaleNotes() {
 
@@ -2938,8 +2947,8 @@ function getScaleNotes() {
             const letter =
                 letters[
                     (
-                        rootLetterIndex
-                        + degreeOffset
+                        rootLetterIndex +
+                        degreeOffset
                     ) % 7
                 ];
 
@@ -2948,22 +2957,9 @@ function getScaleNotes() {
 
             const targetPitch =
                 mod12(
-                    root.pitch + interval
+                    root.pitch +
+                    interval
                 );
-
-            /*
-               The scale degree determines the natural letter.
-               The selected root and interval determine the
-               accidental required for that letter.
-
-               Example:
-
-               C# major =
-               C# D# E# F# G# A# B#
-
-               This avoids the previous problem where the
-               accidental table was effectively fixed to C.
-            */
 
             let accidental =
                 targetPitch -
@@ -3002,224 +2998,683 @@ function getScaleNotes() {
    COMPARISON MODE
 ================================================== */
 
-function getScaleNoteMap(scaleKey, root) {
+function getScaleNoteMap(
+    scaleKey,
+    root
+) {
 
-    const rootDataEntry = rootData[root];
-    const scale = scaleData[scaleKey];
-    const map = new Map();
+    const rootDataEntry =
+        rootData[root];
 
-    scale.intervals.forEach((interval, degreeIndex) => {
+    const scale =
+        scaleData[scaleKey];
 
-        const pitch = mod12(rootDataEntry.pitch + interval);
-        const degreeOffset = scale.degreeOffsets[degreeIndex];
-        const letters = ["C", "D", "E", "F", "G", "A", "B"];
-        const rootLetterIndex = getNaturalLetterIndex(rootDataEntry.letter);
-        const letter = letters[(rootLetterIndex + degreeOffset) % 7];
-        const natural = naturalPitchValue(letter);
+    const map =
+        new Map();
 
-        let accidental = pitch - natural;
-        while (accidental > 6) accidental -= 12;
-        while (accidental < -6) accidental += 12;
+    scale.intervals.forEach(
+        (interval, degreeIndex) => {
 
-        map.set(pitch, {
-            pitch,
-            interval,
-            name: letter + accidentalText(accidental)
-        });
-    });
+            const pitch =
+                mod12(
+                    rootDataEntry.pitch +
+                    interval
+                );
+
+            const degreeOffset =
+                scale.degreeOffsets[
+                    degreeIndex
+                ];
+
+            const letters = [
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "A",
+                "B"
+            ];
+
+            const rootLetterIndex =
+                getNaturalLetterIndex(
+                    rootDataEntry.letter
+                );
+
+            const letter =
+                letters[
+                    (
+                        rootLetterIndex +
+                        degreeOffset
+                    ) % 7
+                ];
+
+            const natural =
+                naturalPitchValue(
+                    letter
+                );
+
+            let accidental =
+                pitch -
+                natural;
+
+            while (accidental > 6) {
+                accidental -= 12;
+            }
+
+            while (accidental < -6) {
+                accidental += 12;
+            }
+
+            map.set(
+                pitch,
+                {
+
+                    pitch,
+
+                    interval,
+
+                    name:
+                        letter +
+                        accidentalText(
+                            accidental
+                        )
+
+                }
+            );
+
+        }
+    );
 
     return map;
+
 }
 
 
 function getComparisonScaleNames() {
 
-    const map = getScaleNoteMap(comparisonScale, comparisonRoot);
-    return [...map.values()].map(note => note.name);
+    const map =
+        getScaleNoteMap(
+            comparisonScale,
+            comparisonRoot
+        );
+
+    return [
+        ...map.values()
+    ].map(
+        note => note.name
+    );
 
 }
 
 
 function renderComparisonFretboard() {
 
-    const board = document.getElementById("fretboard");
+    const board =
+        document.getElementById(
+            "fretboard"
+        );
+
     board.innerHTML = "";
 
-    const mapA = getScaleNoteMap(currentScale, currentRoot);
-    const mapB = getScaleNoteMap(comparisonScale, comparisonRoot);
-    const position = positionDatabase[currentPosition];
+    const mapA =
+        getScaleNoteMap(
+            currentScale,
+            currentRoot
+        );
+
+    const mapB =
+        getScaleNoteMap(
+            comparisonScale,
+            comparisonRoot
+        );
+
+    const position =
+        positionDatabase[
+            currentPosition
+        ];
 
     if (!position) return;
 
-    const startFret = position.startFret;
-    const endFret = position.endFret;
-    const fretCount = endFret - startFret + 1;
+    const startFret =
+        position.startFret;
 
-    board.style.setProperty("--fret-count", fretCount);
+    const endFret =
+        position.endFret;
 
-    const displayStrings = stringsReversed ? [...strings].reverse() : strings;
+    const fretCount =
+        endFret -
+        startFret +
+        1;
 
-    displayStrings.forEach((string, displayIndex) => {
+    board.style.setProperty(
+        "--fret-count",
+        fretCount
+    );
 
-        const isLastRow = displayIndex === displayStrings.length - 1;
-        const label = document.createElement("div");
-        label.className = "string-label";
-        if (isLastRow) label.classList.add("last-row");
-        label.textContent = string.name;
-        board.appendChild(label);
 
-        for (let fret = startFret; fret <= endFret; fret++) {
+    const displayStrings =
+        stringsReversed
+            ? [...strings].reverse()
+            : strings;
 
-            const cell = document.createElement("div");
-            cell.className = "fret";
-            if (fret === endFret) cell.classList.add("last-column");
-            if (isLastRow) cell.classList.add("last-row");
 
-            const pitch = mod12(string.pitch + fret);
-            const noteA = mapA.get(pitch);
-            const noteB = mapB.get(pitch);
+    displayStrings.forEach(
+        (string, displayIndex) => {
 
-            if (noteA || noteB) {
+            const isLastRow =
+                displayIndex ===
+                displayStrings.length - 1;
 
-                const note = document.createElement("div");
-                note.className = "note";
+            const label =
+                document.createElement(
+                    "div"
+                );
 
-                const shared = !!noteA && !!noteB;
-                const rootA = noteA && noteA.interval === 0;
-                const rootB = noteB && noteB.interval === 0;
+            label.className =
+                "string-label";
 
-                if (shared && rootA && rootB) {
-                    note.classList.add("comparison-shared-root");
-                } else if (rootA) {
-                    note.classList.add("comparison-root-a");
-                } else if (rootB) {
-                    note.classList.add("comparison-root-b");
-                } else if (shared) {
-                    note.classList.add("comparison-shared");
-                } else if (noteA) {
-                    note.classList.add("comparison-a");
-                } else {
-                    note.classList.add("comparison-b");
-                }
-
-                const primary = noteA || noteB;
-                const name = document.createElement("div");
-                name.className = "note-name";
-                name.textContent = primary.name;
-
-                const intervalLabel = document.createElement("div");
-                intervalLabel.className = "note-interval";
-
-                if (shared) {
-                    intervalLabel.textContent =
-                        `${noteA.interval === 0 ? "R" : getIntervalLabel(noteA.interval)} / ${noteB.interval === 0 ? "R" : getIntervalLabel(noteB.interval)}`;
-                } else {
-                    intervalLabel.textContent =
-                        primary.interval === 0 ? "R" : getIntervalLabel(primary.interval);
-                }
-
-                if (displayMode === "notes") intervalLabel.style.display = "none";
-                if (displayMode === "intervals") name.style.display = "none";
-
-                note.appendChild(name);
-                note.appendChild(intervalLabel);
-                cell.appendChild(note);
+            if (isLastRow) {
+                label.classList.add(
+                    "last-row"
+                );
             }
 
-            const fretNumber = document.createElement("span");
-            fretNumber.className = "fret-number";
-            fretNumber.textContent = fret;
-            cell.appendChild(fretNumber);
-            board.appendChild(cell);
+            label.textContent =
+                string.name;
+
+            board.appendChild(
+                label
+            );
+
+
+            for (
+                let fret = startFret;
+                fret <= endFret;
+                fret++
+            ) {
+
+                const cell =
+                    document.createElement(
+                        "div"
+                    );
+
+                cell.className =
+                    "fret";
+
+                if (
+                    fret === endFret
+                ) {
+
+                    cell.classList.add(
+                        "last-column"
+                    );
+
+                }
+
+                if (isLastRow) {
+
+                    cell.classList.add(
+                        "last-row"
+                    );
+
+                }
+
+
+                const pitch =
+                    mod12(
+                        string.pitch +
+                        fret
+                    );
+
+                const noteA =
+                    mapA.get(pitch);
+
+                const noteB =
+                    mapB.get(pitch);
+
+
+                if (noteA || noteB) {
+
+                    const note =
+                        document.createElement(
+                            "div"
+                        );
+
+                    note.className =
+                        "note";
+
+                    const shared =
+                        !!noteA &&
+                        !!noteB;
+
+                    const rootA =
+                        noteA &&
+                        noteA.interval === 0;
+
+                    const rootB =
+                        noteB &&
+                        noteB.interval === 0;
+
+
+                    if (
+                        shared &&
+                        rootA &&
+                        rootB
+                    ) {
+
+                        note.classList.add(
+                            "comparison-shared-root"
+                        );
+
+                    } else if (rootA) {
+
+                        note.classList.add(
+                            "comparison-root-a"
+                        );
+
+                    } else if (rootB) {
+
+                        note.classList.add(
+                            "comparison-root-b"
+                        );
+
+                    } else if (shared) {
+
+                        note.classList.add(
+                            "comparison-shared"
+                        );
+
+                    } else if (noteA) {
+
+                        note.classList.add(
+                            "comparison-a"
+                        );
+
+                    } else {
+
+                        note.classList.add(
+                            "comparison-b"
+                        );
+
+                    }
+
+
+                    const primary =
+                        noteA || noteB;
+
+                    const name =
+                        document.createElement(
+                            "div"
+                        );
+
+                    name.className =
+                        "note-name";
+
+                    name.textContent =
+                        primary.name;
+
+
+                    const intervalLabel =
+                        document.createElement(
+                            "div"
+                        );
+
+                    intervalLabel.className =
+                        "note-interval";
+
+
+                    if (shared) {
+
+                        intervalLabel.textContent =
+                            `${
+                                noteA.interval === 0
+                                    ? "R"
+                                    : getIntervalLabel(
+                                        noteA.interval
+                                    )
+                            } / ${
+                                noteB.interval === 0
+                                    ? "R"
+                                    : getIntervalLabel(
+                                        noteB.interval
+                                    )
+                            }`;
+
+                    } else {
+
+                        intervalLabel.textContent =
+                            primary.interval === 0
+                                ? "R"
+                                : getIntervalLabel(
+                                    primary.interval
+                                );
+
+                    }
+
+
+                    if (
+                        displayMode ===
+                        "notes"
+                    ) {
+
+                        intervalLabel.style.display =
+                            "none";
+
+                    }
+
+                    if (
+                        displayMode ===
+                        "intervals"
+                    ) {
+
+                        name.style.display =
+                            "none";
+
+                    }
+
+
+                    note.appendChild(
+                        name
+                    );
+
+                    note.appendChild(
+                        intervalLabel
+                    );
+
+                    cell.appendChild(
+                        note
+                    );
+
+                }
+
+
+                const fretNumber =
+                    document.createElement(
+                        "span"
+                    );
+
+                fretNumber.className =
+                    "fret-number";
+
+                fretNumber.textContent =
+                    fret;
+
+                cell.appendChild(
+                    fretNumber
+                );
+
+                board.appendChild(
+                    cell
+                );
+
+            }
+
         }
-    });
+    );
+
 }
 
 
 function renderFretboard() {
 
     if (comparisonMode) {
+
         renderComparisonFretboard();
+
     } else {
+
         renderSingleFretboard();
+
     }
 
 }
 
 
-function enterComparison(scale, root) {
+function enterComparison(
+    scale,
+    root
+) {
 
-    comparisonScale = scale;
-    comparisonRoot = root;
-    comparisonMode = true;
-    currentPosition = 0;
+    comparisonScale =
+        scale;
 
-    document.getElementById("comparisonInfo").classList.add("open");
-    document.getElementById("comparisonBack").classList.add("open");
-    document.getElementById("singleScaleLegend").style.display = "none";
+    comparisonRoot =
+        root;
 
-    document.getElementById("comparisonTitle").textContent =
-        `${currentRoot} ${scaleData[currentScale].name} + ${comparisonRoot} ${scaleData[comparisonScale].name}`;
+    comparisonMode =
+        true;
 
-    document.getElementById("comparisonSubtitle").textContent =
-        `${getScaleNotes().map(note => note.name).join(" · ")}  +  ${getComparisonScaleNames().join(" · ")}`;
+    currentPosition =
+        0;
 
-    document.getElementById("worksWithMenu").classList.remove("open");
-    document.getElementById("worksWithButton").classList.remove("open");
+    document
+        .getElementById(
+            "comparisonInfo"
+        )
+        .classList.add(
+            "open"
+        );
+
+    document
+        .getElementById(
+            "comparisonBack"
+        )
+        .classList.add(
+            "open"
+        );
+
+    document
+        .getElementById(
+            "singleScaleLegend"
+        )
+        .style.display =
+            "none";
+
+
+    document
+        .getElementById(
+            "comparisonTitle"
+        )
+        .textContent =
+            `${currentRoot} ${
+                scaleData[currentScale].name
+            } + ${
+                comparisonRoot
+            } ${
+                scaleData[comparisonScale].name
+            }`;
+
+
+    document
+        .getElementById(
+            "comparisonSubtitle"
+        )
+        .textContent =
+            `${
+                getScaleNotes()
+                    .map(
+                        note =>
+                            note.name
+                    )
+                    .join(" · ")
+            }  +  ${
+                getComparisonScaleNames()
+                    .join(" · ")
+            }`;
+
+
+    document
+        .getElementById(
+            "worksWithMenu"
+        )
+        .classList.remove(
+            "open"
+        );
+
+    document
+        .getElementById(
+            "worksWithButton"
+        )
+        .classList.remove(
+            "open"
+        );
+
 
     updateAll();
+
 }
 
 
 function exitComparison() {
 
-    comparisonMode = false;
-    comparisonScale = null;
-    comparisonRoot = null;
+    comparisonMode =
+        false;
 
-    document.getElementById("comparisonInfo").classList.remove("open");
-    document.getElementById("comparisonBack").classList.remove("open");
-    document.getElementById("singleScaleLegend").style.display = "flex";
+    comparisonScale =
+        null;
+
+    comparisonRoot =
+        null;
+
+
+    document
+        .getElementById(
+            "comparisonInfo"
+        )
+        .classList.remove(
+            "open"
+        );
+
+    document
+        .getElementById(
+            "comparisonBack"
+        )
+        .classList.remove(
+            "open"
+        );
+
+    document
+        .getElementById(
+            "singleScaleLegend"
+        )
+        .style.display =
+            "flex";
+
 
     updateAll();
+
 }
 
 
 function renderWorksWellWithOptions() {
 
-    const container = document.getElementById("worksWithOptions");
+    const container =
+        document.getElementById(
+            "worksWithOptions"
+        );
+
     container.innerHTML = "";
 
-    const options = getWorksWellWithOptions();
+    const options =
+        getWorksWellWithOptions();
 
-    if (options.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "works-with-title";
-        empty.textContent = "No curated pairing for this scale yet.";
-        container.appendChild(empty);
+
+    if (
+        options.length === 0
+    ) {
+
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+        empty.className =
+            "works-with-title";
+
+        empty.textContent =
+            "No curated pairing for this scale yet.";
+
+        container.appendChild(
+            empty
+        );
+
         return;
+
     }
 
-    options.forEach(option => {
 
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "works-with-option";
+    options.forEach(
+        option => {
 
-        const name = document.createElement("span");
-        name.className = "works-with-option-name";
-        name.textContent = `${option.root} ${scaleData[option.scale].name}`;
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        const relation = document.createElement("span");
-        relation.className = "works-with-option-relation";
-        relation.textContent = option.label;
+            button.type =
+                "button";
 
-        button.appendChild(name);
-        button.appendChild(relation);
+            button.className =
+                "works-with-option";
 
-        button.addEventListener("click", () => enterComparison(option.scale, option.root));
-        container.appendChild(button);
-    });
+
+            const name =
+                document.createElement(
+                    "span"
+                );
+
+            name.className =
+                "works-with-option-name";
+
+            name.textContent =
+                `${
+                    option.root
+                } ${
+                    scaleData[
+                        option.scale
+                    ].name
+                }`;
+
+
+            const relation =
+                document.createElement(
+                    "span"
+                );
+
+            relation.className =
+                "works-with-option-relation";
+
+            relation.textContent =
+                option.label;
+
+
+            button.appendChild(
+                name
+            );
+
+            button.appendChild(
+                relation
+            );
+
+
+            button.addEventListener(
+                "click",
+                () =>
+                    enterComparison(
+                        option.scale,
+                        option.root
+                    )
+            );
+
+
+            container.appendChild(
+                button
+            );
+
+        }
+    );
+
 }
 
 
@@ -3266,149 +3721,38 @@ function getIntervalLabel(
    POSITION DATABASE
 ================================================== */
 
-
 /*
-   The important architectural change:
+   The position database is intentionally independent
+   from CAGED.
 
-   Position data is now an actual object.
+   Every scale uses the same five movable fretboard
+   windows:
 
-   The renderer never decides:
+       1–6
+       6–11
+       11–16
+       16–21
+       20–24
 
-       currentPosition * 5 + 1
-
-   anymore.
-
-   It asks the database for the selected
-   pattern and renders that pattern.
+   The notes shown inside each window are determined
+   exclusively by the selected scale and root.
 */
 
 function buildPositionDatabase() {
 
-    const scale =
-        scaleData[currentScale];
-
-    const rootPitch =
-        noteIndex(currentRoot);
-
-
-    if (
-        scale.system === "Symmetric"
-    ) {
-
-        return SYMMETRIC_TEMPLATES
-            .map(template => {
-
-                let start =
-                    rootPitch +
-                    template.startOffset;
-
-                let end =
-                    rootPitch +
-                    template.endOffset;
-
-                /*
-                   Keep the displayed region inside
-                   the normal guitar range.
-
-                   Each symmetric pattern remains a
-                   practical six-fret study region.
-                */
-
-                while (start < 1) {
-
-                    start += 12;
-                    end += 12;
-
-                }
-
-                while (start > 19) {
-
-                    start -= 12;
-                    end -= 12;
-
-                }
-
-                return {
-
-                    shape:
-                        template.shape,
-
-                    startFret:
-                        start,
-
-                    endFret:
-                        end,
-
-                    system:
-                        scale.system
-
-                };
-
-            })
-            .sort(
-                (a, b) =>
-                    a.startFret -
-                    b.startFret
-            );
-
-    }
-
-
-    /*
-       For CAGED-derived scales, transpose the
-       verified C-major reference geometry by
-       the distance from C to the selected root.
-    */
-
-    const transposition =
-        rootPitch;
-
-
-    return CAGED_TEMPLATES.map(
-        template => {
-
-            let start =
-                template.start +
-                transposition;
-
-            let end =
-                template.end +
-                transposition;
-
-
-            /*
-               Fold the template back into the
-               useful 1–24 fret range.
-            */
-
-            while (start > 19) {
-
-                start -= 12;
-                end -= 12;
-
-            }
-
-            while (end < 1) {
-
-                start += 12;
-                end += 12;
-
-            }
-
+    return POSITION_WINDOWS.map(
+        (window, index) => {
 
             return {
 
-                shape:
-                    template.shape,
+                position:
+                    index + 1,
 
                 startFret:
-                    start,
+                    window.startFret,
 
                 endFret:
-                    end,
-
-                system:
-                    scale.system
+                    window.endFret
 
             };
 
@@ -3436,20 +3780,24 @@ function updatePositionUI() {
     positionDatabase =
         buildPositionDatabase();
 
+
     const position =
         positionDatabase[
             currentPosition
         ];
+
 
     const positionTitle =
         document.getElementById(
             "positionTitle"
         );
 
+
     const positionShape =
         document.getElementById(
             "positionShape"
         );
+
 
     const fretRange =
         document.getElementById(
@@ -3466,17 +3814,15 @@ function updatePositionUI() {
 
 
     positionShape.textContent =
-        position.system === "Symmetric"
-            ? position.shape
-            : `${position.shape} Shape · CAGED`;
-
-
-    fretRange.textContent =
         `Frets ${
             position.startFret
         } – ${
             position.endFret
         }`;
+
+
+    fretRange.textContent =
+        "";
 
 
     renderPositionDots();
@@ -3538,6 +3884,7 @@ function updateScaleInfo() {
     const scale =
         scaleData[currentScale];
 
+
     document.getElementById(
         "scaleTitle"
     ).textContent =
@@ -3552,7 +3899,10 @@ function updateScaleInfo() {
         "scaleNotes"
     ).textContent =
         notes
-            .map(note => note.name)
+            .map(
+                note =>
+                    note.name
+            )
             .join(" · ");
 
 
@@ -3581,14 +3931,6 @@ function renderSingleFretboard() {
     const scaleNotes =
         getScaleNotes();
 
-
-    /*
-       Map pitch → scale information.
-
-       The interval is kept in semitones from
-       the tonic, so display modes continue to
-       work exactly as before.
-    */
 
     const scaleMap =
         new Map();
@@ -3636,13 +3978,23 @@ function renderSingleFretboard() {
     );
 
 
-    strings.forEach(
-        (string, stringIndex) => {
+    /*
+       The string order can be inverted without
+       changing any pitch or note calculation.
+    */
 
+    const displayStrings =
+        stringsReversed
+            ? [...strings].reverse()
+            : strings;
+
+
+    displayStrings.forEach(
+        (string, stringIndex) => {
 
             const isLastRow =
                 stringIndex ===
-                strings.length - 1;
+                displayStrings.length - 1;
 
 
             const label =
@@ -3677,7 +4029,6 @@ function renderSingleFretboard() {
                 fret <= endFret;
                 fret++
             ) {
-
 
                 const cell =
                     document.createElement(
@@ -3721,7 +4072,6 @@ function renderSingleFretboard() {
                         pitch
                     )
                 ) {
-
 
                     const interval =
                         scaleMap.get(
@@ -3867,21 +4217,18 @@ function updateAll() {
 
     updateScaleInfo();
 
+
     positionDatabase =
         buildPositionDatabase();
 
-
-    /*
-       Make sure the selected position still
-       exists after changing scale.
-    */
 
     if (
         currentPosition >=
         positionDatabase.length
     ) {
 
-        currentPosition = 0;
+        currentPosition =
+            0;
 
     }
 
@@ -3964,8 +4311,13 @@ document
                     currentScale =
                         option.dataset.scale;
 
-                    if (comparisonMode) {
+
+                    if (
+                        comparisonMode
+                    ) {
+
                         exitComparison();
+
                     }
 
 
@@ -4025,7 +4377,8 @@ function nextPosition() {
         positionDatabase.length
     ) {
 
-        currentPosition = 0;
+        currentPosition =
+            0;
 
     }
 
@@ -4137,10 +4490,6 @@ fretboardElement.addEventListener(
             touchStartY;
 
 
-        /*
-           Ignore primarily vertical gestures.
-        */
-
         if (
             Math.abs(deltaY) >
             Math.abs(deltaX)
@@ -4178,26 +4527,38 @@ fretboardElement.addEventListener(
 
 
 /* ==================================================
-   STRING ORDER
+   STRING ORDER / FRETBOARD INVERSION
 ================================================== */
 
-document
-    .querySelectorAll(".string-order-toggle button")
-    .forEach(button => {
+const stringOrderButton =
+    document.getElementById(
+        "stringOrderButton"
+    );
 
-        button.addEventListener("click", () => {
 
-            stringsReversed =
-                button.dataset.stringOrder === "tab";
+function updateStringOrderButton() {
 
-            document
-                .querySelectorAll(".string-order-toggle button")
-                .forEach(item => item.classList.remove("active"));
+    stringOrderButton.textContent =
+        stringsReversed
+            ? "⇅ Restore Fretboard"
+            : "⇅ Invert Fretboard";
 
-            button.classList.add("active");
-            renderFretboard();
-        });
-    });
+}
+
+
+stringOrderButton.addEventListener(
+    "click",
+    () => {
+
+        stringsReversed =
+            !stringsReversed;
+
+        updateStringOrderButton();
+
+        renderFretboard();
+
+    }
+);
 
 
 /* ==================================================
@@ -4315,18 +4676,28 @@ rootOptions.forEach(
                 currentRoot =
                     option.dataset.root;
 
-                if (comparisonMode) {
+
+                if (
+                    comparisonMode
+                ) {
+
                     exitComparison();
+
                 }
 
-                currentPosition = 0;
+
+                currentPosition =
+                    0;
+
 
                 rootButton.textContent =
                     currentRoot;
 
+
                 rootMenu.classList.remove(
                     "open"
                 );
+
 
                 updateAll();
 
@@ -4346,8 +4717,11 @@ document.addEventListener(
     event => {
 
         if (
-            !rootMenu.contains(event.target) &&
-            event.target !== rootButton
+            !rootMenu.contains(
+                event.target
+            ) &&
+            event.target !==
+                rootButton
         ) {
 
             rootMenu.classList.remove(
@@ -4356,9 +4730,13 @@ document.addEventListener(
 
         }
 
+
         if (
-            !scaleMenu.contains(event.target) &&
-            event.target !== scaleButton
+            !scaleMenu.contains(
+                event.target
+            ) &&
+            event.target !==
+                scaleButton
         ) {
 
             scaleMenu.classList.remove(
@@ -4375,34 +4753,87 @@ document.addEventListener(
    WORKS WELL WITH EVENTS
 ================================================== */
 
-const worksWithButton = document.getElementById("worksWithButton");
-const worksWithMenu = document.getElementById("worksWithMenu");
+const worksWithButton =
+    document.getElementById(
+        "worksWithButton"
+    );
 
-worksWithButton.addEventListener("click", event => {
-    event.stopPropagation();
+const worksWithMenu =
+    document.getElementById(
+        "worksWithMenu"
+    );
 
-    worksWithMenu.classList.toggle("open");
-    worksWithButton.classList.toggle("open");
 
-    rootMenu.classList.remove("open");
-    scaleMenu.classList.remove("open");
+worksWithButton.addEventListener(
+    "click",
+    event => {
 
-    renderWorksWellWithOptions();
-});
+        event.stopPropagation();
 
-document.getElementById("comparisonBack").addEventListener("click", exitComparison);
+        worksWithMenu.classList.toggle(
+            "open"
+        );
 
-document.addEventListener("click", event => {
-    if (!worksWithMenu.contains(event.target) && !worksWithButton.contains(event.target)) {
-        worksWithMenu.classList.remove("open");
-        worksWithButton.classList.remove("open");
+        worksWithButton.classList.toggle(
+            "open"
+        );
+
+        rootMenu.classList.remove(
+            "open"
+        );
+
+        scaleMenu.classList.remove(
+            "open"
+        );
+
+        renderWorksWellWithOptions();
+
     }
-});
+);
+
+
+document
+    .getElementById(
+        "comparisonBack"
+    )
+    .addEventListener(
+        "click",
+        exitComparison
+    );
+
+
+document.addEventListener(
+    "click",
+    event => {
+
+        if (
+            !worksWithMenu.contains(
+                event.target
+            ) &&
+            !worksWithButton.contains(
+                event.target
+            )
+        ) {
+
+            worksWithMenu.classList.remove(
+                "open"
+            );
+
+            worksWithButton.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
 
 
 /* ==================================================
    INITIAL RENDER
 ================================================== */
+
+updateStringOrderButton();
 
 updateAll();
 
