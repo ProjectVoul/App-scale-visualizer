@@ -343,6 +343,7 @@ button { font: inherit; }
     overflow: hidden;
     background: #93612d;
     touch-action: pan-y;
+    position: relative;
 }
 
 .string-label {
@@ -399,6 +400,8 @@ button { font: inherit; }
     font-weight: 700;
     position: relative;
     z-index: 2;
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
 }
 
@@ -426,17 +429,15 @@ button { font: inherit; }
 
 /* BARRE */
 .barre-marker {
-    position: relative;
+    position: absolute;
     width: 28px;
-    height: calc(100% - 12px);
-    margin: 6px auto;
     border-radius: 14px;
     background: #222;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
+    z-index: 1;
     pointer-events: none;
     font-size: 14px;
     font-weight: 800;
@@ -1649,11 +1650,37 @@ function renderFretboard() {
                 voicing.fingers[barre.fromString - 1] || 1
             );
 
-            marker.style.gridRow =
-                `${Math.min(rowStart, rowEnd) + 1} / ${Math.max(rowStart, rowEnd) + 2}`;
+            /*
+               The barré is a visual overlay, not a grid item.
+               Keeping it out of CSS Grid prevents it from changing
+               the fretboard's row sizing or pushing cells around.
+            */
+            const boardWidth = board.clientWidth;
+            const boardHeight = board.clientHeight;
+            const borderWidth = parseFloat(
+                getComputedStyle(board).borderLeftWidth
+            ) || 0;
+            const labelWidth = parseFloat(
+                getComputedStyle(board).getPropertyValue("--label-width")
+            ) || 78;
 
-            marker.style.gridColumn =
-                `${barre.fret - startFret + 2} / ${barre.fret - startFret + 3}`;
+            const contentWidth = boardWidth - (borderWidth * 2);
+            const contentHeight = boardHeight - (borderWidth * 2);
+            const fretWidth =
+                (contentWidth - labelWidth) / fretCount;
+
+            const columnIndex = barre.fret - startFret;
+            const rowStartIndex = Math.min(rowStart, rowEnd) - 1;
+            const rowEndIndex = Math.max(rowStart, rowEnd);
+
+            marker.style.left =
+                `${borderWidth + labelWidth + (columnIndex * fretWidth) + ((fretWidth - 28) / 2)}px`;
+
+            marker.style.top =
+                `${borderWidth + (rowStartIndex * contentHeight / 6) + 6}px`;
+
+            marker.style.height =
+                `${((rowEndIndex - rowStartIndex) * contentHeight / 6) - 12}px`;
 
             board.appendChild(marker);
         }
