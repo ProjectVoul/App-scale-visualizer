@@ -420,19 +420,23 @@ button { font: inherit; }
     opacity: .95;
 }
 
+.note.barre-covered {
+    z-index: 1;
+}
+
 /* BARRE */
 .barre-marker {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    height: 28px;
+    position: relative;
+    width: 28px;
+    height: calc(100% - 12px);
+    margin: 6px auto;
     border-radius: 14px;
     background: #222;
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+    z-index: 3;
     pointer-events: none;
     font-size: 14px;
     font-weight: 800;
@@ -1549,6 +1553,13 @@ function renderFretboard() {
                     const note = document.createElement("div");
                     note.className = "note";
 
+                    if (voicing.barre &&
+                        fret === voicing.barre.fret &&
+                        string.index >= voicing.barre.fromString - 1 &&
+                        string.index <= voicing.barre.toString - 1) {
+                        note.classList.add("barre-covered");
+                    }
+
                     if (noteInfo.interval === 0) {
                         note.classList.add("root");
                     }
@@ -1634,7 +1645,9 @@ function renderFretboard() {
             */
             const marker = document.createElement("div");
             marker.className = "barre-marker";
-            marker.textContent = "1";
+            marker.textContent = String(
+                voicing.fingers[barre.fromString - 1] || 1
+            );
 
             marker.style.gridRow =
                 `${Math.min(rowStart, rowEnd) + 1} / ${Math.max(rowStart, rowEnd) + 2}`;
