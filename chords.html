@@ -1550,16 +1550,16 @@ function renderFretboard() {
                     string.pitch + shapeFret
                 );
 
-                const isBarreCovered =
-    voicing.barre &&
-    fret === voicing.barre.fret &&
-    string.index >= voicing.barre.fromString - 1 &&
-    string.index <= voicing.barre.toString - 1;
-
-if (noteInfo && !isBarreCovered) {
+if (noteInfo) {
     const note = document.createElement("div");
     note.className = "note";
-                    }
+
+    if (voicing.barre &&
+        fret === voicing.barre.fret &&
+        string.index >= voicing.barre.fromString - 1 &&
+        string.index <= voicing.barre.toString - 1) {
+        note.classList.add("barre-covered");
+    }
 
                     if (noteInfo.interval === 0) {
                         note.classList.add("root");
