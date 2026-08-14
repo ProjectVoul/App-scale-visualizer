@@ -387,6 +387,11 @@ button { font: inherit; }
 .note {
     width: clamp(58px, 7vw, 82px);
     height: clamp(58px, 7vw, 82px);
+    min-width: 58px;
+    min-height: 58px;
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
+    box-sizing: border-box;
     border-radius: 50%;
     background: #f3f3f3;
     color: #151515;
@@ -420,23 +425,6 @@ button { font: inherit; }
     opacity: .95;
 }
 
-/* BARRE */
-.barre-marker {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    height: 28px;
-    border-radius: 14px;
-    background: #222;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    pointer-events: none;
-    font-size: 14px;
-    font-weight: 800;
-}
 
 /* OPEN / MUTED */
 .mute-marker {
@@ -479,7 +467,7 @@ button { font: inherit; }
 
 .invert-wrap {
     width: min(440px, 100%);
-    margin: 20px auto 0;
+    margin: 0 auto 22px;
 }
 
 .invert-button {
@@ -492,6 +480,18 @@ button { font: inherit; }
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+}
+
+.invert-icon {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 21px;
+    line-height: 1;
+    font-weight: 700;
+    color: #ccc;
 }
 
 .invert-button.active {
@@ -524,7 +524,6 @@ button { font: inherit; }
 
 .legend-dot.root { background: #ef334d; }
 .legend-dot.note { background: #f3f3f3; }
-.legend-dot.barre { background: #222; }
 
 /* LANDSCAPE */
 @media (orientation: landscape) and (max-height: 600px) {
@@ -721,18 +720,20 @@ button { font: inherit; }
     <button class="position-arrow" id="nextVoicing">›</button>
 </section>
 
+<!-- FRETBOARD CONTROLS -->
+<div class="invert-wrap">
+    <button class="invert-button" id="invertButton" type="button">
+        <span class="invert-icon" aria-hidden="true">↕</span>
+        <span>Invert Fretboard</span>
+    </button>
+</div>
+
 <!-- FRETBOARD -->
 <div class="fretboard-wrap">
     <div class="fretboard" id="fretboard"></div>
 </div>
 
 <div class="voicing-meta" id="voicingMeta"></div>
-
-<div class="invert-wrap">
-    <button class="invert-button" id="invertButton" type="button">
-        ↕ Invert Fretboard
-    </button>
-</div>
 
 <!-- LEGEND -->
 <div class="legend">
@@ -746,10 +747,6 @@ button { font: inherit; }
         <span>Chord note</span>
     </div>
 
-    <div class="legend-item">
-        <span class="legend-dot barre"></span>
-        <span>Barré</span>
-    </div>
 </div>
 
 </div>
@@ -1327,6 +1324,20 @@ function getTransposedVoicing(reference) {
         barre.fret += appliedShift;
     }
 
+    /* Represent a barre through the individual note markers: all notes
+       covered by the barre use the same index finger. */
+    if (barre) {
+        const from = Math.min(barre.fromString, barre.toString);
+        const to = Math.max(barre.fromString, barre.toString);
+
+        for (let stringNumber = from; stringNumber <= to; stringNumber++) {
+            const index = strings.length - stringNumber;
+            if (index >= 0 && index < frets.length && frets[index] === barre.fret) {
+                fingers[index] = 1;
+            }
+        }
+    }
+
     const nums = frets.filter(value => typeof value === "number");
     const fretted = nums.filter(value => value > 0);
 
@@ -1620,42 +1631,6 @@ function renderFretboard() {
             board.appendChild(cell);
         }
     });
-
-    /*
-       Draw the barre as an overlay inside the first cell of the
-       barre fret. This keeps it visually contained within the
-       fretboard instead of creating the square overflow we had
-       in the comparison view of the scale system.
-    */
-    if (voicing.barre) {
-        const barre = voicing.barre;
-
-        if (barre.fret >= startFret && barre.fret <= endFret) {
-            const rowStart = stringsReversed
-                ? strings.length - barre.fromString + 1
-                : barre.fromString;
-
-            const rowEnd = stringsReversed
-                ? strings.length - barre.toString + 1
-                : barre.toString;
-
-            /*
-               CSS grid row 1 is the low-E label row. Fret columns
-               begin at column 2 because column 1 is the label.
-            */
-            const marker = document.createElement("div");
-            marker.className = "barre-marker";
-            marker.textContent = "1";
-
-            marker.style.gridRow =
-                `${Math.min(rowStart, rowEnd) + 1} / ${Math.max(rowStart, rowEnd) + 2}`;
-
-            marker.style.gridColumn =
-                `${barre.fret - startFret + 2} / ${barre.fret - startFret + 3}`;
-
-            board.appendChild(marker);
-        }
-    }
 }
 
 function updateAll() {
