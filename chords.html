@@ -1350,21 +1350,24 @@ function getChordNoteAtPitch(pitch) {
 
 function getFrettedNoteInfo(stringName, openPitch, fret) {
     const pitch = mod12(openPitch + fret);
-    const letters = ["C","D","E","F","G","A","B"];
-    const letterIndex =
-        (naturalLetterIndex(stringName) + fret) % 7;
-    const letter = letters[letterIndex];
-    let accidental = pitch - naturalPitch[letter];
 
-    while (accidental > 6) accidental -= 12;
-    while (accidental < -6) accidental += 12;
+    /*
+       A fret is chromatic, not diatonic: adding the fret number to the
+       letter index makes spellings such as Gbb / Ebbb. For barre markers
+       we only need the actual sounding note, so use a stable chromatic
+       spelling with flats.
+    */
+    const noteNames = [
+        "C", "Db", "D", "Eb", "E", "F",
+        "Gb", "G", "Ab", "A", "Bb", "B"
+    ];
 
     const interval = mod12(pitch - rootData[currentRoot].pitch);
 
     return {
         pitch,
         interval,
-        name: letter + accidentalText(accidental)
+        name: noteNames[pitch]
     };
 }
 
