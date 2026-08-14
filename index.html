@@ -1544,7 +1544,7 @@ and (max-height: 600px) {
             class="position-shape"
             id="positionShape">
 
-            C Shape · CAGED
+            C Shape
 
         </div>
 
@@ -2558,8 +2558,8 @@ function getScaleNotes() {
                     ) % 7
                 ];
 
-            const naturalPitch =
-                naturalPitchValue(letter);
+            const naturalLetterPitch =
+                naturalPitch[letter];
 
             const targetPitch =
                 mod12(
@@ -2582,7 +2582,7 @@ function getScaleNotes() {
 
             let accidental =
                 targetPitch -
-                naturalPitch;
+                naturalLetterPitch;
 
             while (accidental > 6) {
                 accidental -= 12;
@@ -2855,9 +2855,7 @@ function updatePositionUI() {
 
 
     positionShape.textContent =
-        position.system === "Symmetric"
-            ? position.shape
-            : `${position.shape} Shape · CAGED`;
+        position.shape;
 
 
     fretRange.textContent =
