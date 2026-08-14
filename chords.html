@@ -1550,10 +1550,12 @@ function renderFretboard() {
                     string.pitch + shapeFret
                 );
 
-                const barreCovered = voicing.barre &&
-                    fret === voicing.barre.fret &&
-                    string.index >= voicing.barre.fromString - 1 &&
-                    string.index <= voicing.barre.toString - 1;
+const stringNumber = 6 - string.index;
+
+const barreCovered = voicing.barre &&
+    fret === voicing.barre.fret &&
+    stringNumber <= voicing.barre.fromString &&
+    stringNumber >= voicing.barre.toString;
 
                 if (noteInfo && !barreCovered) {
                     const note = document.createElement("div");
