@@ -975,6 +975,12 @@ button {
     height:
         clamp(56px, 7vw, 82px);
 
+    min-width: 56px;
+    min-height: 56px;
+    aspect-ratio: 1 / 1;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+
     border-radius: 50%;
 
     background: #f3f3f3;
@@ -1127,6 +1133,10 @@ and (max-height: 600px) {
     .note {
         width: 58px;
         height: 58px;
+        min-width: 58px;
+        min-height: 58px;
+        aspect-ratio: 1 / 1;
+        flex: 0 0 auto;
     }
 
     .note-name {
@@ -1239,6 +1249,10 @@ and (max-height: 600px) {
     .note {
         width: 56px;
         height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+        aspect-ratio: 1 / 1;
+        flex: 0 0 auto;
     }
 
     .note-name {
