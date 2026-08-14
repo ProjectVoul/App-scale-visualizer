@@ -423,24 +423,9 @@ button { font: inherit; }
     opacity: .95;
 }
 
-.note.barre-covered {
-    z-index: 1;
-}
-
-/* BARRE */
-.barre-marker {
-    position: absolute;
-    width: 28px;
-    border-radius: 14px;
-    background: #222;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    pointer-events: none;
-    font-size: 14px;
-    font-weight: 800;
+/* BARRE NOTE MARKERS */
+.barre-note {
+    z-index: 2;
 }
 
 /* OPEN / MUTED */
@@ -529,7 +514,6 @@ button { font: inherit; }
 
 .legend-dot.root { background: #ef334d; }
 .legend-dot.note { background: #f3f3f3; }
-.legend-dot.barre { background: #222; }
 
 /* LANDSCAPE */
 @media (orientation: landscape) and (max-height: 600px) {
@@ -751,10 +735,6 @@ button { font: inherit; }
         <span>Chord note</span>
     </div>
 
-    <div class="legend-item">
-        <span class="legend-dot barre"></span>
-        <span>Barré</span>
-    </div>
 </div>
 
 </div>
@@ -1368,6 +1348,26 @@ function getChordNoteAtPitch(pitch) {
     return getChordNoteMap().get(mod12(pitch));
 }
 
+function getFrettedNoteInfo(stringName, openPitch, fret) {
+    const pitch = mod12(openPitch + fret);
+    const letters = ["C","D","E","F","G","A","B"];
+    const letterIndex =
+        (naturalLetterIndex(stringName) + fret) % 7;
+    const letter = letters[letterIndex];
+    let accidental = pitch - naturalPitch[letter];
+
+    while (accidental > 6) accidental -= 12;
+    while (accidental < -6) accidental += 12;
+
+    const interval = mod12(pitch - rootData[currentRoot].pitch);
+
+    return {
+        pitch,
+        interval,
+        name: letter + accidentalText(accidental)
+    };
+}
+
 function getDisplayInterval(note) {
     return note.interval === 0 ? "R" : getIntervalLabel(note.interval);
 }
@@ -1523,6 +1523,75 @@ function renderFretboard() {
             */
             const shapeFret = voicing.frets[string.index];
 
+            /*
+               A barre is represented string-by-string.
+               If this string is covered by the barre, draw a normal
+               circular marker at the barre fret. If that string already
+               has its actual chord note at that fret, the normal note
+               marker below remains responsible for it.
+            */
+            const stringNumber = 6 - string.index;
+
+            const isBarreString =
+                voicing.barre &&
+                fret === voicing.barre.fret &&
+                stringNumber <= voicing.barre.fromString &&
+                stringNumber >= voicing.barre.toString;
+
+            const hasActualNoteAtBarre =
+                isBarreString &&
+                shapeFret === voicing.barre.fret;
+
+            if (isBarreString && !hasActualNoteAtBarre && shapeFret !== "X" && shapeFret !== 0) {
+                const barreNoteInfo = getFrettedNoteInfo(
+                    string.name,
+                    string.pitch,
+                    voicing.barre.fret
+                );
+
+                if (barreNoteInfo) {
+                    const barreNote = document.createElement("div");
+                    barreNote.className = "note barre-note";
+
+                    if (barreNoteInfo.interval === 0) {
+                        barreNote.classList.add("root");
+                    }
+
+                    const barreName = document.createElement("div");
+                    barreName.className = "note-name";
+                    barreName.textContent = barreNoteInfo.name;
+
+                    const barreInterval = document.createElement("div");
+                    barreInterval.className = "note-interval";
+                    barreInterval.textContent = getDisplayInterval(barreNoteInfo);
+
+                    const barreFinger = document.createElement("div");
+                    barreFinger.className = "note-finger";
+                    barreFinger.textContent = "1";
+
+                    if (displayMode === "notes") {
+                        barreInterval.style.display = "none";
+                        barreFinger.style.display = "none";
+                    }
+
+                    if (displayMode === "intervals") {
+                        barreName.style.display = "none";
+                        barreFinger.style.display = "none";
+                    }
+
+                    if (displayMode === "fingering") {
+                        barreName.style.display = "none";
+                        barreInterval.style.display = "none";
+                    }
+
+                    barreNote.appendChild(barreName);
+                    barreNote.appendChild(barreInterval);
+                    barreNote.appendChild(barreFinger);
+
+                    cell.appendChild(barreNote);
+                }
+            }
+
             if (shapeFret === "X") {
                 /*
                    X is attached to the nut/first displayed fret
@@ -1550,14 +1619,7 @@ function renderFretboard() {
                     string.pitch + shapeFret
                 );
 
-const stringNumber = 6 - string.index;
-
-const barreCovered = voicing.barre &&
-    fret === voicing.barre.fret &&
-    stringNumber <= voicing.barre.fromString &&
-    stringNumber >= voicing.barre.toString;
-
-                if (noteInfo && !barreCovered) {
+                if (noteInfo) {
                     const note = document.createElement("div");
                     note.className = "note";
 
@@ -1576,7 +1638,10 @@ const barreCovered = voicing.barre &&
                     const finger = document.createElement("div");
                     finger.className = "note-finger";
 
-                    const fingerValue = voicing.fingers[string.index];
+                    const fingerValue =
+                        isBarreString && shapeFret === voicing.barre?.fret
+                            ? 1
+                            : voicing.fingers[string.index];
 
                     if (fingerValue === 0) {
                         finger.textContent = "O";
@@ -1622,69 +1687,6 @@ const barreCovered = voicing.barre &&
         }
     });
 
-    /*
-       Draw the barre as an overlay inside the first cell of the
-       barre fret. This keeps it visually contained within the
-       fretboard instead of creating the square overflow we had
-       in the comparison view of the scale system.
-    */
-    if (voicing.barre) {
-        const barre = voicing.barre;
-
-        if (barre.fret >= startFret && barre.fret <= endFret) {
-            const rowStart = stringsReversed
-                ? strings.length - barre.fromString + 1
-                : barre.fromString;
-
-            const rowEnd = stringsReversed
-                ? strings.length - barre.toString + 1
-                : barre.toString;
-
-            /*
-               CSS grid row 1 is the low-E label row. Fret columns
-               begin at column 2 because column 1 is the label.
-            */
-            const marker = document.createElement("div");
-            marker.className = "barre-marker";
-            marker.textContent = String(
-                voicing.fingers[barre.fromString - 1] || 1
-            );
-
-            /*
-               The barré is a visual overlay, not a grid item.
-               Keeping it out of CSS Grid prevents it from changing
-               the fretboard's row sizing or pushing cells around.
-            */
-            const boardWidth = board.clientWidth;
-            const boardHeight = board.clientHeight;
-            const borderWidth = parseFloat(
-                getComputedStyle(board).borderLeftWidth
-            ) || 0;
-            const labelWidth = parseFloat(
-                getComputedStyle(board).getPropertyValue("--label-width")
-            ) || 78;
-
-            const contentWidth = boardWidth - (borderWidth * 2);
-            const contentHeight = boardHeight - (borderWidth * 2);
-            const fretWidth =
-                (contentWidth - labelWidth) / fretCount;
-
-            const columnIndex = barre.fret - startFret;
-            const rowStartIndex = Math.min(rowStart, rowEnd) - 1;
-            const rowEndIndex = Math.max(rowStart, rowEnd);
-
-            marker.style.left =
-                `${borderWidth + labelWidth + (columnIndex * fretWidth) + ((fretWidth - 28) / 2)}px`;
-
-            marker.style.top =
-                `${borderWidth + (rowStartIndex * contentHeight / 6) + 6}px`;
-
-            marker.style.height =
-                `${((rowEndIndex - rowStartIndex) * contentHeight / 6) - 12}px`;
-
-            board.appendChild(marker);
-        }
-    }
 }
 
 function updateAll() {
