@@ -478,8 +478,16 @@ button { font: inherit; }
 }
 
 .invert-wrap {
-    width: min(440px, 100%);
-    margin: 20px auto 0;
+    width: min(760px, 100%);
+    margin: 0 auto 24px;
+}
+
+.invert-icon {
+    display: inline-block;
+    margin-right: 7px;
+    font-size: 18px;
+    line-height: 1;
+    vertical-align: -1px;
 }
 
 .invert-button {
@@ -699,6 +707,13 @@ button { font: inherit; }
     <button class="active" data-display="all">All</button>
 </div>
 
+<div class="invert-wrap">
+    <button class="invert-button" id="invertButton" type="button">
+        <span class="invert-icon" aria-hidden="true">↕</span>
+        <span>Invert Fretboard</span>
+    </button>
+</div>
+
 <!-- CHORD INFO -->
 <section class="chord-info">
     <h1 class="chord-title" id="chordTitle">C Major</h1>
@@ -726,12 +741,6 @@ button { font: inherit; }
 </div>
 
 <div class="voicing-meta" id="voicingMeta"></div>
-
-<div class="invert-wrap">
-    <button class="invert-button" id="invertButton" type="button">
-        ↕ Invert Fretboard
-    </button>
-</div>
 
 <!-- LEGEND -->
 <div class="legend">
