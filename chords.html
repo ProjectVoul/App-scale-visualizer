@@ -343,6 +343,7 @@ button { font: inherit; }
     overflow: hidden;
     background: #93612d;
     touch-action: pan-y;
+    position: relative;
 }
 
 .string-label {
@@ -387,11 +388,6 @@ button { font: inherit; }
 .note {
     width: clamp(58px, 7vw, 82px);
     height: clamp(58px, 7vw, 82px);
-    min-width: 58px;
-    min-height: 58px;
-    aspect-ratio: 1 / 1;
-    flex: 0 0 auto;
-    box-sizing: border-box;
     border-radius: 50%;
     background: #f3f3f3;
     color: #151515;
@@ -404,6 +400,8 @@ button { font: inherit; }
     font-weight: 700;
     position: relative;
     z-index: 2;
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
 }
 
@@ -425,6 +423,20 @@ button { font: inherit; }
     opacity: .95;
 }
 
+/* BARRE NOTE MARKERS */
+.barre-note {
+    z-index: 2;
+}
+
+.barre-note {
+    /* Full marker: note + interval + finger. */
+}
+
+.barre-note .note-name,
+.barre-note .note-interval,
+.barre-note .note-finger {
+    display: block;
+}
 
 /* OPEN / MUTED */
 .mute-marker {
@@ -467,7 +479,7 @@ button { font: inherit; }
 
 .invert-wrap {
     width: min(440px, 100%);
-    margin: 0 auto 22px;
+    margin: 20px auto 0;
 }
 
 .invert-button {
@@ -480,18 +492,6 @@ button { font: inherit; }
     cursor: pointer;
     font-size: 15px;
     font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-}
-
-.invert-icon {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 21px;
-    line-height: 1;
-    font-weight: 700;
-    color: #ccc;
 }
 
 .invert-button.active {
@@ -720,20 +720,18 @@ button { font: inherit; }
     <button class="position-arrow" id="nextVoicing">›</button>
 </section>
 
-<!-- FRETBOARD CONTROLS -->
-<div class="invert-wrap">
-    <button class="invert-button" id="invertButton" type="button">
-        <span class="invert-icon" aria-hidden="true">↕</span>
-        <span>Invert Fretboard</span>
-    </button>
-</div>
-
 <!-- FRETBOARD -->
 <div class="fretboard-wrap">
     <div class="fretboard" id="fretboard"></div>
 </div>
 
 <div class="voicing-meta" id="voicingMeta"></div>
+
+<div class="invert-wrap">
+    <button class="invert-button" id="invertButton" type="button">
+        ↕ Invert Fretboard
+    </button>
+</div>
 
 <!-- LEGEND -->
 <div class="legend">
@@ -1155,17 +1153,6 @@ const chordData = {
 
 let currentRoot = "C";
 let currentChord = "major";
-
-/* Optional deep-link from the Scales page. */
-const params = new URLSearchParams(window.location.search);
-
-if (params.has("root") && rootData[params.get("root")]) {
-    currentRoot = params.get("root");
-}
-
-if (params.has("chord") && chordData[params.get("chord")]) {
-    currentChord = params.get("chord");
-}
 let currentVoicing = 0;
 let displayMode = "all";
 let stringsReversed = false;
@@ -1324,20 +1311,6 @@ function getTransposedVoicing(reference) {
         barre.fret += appliedShift;
     }
 
-    /* Represent a barre through the individual note markers: all notes
-       covered by the barre use the same index finger. */
-    if (barre) {
-        const from = Math.min(barre.fromString, barre.toString);
-        const to = Math.max(barre.fromString, barre.toString);
-
-        for (let stringNumber = from; stringNumber <= to; stringNumber++) {
-            const index = strings.length - stringNumber;
-            if (index >= 0 && index < frets.length && frets[index] === barre.fret) {
-                fingers[index] = 1;
-            }
-        }
-    }
-
     const nums = frets.filter(value => typeof value === "number");
     const fretted = nums.filter(value => value > 0);
 
@@ -1383,6 +1356,24 @@ function getIntervalLabel(interval) {
 
 function getChordNoteAtPitch(pitch) {
     return getChordNoteMap().get(mod12(pitch));
+}
+
+function getGenericNoteName(pitch) {
+    const pitchClass = mod12(pitch);
+
+    const sharpNames = [
+        "C","C#","D","D#","E","F",
+        "F#","G","G#","A","A#","B"
+    ];
+
+    const flatNames = [
+        "C","Db","D","Eb","E","F",
+        "Gb","G","Ab","A","Bb","B"
+    ];
+
+    return currentRoot.includes("b")
+        ? flatNames[pitchClass]
+        : sharpNames[pitchClass];
 }
 
 function getDisplayInterval(note) {
@@ -1540,6 +1531,110 @@ function renderFretboard() {
             */
             const shapeFret = voicing.frets[string.index];
 
+            /*
+               A barre is represented string-by-string.
+               If this string is covered by the barre, draw a normal
+               circular marker at the barre fret. If that string already
+               has its actual chord note at that fret, the normal note
+               marker below remains responsible for it.
+            */
+            const stringNumber = 6 - string.index;
+
+            const isBarreString =
+                voicing.barre &&
+                fret === voicing.barre.fret &&
+                stringNumber <= voicing.barre.fromString &&
+                stringNumber >= voicing.barre.toString;
+
+            const hasActualNoteAtBarre =
+                isBarreString &&
+                shapeFret === voicing.barre.fret;
+
+            if (isBarreString && !hasActualNoteAtBarre && shapeFret !== "X") {
+                /*
+                   The barre gets a complete marker too:
+                   note + interval + finger.
+                */
+                const barrePitch =
+                    mod12(string.pitch + voicing.barre.fret);
+
+                const chordNoteInfo =
+                    getChordNoteAtPitch(barrePitch);
+
+                const barreInterval =
+                    mod12(
+                        barrePitch -
+                        rootData[currentRoot].pitch
+                    );
+
+                const barreNoteInfo =
+                    chordNoteInfo || {
+                        pitch: barrePitch,
+                        interval: barreInterval,
+                        name: getGenericNoteName(barrePitch)
+                    };
+
+                const barreNote =
+                    document.createElement("div");
+
+                barreNote.className =
+                    "note barre-note";
+
+                if (barreNoteInfo.interval === 0) {
+                    barreNote.classList.add("root");
+                }
+
+                const barreName =
+                    document.createElement("div");
+
+                barreName.className =
+                    "note-name";
+
+                barreName.textContent =
+                    barreNoteInfo.name;
+
+                const barreIntervalLabel =
+                    document.createElement("div");
+
+                barreIntervalLabel.className =
+                    "note-interval";
+
+                barreIntervalLabel.textContent =
+                    getDisplayInterval(barreNoteInfo);
+
+                const barreFinger =
+                    document.createElement("div");
+
+                barreFinger.className =
+                    "note-finger";
+
+                barreFinger.textContent =
+                    String(
+                        voicing.fingers[string.index] || 1
+                    );
+
+                if (displayMode === "notes") {
+                    barreIntervalLabel.style.display = "none";
+                    barreFinger.style.display = "none";
+                }
+
+                if (displayMode === "intervals") {
+                    barreName.style.display = "none";
+                    barreFinger.style.display = "none";
+                }
+
+                if (displayMode === "fingering") {
+                    barreName.style.display = "none";
+                    barreIntervalLabel.style.display = "none";
+                }
+
+                barreNote.appendChild(barreName);
+                barreNote.appendChild(barreIntervalLabel);
+                barreNote.appendChild(barreFinger);
+
+                cell.appendChild(barreNote);
+            }
+
             if (shapeFret === "X") {
                 /*
                    X is attached to the nut/first displayed fret
@@ -1631,6 +1726,7 @@ function renderFretboard() {
             board.appendChild(cell);
         }
     });
+
 }
 
 function updateAll() {
@@ -1811,7 +1907,6 @@ document.addEventListener("click", event => {
    INITIAL RENDER
 ================================================== */
 
-document.getElementById("rootButton").textContent = currentRoot;
 updateRootMenu();
 updateChordMenu();
 updateAll();
